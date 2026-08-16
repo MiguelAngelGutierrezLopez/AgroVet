@@ -1,4 +1,4 @@
-# 🌾 AGROVET YACUANQUER
+# AGROVET YACUANQUER
 
 **Sistema de Gestión Comercial Integrado para Agroinsumos**
 
@@ -12,46 +12,46 @@ Actualmente en operación en **AgroVet Yacuanquer**, ofreciendo una plataforma c
 
 ---
 
-##  Funcionalidades principales
+## Funcionalidades principales
 
-###  Gestión de Ventas
+### Gestión de Ventas
 - Registro y procesamiento de ventas en tiempo real
 - Generación automática de facturas y documentos PDF
 - Historial completo de transacciones
 - Gestión de métodos de pago y créditos
 
-###  Control de Inventario
+### Control de Inventario
 - Monitoreo de existencias de productos agrícolas y veterinarios
 - Alertas de productos con bajo inventario
 - Registro de entradas y salidas de productos
 - Historial detallado de movimientos
 
-###  Gestión de Clientes y Proveedores
+### Gestión de Clientes y Proveedores
 - Base de datos centralizada de clientes
 - Perfiles de proveedores
 - Historial de compras y ventas por cliente
 - Información de contacto organizada
 
-###  Reportes Financieros
+### Reportes Financieros
 - Reporte de caja diario
 - Análisis de ventas por período
 - Estadísticas de productos más vendidos
 - Gestión de créditos y pagos
 
-###  Seguridad y Acceso
+### Seguridad y Acceso
 - Sistema de autenticación de usuarios
 - Control de acceso por roles
 - Interfaz especializada para auxiliares de atención al cliente
 - Auditoría de operaciones
 
-###  Comunicación
+### Comunicación
 - Envío de correos integrado
 - Notificaciones automáticas
 - Respuestas a consultas de contacto
 
 ---
 
-##  Stack Tecnológico
+## Stack Tecnológico
 
 | Aspecto | Tecnología |
 |--------|-----------|
@@ -66,7 +66,7 @@ Actualmente en operación en **AgroVet Yacuanquer**, ofreciendo una plataforma c
 
 ---
 
-##  Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 AgroVet/
@@ -122,32 +122,32 @@ AgroVet/
 
 ### Módulos Principales
 
-#### 🛒 Ventas
+#### Ventas
 - Crear nuevas ventas
 - Registrar productos vendidos
 - Aplicar descuentos
 - Generar facturas PDF
 - Gestionar formas de pago
 
-#### 📦 Productos
+#### Productos
 - Catálogo centralizado
 - Precios y referencias
 - Categorización
 - Información de proveedores
 
-#### 📊 Inventario
+#### Inventario
 - Stock en tiempo real
 - Alertas de inventario bajo
 - Movimientos de entrada/salida
 - Reporte de existencias
 
-#### 👤 Clientes
+#### Clientes
 - Registro de clientes
 - Histórico de compras
 - Gestión de créditos
 - Información de contacto
 
-#### 📈 Reportes
+#### Reportes
 - Reporte de caja diario
 - Historial de ventas
 - Análisis de productos
@@ -161,7 +161,7 @@ AgroVet/
 
 
 
-## 📋 API Interna
+## API Interna
 
 La aplicación ofrece varios endpoints de utilidad:
 
@@ -176,7 +176,7 @@ La aplicación ofrece varios endpoints de utilidad:
 
 
 
-## 📦 Compilación a Ejecutable
+## Compilación a Ejecutable
 
 El proyecto incluye scripts para compilar a `.exe` en Windows:
 
@@ -190,7 +190,7 @@ Genera:
 
 ---
 
-## 👥 Equipo y Contacto
+## Equipo y Contacto
 
 **Desarrollador:** Miguel Ángel Gutiérrez López  
 **Empresa:** AgroVet Yacuanquer  
@@ -199,13 +199,13 @@ Genera:
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto es propiedad de **AgroVet Yacuanquer** y está reservado para uso interno.
 
 ---
 
-## 🔐 Seguridad
+## Seguridad
 
 - **Cambiar credenciales por defecto antes de producción**
 - Mantener MySQL actualizado
@@ -215,7 +215,7 @@ Este proyecto es propiedad de **AgroVet Yacuanquer** y está reservado para uso 
 
 ---
 
-## 📚 Recursos Adicionales
+## Recursos Adicionales
 
 - [Documentación Flask](https://flask.palletsprojects.com/)
 - [MySQL Connector/Python](https://dev.mysql.com/doc/connector-python/en/)
@@ -223,7 +223,7 @@ Este proyecto es propiedad de **AgroVet Yacuanquer** y está reservado para uso 
 
 ---
 
-## 📊 Próximos Pasos: Análisis de Datos
+## Próximos Pasos: Análisis de Datos
 
 A cierre de año fiscal 2026, se realizará un **análisis integral del desempeño financiero y operacional de AgroVet Yacuanquer** utilizando los datos recopilados durante este período.
 
