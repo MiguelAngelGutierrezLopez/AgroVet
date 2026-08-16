@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGROVET - Gestión de Clientes</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --teal-dark: #166b68;
+            --teal-light: #3fa6a0;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E8F4F6;
+            --blanco-hueso: #F8F9FA;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2C3E50;
+            --gris-medio: #7F8C8D;
+            --gris-claro: #ECF0F1;
+            --exito: #27AE60;
+            --exito-dark: #1e8449;
+            --error: #E74C3C;
+            --error-dark: #c0392b;
+            --advertencia: #F39C12;
+            --azul-mix: #3498DB;
+            --sombra: 0 4px 12px rgba(0,0,0,0.08);
+            --sombra-hover: 0 8px 24px rgba(0,0,0,0.12);
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--celeste-fondo) 0%, #d4e8ec 100%);
+            min-height: 100vh;
+        }
+        
+        /* ===== SIDEMENU - NUEVOS COLORES (TEAL + TERRACOTA) ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--teal-dark) 0%, #0f4e4b 100%);
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .sidebar-header small {
+            display: none;
+        }
+        
+        .sidebar-header h3 {
+            color: var(--mostaza);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-header small {
+            font-size: 10px;
+            opacity: 0.8;
+            display: block;
+            margin-top: 4px;
+            color: var(--celeste-fondo);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu li {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.85);
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu li:hover {
+            background: rgba(192,138,103,0.25);
+            color: white;
+            border-left-color: var(--terracota);
+        }
+        
+        .sidebar-menu li.active {
+            background: rgba(217,195,87,0.2);
+            color: var(--mostaza);
+            border-left: 3px solid var(--mostaza);
+            font-weight: 600;
+        }
+        
+        .sidebar.collapsed .sidebar-menu li span {
+            display: none;
+        }
+        
+        .sidebar-menu li i {
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .toggle-sidebar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.12);
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .toggle-sidebar:hover {
+            background: var(--terracota);
+            transform: translateX(-50%) scale(1.05);
+        }
+        
+        /* Main content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        /* ===== HEADER ===== */
+        .main-header {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: var(--sombra);
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--mostaza);
+        }
+        
+        .logo small {
+            font-size: 11px;
+            opacity: 0.85;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .logout-btn:hover {
+            background: var(--rojo-rosado);
+            transform: translateY(-2px);
+            border-color: transparent;
+        }
+        
+        /* ===== TABS (SOLO CLIENTES AHORA) ===== */
+        .tabs-container {
+            padding: 0 25px;
+            margin-top: 25px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            max-width: 400px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: var(--blanco-hueso);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--gris-medio);
+        }
+        
+        .tab-btn i {
+            font-size: 18px;
+        }
+        
+        .tab-btn.active {
+            background: var(--teal);
+            color: white;
+        }
+        
+        .tab-btn:first-child {
+            border-radius: var(--border-radius) 0 0 0;
+        }
+        
+        /* Ocultamos el segundo tab ya que no hay proveedores */
+        .tab-btn:last-child {
+            display: none;
+        }
+        
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .container {
+            padding: 0 25px 25px 25px;
+        }
+        
+        .tab-content {
+            display: block;
+            background: white;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--sombra);
+        }
+        
+        /* Ocultamos el contenido de proveedores */
+        #proveedoresTab {
+            display: none;
+        }
+        
+        /* ===== PANEL DE ESTADÍSTICAS ===== */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, white, var(--blanco-hueso));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--gris-claro);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--teal), var(--terracota));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sombra-hover);
+        }
+        
+        .stat-card i {
+            font-size: 36px;
+            color: var(--teal);
+            margin-bottom: 12px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--gris-oscuro);
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+        
+        /* ===== BARRA DE HERRAMIENTAS ===== */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 2px solid var(--gris-claro);
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            transition: all 0.2s;
+            background: var(--blanco-hueso);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--teal);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(31,138,134,0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 18px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--teal);
+            transform: translateY(-1px);
+        }
+        
+        .filter-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* ===== TABLAS ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--gris-claro);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background: var(--teal);
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gris-claro);
+            font-size: 14px;
+        }
+        
+        .data-table tr {
+            transition: all 0.2s;
+        }
+        
+        .data-table tbody tr:hover {
+            background: var(--celeste-fondo);
+            cursor: pointer;
+        }
+        
+        .deuda-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .deuda-0 { background: rgba(39,174,96,0.15); color: var(--exito); }
+        .deuda-pequena { background: rgba(243,156,18,0.15); color: var(--advertencia); }
+        .deuda-grande { background: rgba(212,74,94,0.15); color: var(--rojo-rosado); }
+        
+        .estado-activo {
+            color: var(--exito);
+            font-weight: 600;
+        }
+        
+        .estado-inactivo {
+            color: var(--rojo-rosado);
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn.view {
+            color: var(--azul-mix);
+            background: rgba(52,152,219,0.1);
+        }
+        
+        .action-btn.view:hover {
+            background: var(--azul-mix);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .action-btn.credit {
+            color: var(--teal);
+            background: rgba(31,138,134,0.1);
+        }
+        
+        .action-btn.credit:hover {
+            background: var(--teal);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px;
+        }
+        
+        .pagination button {
+            padding: 8px 14px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .pagination button:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .pagination button.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--sombra-hover);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--teal), var(--turquesa));
+            color: white;
+            padding: 20px 25px;
+            border-radius: 24px 24px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.4);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .detail-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--gris-claro);
+            padding-bottom: 20px;
+        }
+        
+        .detail-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        
+        .detail-section h3 {
+            color: var(--teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .detail-item {
+            background: var(--blanco-hueso);
+            padding: 14px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .detail-item:hover {
+            background: var(--celeste-fondo);
+        }
+        
+        .detail-label {
+            font-size: 11px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            margin-top: 6px;
+        }
+        
+        .creditos-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .creditos-table th {
+            background: var(--turquesa);
+            color: white;
+            padding: 10px;
+            font-weight: 600;
+        }
+        
+        .creditos-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-success { background: rgba(39,174,96,0.15); color: var(--exito); }
+        .badge-warning { background: rgba(243,156,18,0.15); color: var(--advertencia); }
+        .badge-danger { background: rgba(212,74,94,0.15); color: var(--rojo-rosado); }
+        .badge-info { background: rgba(31,138,134,0.15); color: var(--teal); }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--gris-medio);
+        }
+        
+        .loading i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .empty-row {
+            text-align: center;
+            padding: 40px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 40px;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--sombra-hover);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, var(--exito), var(--exito-dark));
+            color: white;
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .data-table {
+                font-size: 12px;
+            }
+            .data-table th, .data-table td {
+                padding: 10px;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+            .main-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEMENU con colores teal/terracota -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>AGROVET</h3>
+            <small>Yacuanquer</small>
+        </div>
+        <ul class="sidebar-menu">
+            <li data-page="ventas">
+                <i class="fas fa-cash-register"></i>
+                <span>Módulo Ventas</span>
+            </li>
+            <li class="active" data-page="clientes">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </li>
+        </ul>
+        <button class="toggle-sidebar" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+        <div class="main-header">
+            <div class="logo">
+                <h1>AGRO<span>VET</span></h1>
+                <small>Yacuanquer - Gestión de Clientes</small>
+            </div>
+            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+        
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="clientes"><i class="fas fa-users"></i> Clientes</button>
+                <button class="tab-btn" data-tab="proveedores" style="display:none;"><i class="fas fa-truck"></i> Proveedores</button>
+            </div>
+        </div>
+        
+        <div class="container">
+            <!-- TAB CLIENTES (Único visible) -->
+            <div class="tab-content active" id="clientesTab">
+                <div class="stats-panel" id="clienteStats">
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="value" id="totalClientes">-</div>
+                        <div class="label">Total Clientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-coins"></i>
+                        <div class="value" id="deudaTotal">-</div>
+                        <div class="label">Deuda Total Global</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="value" id="clientesMorosos">-</div>
+                        <div class="label">Morosos (Deuda ≥ $50k)</div>
+                    </div>
+                </div>
+                
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchCliente" placeholder="Buscar por nombre, cédula o teléfono...">
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-deuda="todos">Todos</button>
+                        <button class="filter-btn" data-deuda="sin">Sin Deuda</button>
+                        <button class="filter-btn" data-deuda="pequena">Deuda &lt; $50k</button>
+                        <button class="filter-btn" data-deuda="grande">Deuda ≥ $50k</button>
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table class="data-table" id="clientesTable">
+                        <thead>
+                            <tr><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Deuda Total</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="clientesTableBody">
+                            <tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i><br>Cargando clientes...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination" id="clientePagination"></div>
+            </div>
+            
+            <!-- Proveedores oculto completamente -->
+            <div class="tab-content" id="proveedoresTab" style="display:none;"></div>
+        </div>
+    </div>
+    
+    <!-- MODAL DETALLE CLIENTE -->
+    <div class="modal" id="clienteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user"></i> Detalle del Cliente</h2>
+                <button class="modal-close" onclick="closeModal('clienteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="clienteModalBody"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables globales
+        let currentClientePage = 1;
+        let clienteFiltroDeuda = 'todos';
+        let clienteBusqueda = '';
+        
+        // ===== FUNCIONES UTILES =====
+        function formatMoney(val) {
+            return `$${parseFloat(val).toLocaleString('es-CO', {minimumFractionDigits: 2})}`;
+        }
+        
+        function getDeudaClass(deuda) {
+            if (deuda === 0) return 'deuda-0';
+            if (deuda < 50000) return 'deuda-pequena';
+            return 'deuda-grande';
+        }
+        
+        function showNotification(msg, type) {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+            document.body.appendChild(notif);
+            setTimeout(() => {
+                notif.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, 2500);
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // ===== SIDEMENU =====
+        function setupSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            let sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            
+            if (sidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            }
+            
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+                const isCollapsed = sidebar.classList.contains('collapsed');
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                toggleBtn.innerHTML = isCollapsed ? '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
+            });
+            
+            document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                li.addEventListener('click', () => {
+                    const page = li.dataset.page;
+                    if (page === 'ventas') {
+                        window.location.href = '/prueba';
+                    }
+                });
+            });
+        }
+        
+        // ===== CARGAR ESTADÍSTICAS GLOBALES (Deuda total real de TODOS los clientes) =====
+        async function cargarEstadisticasGlobales() {
+            try {
+                // Petición para obtener el resumen global de deudas (sin paginación ni filtros)
+                const response = await fetch('/clientes-proveedores/clientes/resumen-global');
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Actualizar deuda total global
+                    document.getElementById('deudaTotal').innerText = formatMoney(data.deuda_total_global || 0);
+                    document.getElementById('totalClientes').innerText = data.total_clientes_global || 0;
+                    document.getElementById('clientesMorosos').innerText = data.total_morosos_global || 0;
+                } else {
+                    console.warn('No se pudo obtener resumen global, se usará cálculo alternativo');
+                    await cargarEstadisticasAlternativas();
+                }
+            } catch (error) {
+                console.error('Error cargando estadísticas globales:', error);
+                // Fallback: cargar todas las páginas para calcular (solo si el endpoint no existe)
+                await cargarEstadisticasAlternativas();
+            }
+        }
+        
+        // Método alternativo: obtener todas las páginas para calcular el total real
+        async function cargarEstadisticasAlternativas() {
+            try {
+                let todasLasPaginas = [];
+                let paginaActual = 1;
+                let hayMas = true;
+                
+                // Recorrer todas las páginas hasta obtener todos los clientes
+                while (hayMas) {
+                    const url = `/clientes-proveedores/clientes?page=${paginaActual}&per_page=100`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.success && data.clientes && data.clientes.length > 0) {
+                        todasLasPaginas = todasLasPaginas.concat(data.clientes);
+                        paginaActual++;
+                        // Si ya no hay más páginas o es la última
+                        if (paginaActual > Math.ceil(data.total / 100)) {
+                            hayMas = false;
+                        }
+                    } else {
+                        hayMas = false;
+                    }
+                }
+                
+                // Calcular totales reales
+                let deudaTotalGlobal = 0;
+                let totalMorosos = 0;
+                todasLasPaginas.forEach(cliente => {
+                    const deuda = cliente.deuda_total || 0;
+                    deudaTotalGlobal += deuda;
+                    if (deuda >= 50000) totalMorosos++;
+                });
+                
+                document.getElementById('deudaTotal').innerText = formatMoney(deudaTotalGlobal);
+                document.getElementById('totalClientes').innerText = todasLasPaginas.length;
+                document.getElementById('clientesMorosos').innerText = totalMorosos;
+                
+            } catch (error) {
+                console.error('Error en método alternativo:', error);
+                document.getElementById('deudaTotal').innerText = 'Error';
+            }
+        }
+        
+        // ===== CLIENTES (con paginación normal) =====
+        async function cargarClientes() {
+            const tbody = document.getElementById('clientesTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i><br>Cargando clientes...</td></tr>';
+            
+            try {
+                let url = `/clientes-proveedores/clientes?page=${currentClientePage}&per_page=10`;
+                if (clienteBusqueda) url += `&busqueda=${encodeURIComponent(clienteBusqueda)}`;
+                if (clienteFiltroDeuda !== 'todos') url += `&deuda=${clienteFiltroDeuda}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const clientes = data.clientes;
+                    const total = data.total;
+                    
+                    if (clientes.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="empty-row"><i class="fas fa-inbox"></i><br>No se encontraron clientes</td></tr>';
+                    } else {
+                        tbody.innerHTML = clientes.map(c => `
+                            <tr>
+                                <td><strong>${c.nombre || 'N/A'}</strong></td>
+                                <td>${c.cedula || 'N/A'}</td>
+                                <td>${c.telefono || 'N/A'}</td>
+                                <td><span class="deuda-badge ${getDeudaClass(c.deuda_total || 0)}">${formatMoney(c.deuda_total || 0)}</span></td>
+                                <td><span class="${c.estado_actual === 'moroso' ? 'estado-inactivo' : 'estado-activo'}">${c.estado_actual === 'moroso' ? 'MOROSO' : 'ACTIVO'}</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view" onclick="verDetalleCliente('${c.cedula}')"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn credit" onclick="verCreditosCliente('${c.cedula}')"><i class="fas fa-credit-card"></i></button>
+                                 </td>
+                             </tr>
+                        `).join('');
+                    }
+                    
+                    renderPagination('clientePagination', currentClientePage, Math.ceil(total / 10), (page) => {
+                        currentClientePage = page;
+                        cargarClientes();
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-row" style="color:var(--error)"><i class="fas fa-exclamation-triangle"></i><br>Error cargando clientes</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-row" style="color:var(--error)"><i class="fas fa-wifi"></i><br>Error de conexión</td></tr>';
+            }
+        }
+        
+        async function verDetalleCliente(cedula) {
+            try {
+                const response = await fetch(`/clientes-proveedores/cliente/${cedula}/historial`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const h = data.historial;
+                    const cliente = h.cliente;
+                    const ventas = h.ventas || [];
+                    const creditos = h.creditos || [];
+                    
+                    const modalBody = document.getElementById('clienteModalBody');
+                    modalBody.innerHTML = `
+                        <div class="detail-section">
+                            <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
+                            <div class="detail-grid">
+                                <div class="detail-item"><div class="detail-label">Nombre</div><div class="detail-value">${cliente.nombre || 'N/A'}</div></div>
+                                <div class="detail-item"><div class="detail-label">Cédula</div><div class="detail-value">${cliente.cedula || 'N/A'}</div></div>
+                                <div class="detail-item"><div class="detail-label">Teléfono</div><div class="detail-value">${cliente.telefono || 'N/A'}</div></div>
+                                <div class="detail-item"><div class="detail-label">Correo</div><div class="detail-value">${cliente.correo || 'N/A'}</div></div>
+                                <div class="detail-item"><div class="detail-label">Dirección</div><div class="detail-value">${cliente.direccion || 'N/A'}</div></div>
+                                <div class="detail-item"><div class="detail-label">Fecha Registro</div><div class="detail-value">${cliente.fecha_creacion || 'N/A'}</div></div>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h3><i class="fas fa-chart-line"></i> Resumen de Ventas</h3>
+                            <div class="detail-grid">
+                                <div class="detail-item"><div class="detail-label">Total Ventas</div><div class="detail-value">${h.resumen.total_ventas}</div></div>
+                                <div class="detail-item"><div class="detail-label">Monto Total</div><div class="detail-value">${formatMoney(h.resumen.monto_total)}</div></div>
+                                <div class="detail-item"><div class="detail-label">Deuda Actual</div><div class="detail-value" style="color:var(--rojo-rosado)">${formatMoney(h.resumen.deuda_total)}</div></div>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h3><i class="fas fa-credit-card"></i> Créditos Activos</h3>
+                            ${creditos.filter(c => c.estado === 'pendiente').length === 0 ? '<p>No hay créditos activos</p>' : `
+                                <table class="creditos-table">
+                                    <thead><tr><th># Venta</th><th>Fecha</th><th>Deuda Inicial</th><th>Saldo Pendiente</th><th>Vencimiento</th></tr></thead>
+                                    <tbody>
+                                        ${creditos.filter(c => c.estado === 'pendiente').map(c => `
+                                            <tr>
+                                                <td>${c.numero_venta || 'N/A'}</td>
+                                                <td>${c.fecha_inicio || 'N/A'}</td>
+                                                <td>${formatMoney(c.deuda_inicial)}</td>
+                                                <td style="color:var(--rojo-rosado)">${formatMoney(c.saldo_pendiente)}</td>
+                                                <td>${c.fecha_vencimiento || 'N/A'}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            `}
+                        </div>
+                        <div class="detail-section">
+                            <h3><i class="fas fa-history"></i> Últimas Ventas</h3>
+                            ${ventas.length === 0 ? '<p>No hay ventas registradas</p>' : `
+                                <table class="creditos-table">
+                                    <thead><tr><th># Venta</th><th>Fecha</th><th>Total</th><th>Productos</th></tr></thead>
+                                    <tbody>
+                                        ${ventas.slice(0, 5).map(v => `
+                                            <tr>
+                                                <td>${v.numero_venta || 'N/A'}</td>
+                                                <td>${v.fecha_dia || 'N/A'}</td>
+                                                <td>${formatMoney(v.total)}</td>
+                                                <td>${v.productos || '-'}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            `}
+                        </div>
+                    `;
+                    document.getElementById('clienteModal').style.display = 'flex';
+                } else {
+                    showNotification('Error cargando detalles del cliente', 'error');
+                }
+            } catch (error) {
+                showNotification('Error de conexión', 'error');
+            }
+        }
+        
+        async function verCreditosCliente(cedula) {
+            try {
+                const response = await fetch(`/clientes-proveedores/cliente/${cedula}/creditos`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const creditos = data.creditos;
+                    const modalBody = document.getElementById('clienteModalBody');
+                    if (creditos.length === 0) {
+                        modalBody.innerHTML = `<div class="detail-section"><h3><i class="fas fa-credit-card"></i> Créditos</h3><p>No hay créditos registrados para este cliente</p></div>`;
+                    } else {
+                        modalBody.innerHTML = `
+                            <div class="detail-section">
+                                <h3><i class="fas fa-credit-card"></i> Historial de Créditos</h3>
+                                <table class="creditos-table">
+                                    <thead><tr><th># Venta</th><th>Fecha</th><th>Deuda Inicial</th><th>Abonos</th><th>Saldo</th><th>Estado</th><th>Vencimiento</th></tr></thead>
+                                    <tbody>${creditos.map(c => `
+                                        <tr>
+                                            <td>${c.numero_venta || 'N/A'}</td>
+                                            <td>${c.fecha_dia || c.fecha_inicio || 'N/A'}</td>
+                                            <td>${formatMoney(c.deuda_inicial)}</td>
+                                            <td>${formatMoney(c.abonos_realizados || 0)}</td>
+                                            <td style="${c.estado === 'pendiente' ? 'color:var(--rojo-rosado)' : 'color:var(--exito)'}">${formatMoney(c.saldo_pendiente)}</td>
+                                            <td><span class="badge ${c.estado === 'pendiente' ? 'badge-warning' : 'badge-success'}">${c.estado === 'pendiente' ? 'PENDIENTE' : 'PAGADO'}</span></td>
+                                            <td>${c.fecha_vencimiento || 'N/A'}</td>
+                                        </tr>
+                                    `).join('')}</tbody>
+                                </table>
+                            </div>
+                        `;
+                    }
+                    document.getElementById('clienteModal').style.display = 'flex';
+                } else {
+                    showNotification('Error cargando créditos', 'error');
+                }
+            } catch (error) {
+                showNotification('Error de conexión', 'error');
+            }
+        }
+        
+        function renderPagination(containerId, currentPage, totalPages, onPageChange) {
+            const container = document.getElementById(containerId);
+            if (!container || totalPages <= 1) {
+                if (container) container.innerHTML = '';
+                return;
+            }
+            let html = '';
+            if (currentPage > 1) html += `<button onclick="window.changePage(${currentPage - 1}, '${containerId}')"><i class="fas fa-chevron-left"></i></button>`;
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="window.changePage(${i}, '${containerId}')">${i}</button>`;
+            }
+            if (currentPage < totalPages) html += `<button onclick="window.changePage(${currentPage + 1}, '${containerId}')"><i class="fas fa-chevron-right"></i></button>`;
+            container.innerHTML = html;
+            window.changePage = (page, containerId) => {
+                if (containerId === 'clientePagination') {
+                    currentClientePage = page;
+                    cargarClientes();
+                }
+            };
+        }
+        
+        function setupEventos() {
+            // Búsqueda clientes
+            const searchCliente = document.getElementById('searchCliente');
+            let clienteTimeout;
+            searchCliente.addEventListener('input', () => {
+                clearTimeout(clienteTimeout);
+                clienteTimeout = setTimeout(() => {
+                    clienteBusqueda = searchCliente.value;
+                    currentClientePage = 1;
+                    cargarClientes();
+                }, 500);
+            });
+            
+            // Filtros clientes
+            document.querySelectorAll('#clientesTab .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#clientesTab .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    clienteFiltroDeuda = btn.dataset.deuda;
+                    currentClientePage = 1;
+                    cargarClientes();
+                });
+            });
+            
+            window.onclick = (e) => {
+                if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+            };
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if (confirm('¿Cerrar sesión?')) {
+                    sessionStorage.clear();
+                    window.location.href = '/';
+                }
+            });
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const rol = sessionStorage.getItem('rol');
+            const logged = sessionStorage.getItem('logged');
+            if (logged !== 'true' || (rol !== 'auxiliar' && rol !== 'admin')) {
+                alert('Acceso denegado');
+                window.location.href = '/';
+                return;
+            }
+            setupSidebar();
+            setupEventos();
+            // Primero cargar estadísticas globales (deuda total real)
+            cargarEstadisticasGlobales();
+            // Luego cargar la tabla paginada
+            cargarClientes();
+        });
+    </script>
+</body>
+</html>

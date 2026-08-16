@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Ventas - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+            --info: #3498db;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-badge {
+            background: var(--celeste-fondo);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 140px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .stat-value.ingresos { color: var(--exito); }
+        .stat-value.ventas { color: var(--info); }
+        .stat-value.promedio { color: var(--turquesa); }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== CONTROLES DE PERÍODO ===== */
+        .periodo-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .periodo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .periodo-title {
+            font-size: 20px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .periodo-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .periodo-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .periodo-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gris-oscuro);
+        }
+        
+        .periodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .periodo-btn:hover:not(.active) {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--blanco-hueso);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+        }
+        
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(31, 138, 134, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--exito) 0%, #219653 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error) 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        /* ===== FILTROS AVANZADOS ===== */
+        .filters-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .filters-title {
+            font-size: 18px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            color: var(--gris-oscuro);
+            font-weight: 500;
+        }
+        
+        .filter-select, .filter-input {
+            padding: 12px 15px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(31, 138, 134, 0.1);
+        }
+        
+        /* ===== RESUMEN DE VENTAS ===== */
+        .resumen-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .resumen-card {
+            background: var(--blanco-hueso);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            border-top: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .resumen-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-1 { border-color: var(--teal); }
+        .card-2 { border-color: var(--terracota); }
+        .card-3 { border-color: var(--turquesa); }
+        .card-4 { border-color: var(--mostaza); }
+        
+        .resumen-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin: 0 auto 15px;
+        }
+        
+        .icon-1 { background: var(--teal); }
+        .icon-2 { background: var(--terracota); }
+        .icon-3 { background: var(--turquesa); }
+        .icon-4 { background: var(--mostaza); }
+        
+        .resumen-title {
+            font-size: 14px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .resumen-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--gris-oscuro);
+            margin: 10px 0;
+        }
+        
+        .resumen-subtitle {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== TABLA DE HISTORIAL ===== */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
+        
+        .historial-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+        
+        .historial-table th {
+            background: var(--gris-claro);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            border-bottom: 2px solid var(--teal);
+        }
+        
+        .historial-table td {
+            padding: 20px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+        
+        .historial-table tr:hover {
+            background: var(--blanco-hueso);
+        }
+        
+        /* ===== ESTILOS DE CELDAS ESPECIALES ===== */
+        .venta-id {
+            font-weight: 600;
+            color: var(--teal);
+        }
+        
+        .cliente-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .cliente-nombre {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .cliente-info {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        .fecha-cell {
+            font-size: 13px;
+            color: var(--gris-medio);
+        }
+        
+        .productos-cell {
+            max-width: 300px;
+        }
+        
+        .producto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--gris-claro);
+        }
+        
+        .producto-item:last-child {
+            border-bottom: none;
+        }
+        
+        .producto-nombre {
+            font-size: 13px;
+            flex: 1;
+        }
+        
+        .producto-cantidad {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-right: 10px;
+        }
+        
+        .producto-precio {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--teal);
+        }
+        
+        .pago-cell {
+            text-align: center;
+        }
+        
+        .pago-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .pago-contado { background: rgba(39, 174, 96, 0.1); color: var(--exito); }
+        .pago-credito { background: rgba(52, 152, 219, 0.1); color: var(--info); }
+        .pago-nequi { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
+        .pago-transferencia { background: rgba(241, 196, 15, 0.1); color: var(--advertencia); }
+        .pago-tarjeta { background: rgba(231, 76, 60, 0.1); color: var(--error); }
+        
+        .total-cell {
+            font-weight: bold;
+            color: var(--gris-oscuro);
+            text-align: right;
+            font-size: 16px;
+        }
+        
+        .acciones-cell {
+            text-align: center;
+        }
+        
+        /* ===== MODAL DETALLE VENTA ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: var(--teal);
+            color: white;
+            padding: 25px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .detalle-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gris-claro);
+        }
+        
+        .detalle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .detalle-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detalle-label {
+            font-size: 13px;
+            color: var(--gris-medio);
+            font-weight: 500;
+        }
+        
+        .detalle-value {
+            font-size: 16px;
+            color: var(--gris-oscuro);
+            font-weight: 500;
+        }
+        
+        .productos-detalle {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .productos-detalle th {
+            background: var(--gris-claro);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 13px;
+        }
+        
+        .productos-detalle td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .productos-detalle tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .total-section {
+            background: var(--blanco-hueso);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            color: var(--gris-oscuro);
+            font-weight: 600;
+            margin-right: 20px;
+        }
+        
+        .total-valor {
+            font-size: 24px;
+            color: var(--teal);
+            font-weight: bold;
+        }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .page-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* ===== GRÁFICOS ===== */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* ===== ESTILOS DE CARGA Y ERROR ===== */
+        .cargando {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .cargando i {
+            font-size: 48px;
+            color: var(--teal);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .mensaje-error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mensaje-exito {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid var(--exito);
+            color: var(--exito);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .periodo-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .periodo-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .periodo-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .nav-icon {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+            
+            .resumen-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .resumen-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .periodo-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .date-range {
+                flex-direction: column;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-badge {
+                padding: 8px 12px;
+                min-width: 120px;
+            }
+            
+            .periodo-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            .detalle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item active">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Historial de Ventas</h1>
+                <p>Registro completo de todas las transacciones realizadas</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <div class="stat-value ventas" id="totalVentasPeriodo">0</div>
+                    <div class="stat-label">Ventas Totales</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value ingresos" id="totalIngresosPeriodo">$0</div>
+                    <div class="stat-label">Ingresos Totales</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value promedio" id="promedioVenta">$0</div>
+                    <div class="stat-label">Promedio por Venta</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- MENSAJES DE ESTADO -->
+        <div class="mensaje-error" id="mensajeError">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="textoError">Error al cargar datos</span>
+        </div>
+        
+        <div class="mensaje-exito" id="mensajeExito">
+            <i class="fas fa-check-circle"></i>
+            <span id="textoExito">Operación exitosa</span>
+        </div>
+        
+        <!-- CONTROLES DE PERÍODO -->
+        <div class="periodo-container">
+            <div class="periodo-header">
+                <h2 class="periodo-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Seleccionar Período
+                </h2>
+                <div class="periodo-actions">
+                    <div class="periodo-buttons">
+                        <button class="periodo-btn active" data-periodo="hoy">Hoy</button>
+                        <button class="periodo-btn" data-periodo="semana">Esta Semana</button>
+                        <button class="periodo-btn" data-periodo="mes">Este Mes</button>
+                        <button class="periodo-btn" data-periodo="anio">Este Año</button>
+                        <button class="periodo-btn" data-periodo="personalizado">Personalizado</button>
+                    </div>
+                    <div class="date-range" id="dateRange" style="display: none;">
+                        <input type="date" class="date-input" id="fechaInicio">
+                        <span>hasta</span>
+                        <input type="date" class="date-input" id="fechaFin">
+                        <button class="btn btn-primary" id="aplicarFechas">
+                            <i class="fas fa-check"></i> Aplicar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FILTROS AVANZADOS -->
+            <div class="filters-container">
+                <div class="filters-header">
+                    <h3 class="filters-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros de Búsqueda
+                    </h3>
+                    <button class="btn btn-secondary" id="limpiarFiltros">
+                        <i class="fas fa-broom"></i> Limpiar Filtros
+                    </button>
+                </div>
+                
+                <div class="filters-grid">
+                    <!-- Filtro por Tipo de Pago -->
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo de Pago</label>
+                        <select class="filter-select" id="filterTipoPago">
+                            <option value="">Todos los tipos</option>
+                            <option value="De Contado">De Contado</option>
+                            <option value="Crédito">Crédito</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filtro por Tipo de Usuario -->
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo de Usuario</label>
+                        <select class="filter-select" id="filterTipoUsuario">
+                            <option value="">Todos los tipos</option>
+                            <option value="cliente">Cliente</option>
+                            <option value="proveedor">Proveedor</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filtro por Cliente/Proveedor -->
+                    <div class="filter-group">
+                        <label class="filter-label">Cliente/Proveedor</label>
+                        <select class="filter-select" id="filterUsuario">
+                            <option value="">Cargando...</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filtro por Producto -->
+                    <div class="filter-group">
+                        <label class="filter-label">Producto</label>
+                        <select class="filter-select" id="filterProducto">
+                            <option value="">Cargando...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RESUMEN DE VENTAS -->
+        <div class="resumen-container">
+            <h2 class="periodo-title" style="margin-bottom: 25px;">
+                <i class="fas fa-chart-pie"></i>
+                Resumen del Período
+                <span id="periodoActual" style="font-size: 16px; color: var(--gris-medio); margin-left: 10px;">(Hoy)</span>
+            </h2>
+            
+            <div class="resumen-grid">
+                <div class="resumen-card card-1">
+                    <div class="resumen-icon icon-1">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="resumen-title">Ventas Realizadas</div>
+                    <div class="resumen-value" id="resumenVentas">0</div>
+                    <div class="resumen-subtitle" id="resumenVentasSub">Transacciones en el período</div>
+                </div>
+                
+                <div class="resumen-card card-2">
+                    <div class="resumen-icon icon-2">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="resumen-title">Ingresos Totales</div>
+                    <div class="resumen-value" id="resumenIngresos">$0</div>
+                    <div class="resumen-subtitle" id="resumenIngresosSub">Valor total de ventas</div>
+                </div>
+                
+                <div class="resumen-card card-3">
+                    <div class="resumen-icon icon-3">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="resumen-title">Venta Promedio</div>
+                    <div class="resumen-value" id="resumenPromedio">$0</div>
+                    <div class="resumen-subtitle" id="resumenPromedioSub">Por transacción</div>
+                </div>
+                
+                <div class="resumen-card card-4">
+                    <div class="resumen-icon icon-4">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="resumen-title">Productos Vendidos</div>
+                    <div class="resumen-value" id="resumenProductos">0</div>
+                    <div class="resumen-subtitle" id="resumenProductosSub">Total de unidades</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GRÁFICOS -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Ventas por Tipo de Pago
+                </h3>
+                <canvas id="chartTipoPago" height="300"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    Tendencia de Ventas
+                </h3>
+                <canvas id="chartTendencia" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- TABLA DE HISTORIAL DE VENTAS -->
+        <div class="table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 class="periodo-title">
+                    <i class="fas fa-list-alt"></i>
+                    Historial de Ventas
+                </h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btnExportarExcel" title="Exportar todas las ventas del período actual">
+                        <i class="fas fa-file-excel"></i> Exportar Excel
+                    </button>
+                    <button class="btn btn-secondary" id="btnExportarResumen" title="Exportar resumen estadístico">
+                        <i class="fas fa-chart-bar"></i> Exportar Resumen
+                    </button>
+                    <button class="btn btn-success" id="btnRefrescar" title="Actualizar datos">
+                        <i class="fas fa-sync-alt"></i> Refrescar
+                    </button>
+                </div>
+            </div>
+            
+            <table class="historial-table" id="historialTable">
+                <thead>
+                    <tr>
+                        <th>ID Venta</th>
+                        <th>Cliente</th>
+                        <th>Fecha y Hora</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Método de Pago</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="historialBody">
+                    <!-- Las ventas se cargarán dinámicamente desde la API -->
+                </tbody>
+            </table>
+            
+            <!-- PAGINACIÓN -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <!-- La paginación se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DETALLE VENTA -->
+    <div class="modal-overlay" id="modalDetalle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalle de Venta</h2>
+                <button class="modal-close" id="cerrarModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalDetalleBody">
+                <!-- El contenido del modal se cargará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- OVERLAY DE CARGA -->
+    <div class="cargando" id="cargandoOverlay">
+        <i class="fas fa-spinner"></i>
+        <div>Cargando datos...</div>
+    </div>
+    
+    <script>
+        // ===== CONFIGURACIÓN =====
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let periodoActual = "hoy";
+        let chartTipoPago, chartTendencia;
+        let ventasActuales = [];
+        
+        // ===== FUNCIONES DE FORMATO =====
+        function formatCurrency(valor) {
+            if (!valor) return '$ 0';
+            return `$ ${parseFloat(valor).toLocaleString('es-CO', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        }
+        
+        function formatDateTime(fechaStr, horaStr) {
+            if (!fechaStr) return 'Sin fecha';
+            const fecha = new Date(fechaStr + ' ' + (horaStr || '00:00:00'));
+            return fecha.toLocaleDateString('es-ES', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function formatDateShort(fechaStr) {
+            if (!fechaStr) return '';
+            const fecha = new Date(fechaStr);
+            return fecha.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short'
+            });
+        }
+        
+        function getPeriodoNombre(periodo) {
+            switch(periodo) {
+                case 'hoy': return 'Hoy';
+                case 'semana': return 'Esta Semana';
+                case 'mes': return 'Este Mes';
+                case 'anio': return 'Este Año';
+                default: return 'Período Personalizado';
+            }
+        }
+        
+        function getPagoBadgeClass(tipoPago) {
+            switch(tipoPago) {
+                case 'De Contado': return 'pago-contado';
+                case 'Crédito': return 'pago-credito';
+                case 'Nequi': return 'pago-nequi';
+                case 'Transferencia': return 'pago-transferencia';
+                case 'Tarjeta': return 'pago-tarjeta';
+                default: return 'pago-contado';
+            }
+        }
+        
+        function getPagoIcon(tipoPago) {
+            switch(tipoPago) {
+                case 'De Contado': return 'fa-money-bill-wave';
+                case 'Crédito': return 'fa-credit-card';
+                case 'Nequi': return 'fa-mobile-alt';
+                case 'Transferencia': return 'fa-exchange-alt';
+                case 'Tarjeta': return 'fa-credit-card';
+                default: return 'fa-money-bill-wave';
+            }
+        }
+        
+        // ===== FUNCIONES DE INTERFAZ =====
+        function mostrarCargando(mostrar) {
+            document.getElementById('cargandoOverlay').style.display = mostrar ? 'flex' : 'none';
+        }
+        
+        function mostrarError(mensaje) {
+            const errorDiv = document.getElementById('mensajeError');
+            const texto = document.getElementById('textoError');
+            texto.textContent = mensaje;
+            errorDiv.style.display = 'flex';
+            
+            // Ocultar después de 5 segundos
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function mostrarExito(mensaje) {
+            const exitoDiv = document.getElementById('mensajeExito');
+            const texto = document.getElementById('textoExito');
+            texto.textContent = mensaje;
+            exitoDiv.style.display = 'flex';
+            
+            // Ocultar después de 3 segundos
+            setTimeout(() => {
+                exitoDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // ===== LLAMADAS A LA API =====
+        async function cargarPeriodoRapido(periodo) {
+            try {
+                mostrarCargando(true);
+                periodoActual = periodo;
+                
+                const response = await fetch(`/api/historial-ventas/periodo/rapido?periodo=${periodo}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    ventasActuales = data.ventas || [];
+                    
+                    // Actualizar estadísticas
+                    actualizarResumen(data.estadisticas);
+                    
+                    // Actualizar período actual
+                    document.getElementById('periodoActual').textContent = `(${getPeriodoNombre(periodo)})`;
+                    
+                    // Actualizar gráficos
+                    if (data.ventas_por_pago && data.tendencia_ventas) {
+                        actualizarGraficos(data.ventas_por_pago, data.tendencia_ventas);
+                    }
+                    
+                    // Actualizar tabla
+                    renderTablaHistorial(ventasActuales);
+                    
+                    mostrarExito('Datos cargados correctamente');
+                } else {
+                    mostrarError('Error al cargar datos: ' + (data.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error en cargarPeriodoRapido:', error);
+                mostrarError('Error de conexión con el servidor');
+            } finally {
+                mostrarCargando(false);
+            }
+        }
+        
+        async function cargarFiltrosAvanzados() {
+            try {
+                // Cargar clientes para filtro
+                const responseClientes = await fetch('/api/historial-ventas/filtros/clientes');
+                const dataClientes = await responseClientes.json();
+                
+                if (dataClientes.success && dataClientes.usuarios) {
+                    const selectUsuario = document.getElementById('filterUsuario');
+                    selectUsuario.innerHTML = '<option value="">Todos</option>' +
+                        dataClientes.usuarios.map(user => 
+                            `<option value="${user.id}">${user.nombre} (${user.tipo})</option>`
+                        ).join('');
+                }
+                
+                // Cargar productos para filtro
+                const responseProductos = await fetch('/api/historial-ventas/filtros/productos');
+                const dataProductos = await responseProductos.json();
+                
+                if (dataProductos.success && dataProductos.productos) {
+                    const selectProducto = document.getElementById('filterProducto');
+                    selectProducto.innerHTML = '<option value="">Todos los productos</option>' +
+                        dataProductos.productos.map(prod => 
+                            `<option value="${prod.id}">${prod.nombre} - ${prod.categoria}</option>`
+                        ).join('');
+                }
+            } catch (error) {
+                console.error('Error cargando filtros:', error);
+                mostrarError('Error al cargar opciones de filtro');
+            }
+        }
+        
+        async function aplicarFiltrosAvanzados() {
+            try {
+                mostrarCargando(true);
+                
+                const params = new URLSearchParams();
+                
+                const tipoPago = document.getElementById('filterTipoPago').value;
+                const tipoUsuario = document.getElementById('filterTipoUsuario').value;
+                const usuario = document.getElementById('filterUsuario').value;
+                const producto = document.getElementById('filterProducto').value;
+                const fechaInicio = document.getElementById('fechaInicio').value;
+                const fechaFin = document.getElementById('fechaFin').value;
+                
+                if (fechaInicio) params.append('fecha_inicio', fechaInicio);
+                if (fechaFin) params.append('fecha_fin', fechaFin);
+                if (tipoPago) params.append('tipo_pago', tipoPago);
+                if (tipoUsuario) params.append('tipo_usuario', tipoUsuario);
+                if (usuario) params.append('cliente_cedula', usuario);
+                if (producto) params.append('producto_id', producto);
+                
+                // Actualizar período actual
+                periodoActual = 'personalizado';
+                document.getElementById('periodoActual').textContent = '(Período Personalizado)';
+                
+                // Obtener ventas filtradas
+                const response = await fetch(`/api/historial-ventas/filtrar?${params.toString()}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    ventasActuales = data.ventas || [];
+                    
+                    // Obtener estadísticas para el período filtrado
+                    const responseStats = await fetch(`/api/historial-ventas/estadisticas?${params.toString()}`);
+                    const statsData = await responseStats.json();
+                    
+                    if (statsData.success) {
+                        actualizarResumen(statsData.estadisticas);
+                        
+                        if (statsData.ventas_por_pago && statsData.tendencia_ventas) {
+                            actualizarGraficos(statsData.ventas_por_pago, statsData.tendencia_ventas);
+                        }
+                    }
+                    
+                    // Actualizar tabla
+                    renderTablaHistorial(ventasActuales);
+                    
+                    mostrarExito(`Filtro aplicado: ${data.total} ventas encontradas`);
+                } else {
+                    mostrarError('Error al aplicar filtros: ' + (data.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error en aplicarFiltrosAvanzados:', error);
+                mostrarError('Error al aplicar filtros');
+            } finally {
+                mostrarCargando(false);
+            }
+        }
+        
+        async function obtenerDetalleVenta(ventaId) {
+            try {
+                mostrarCargando(true);
+                
+                const response = await fetch(`/api/historial-ventas/${ventaId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    mostrarModalDetalle(data.venta);
+                } else {
+                    mostrarError('Error al cargar detalle: ' + (data.error || 'Venta no encontrada'));
+                }
+            } catch (error) {
+                console.error('Error obteniendo detalle:', error);
+                mostrarError('Error al cargar detalle de la venta');
+            } finally {
+                mostrarCargando(false);
+            }
+        }
+        
+        // ===== FUNCIONES DE IMPRESIÓN Y FACTURACIÓN =====
+        function imprimirFacturaHTML(ventaId) {
+            // Abrir factura PDF en nueva pestaña - USAR LA RUTA CORRECTA
+            window.open(`/api/ventas/${ventaId}/factura-pdf`, '_blank');
+            mostrarExito('Generando factura... Se abrirá en nueva ventana.');
+        }
+        
+        function generarFacturaPDF(ventaId) {
+            // Redirigir al sistema principal de PDF - USAR LA RUTA CORRECTA
+            window.open(`/api/ventas/${ventaId}/factura-pdf`, '_blank');
+            mostrarExito('Generando factura PDF... Se abrirá en nueva ventana.');
+        }
+        
+        function enviarFactura(id) {
+            alert(`El envío por email de la factura #${id} está en desarrollo.`);
+            // Aquí se implementaría el envío por email
+        }
+        
+        // ===== FUNCIONES DE EXPORTACIÓN A EXCEL =====
+        function exportarExcel() {
+            try {
+                // Obtener los filtros actuales
+                const tipoPago = document.getElementById('filterTipoPago').value;
+                const tipoUsuario = document.getElementById('filterTipoUsuario').value;
+                const usuario = document.getElementById('filterUsuario').value;
+                const fechaInicio = document.getElementById('fechaInicio').value;
+                const fechaFin = document.getElementById('fechaFin').value;
+                
+                // Construir URL con parámetros de filtro
+                let url = '/api/historial-ventas/exportar/excel?';
+                const params = [];
+                
+                if (fechaInicio) params.push(`fecha_inicio=${encodeURIComponent(fechaInicio)}`);
+                if (fechaFin) params.push(`fecha_fin=${encodeURIComponent(fechaFin)}`);
+                if (tipoPago) params.push(`tipo_pago=${encodeURIComponent(tipoPago)}`);
+                if (tipoUsuario) params.push(`tipo_usuario=${encodeURIComponent(tipoUsuario)}`);
+                if (usuario) params.push(`cliente_cedula=${encodeURIComponent(usuario)}`);
+                
+                // Si no hay filtros de fecha específicos, usar el período actual
+                if (!fechaInicio && !fechaFin) {
+                    // Determinar fechas según período actual
+                    const hoy = new Date();
+                    let inicioPeriodo, finPeriodo;
+                    
+                    switch(periodoActual) {
+                        case 'hoy':
+                            inicioPeriodo = finPeriodo = hoy.toISOString().split('T')[0];
+                            break;
+                        case 'semana':
+                            inicioPeriodo = new Date(hoy.setDate(hoy.getDate() - hoy.getDay())).toISOString().split('T')[0];
+                            finPeriodo = new Date().toISOString().split('T')[0];
+                            break;
+                        case 'mes':
+                            inicioPeriodo = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().split('T')[0];
+                            finPeriodo = new Date().toISOString().split('T')[0];
+                            break;
+                        case 'anio':
+                            inicioPeriodo = new Date(hoy.getFullYear(), 0, 1).toISOString().split('T')[0];
+                            finPeriodo = new Date().toISOString().split('T')[0];
+                            break;
+                        default:
+                            // Para personalizado, ya debería tener fechas
+                            break;
+                    }
+                    
+                    if (inicioPeriodo && finPeriodo) {
+                        params.push(`fecha_inicio=${encodeURIComponent(inicioPeriodo)}`);
+                        params.push(`fecha_fin=${encodeURIComponent(finPeriodo)}`);
+                    }
+                }
+                
+                url += params.join('&');
+                
+                // Descargar archivo
+                window.open(url, '_blank');
+                mostrarExito('Exportando a Excel... El archivo se descargará automáticamente.');
+                
+            } catch (error) {
+                console.error('Error exportando a Excel:', error);
+                mostrarError('Error al exportar a Excel: ' + error.message);
+            }
+        }
+        
+        function exportarResumenExcel() {
+            try {
+                // Obtener las fechas del período actual
+                const fechaInicio = document.getElementById('fechaInicio').value;
+                const fechaFin = document.getElementById('fechaFin').value;
+                
+                let url = '/api/historial-ventas/exportar/resumen-excel?';
+                const params = [];
+                
+                if (fechaInicio) params.push(`fecha_inicio=${encodeURIComponent(fechaInicio)}`);
+                if (fechaFin) params.push(`fecha_fin=${encodeURIComponent(fechaFin)}`);
+                
+                // Si no hay fechas específicas, usar período actual
+                if (!fechaInicio && !fechaFin) {
+                    const hoy = new Date();
+                    let inicioPeriodo, finPeriodo;
+                    
+                    switch(periodoActual) {
+                        case 'hoy':
+                            inicioPeriodo = finPeriodo = hoy.toISOString().split('T')[0];
+                            break;
+                        case 'semana':
+                            const inicioSemana = new Date(hoy);
+                            inicioSemana.setDate(hoy.getDate() - hoy.getDay());
+                            inicioPeriodo = inicioSemana.toISOString().split('T')[0];
+                            finPeriodo = hoy.toISOString().split('T')[0];
+                            break;
+                        case 'mes':
+                            inicioPeriodo = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().split('T')[0];
+                            finPeriodo = hoy.toISOString().split('T')[0];
+                            break;
+                        case 'anio':
+                            inicioPeriodo = new Date(hoy.getFullYear(), 0, 1).toISOString().split('T')[0];
+                            finPeriodo = hoy.toISOString().split('T')[0];
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    if (inicioPeriodo && finPeriodo) {
+                        params.push(`fecha_inicio=${encodeURIComponent(inicioPeriodo)}`);
+                        params.push(`fecha_fin=${encodeURIComponent(finPeriodo)}`);
+                    }
+                }
+                
+                url += params.join('&');
+                
+                window.open(url, '_blank');
+                mostrarExito('Exportando resumen a Excel...');
+                
+            } catch (error) {
+                console.error('Error exportando resumen:', error);
+                mostrarError('Error al exportar resumen: ' + error.message);
+            }
+        }
+        
+        // ===== ACTUALIZAR INTERFAZ =====
+        function actualizarResumen(estadisticas) {
+            if (!estadisticas) return;
+            
+            // Actualizar header
+            document.getElementById('totalVentasPeriodo').textContent = estadisticas.total_ventas || 0;
+            document.getElementById('totalIngresosPeriodo').textContent = formatCurrency(estadisticas.ingresos_totales || 0);
+            document.getElementById('promedioVenta').textContent = formatCurrency(estadisticas.promedio_venta || 0);
+            
+            // Actualizar resumen cards
+            document.getElementById('resumenVentas').textContent = estadisticas.total_ventas || 0;
+            document.getElementById('resumenIngresos').textContent = formatCurrency(estadisticas.ingresos_totales || 0);
+            document.getElementById('resumenPromedio').textContent = formatCurrency(estadisticas.promedio_venta || 0);
+            document.getElementById('resumenProductos').textContent = estadisticas.total_unidades || 0;
+            
+            // Actualizar subtítulos
+            const periodoNombre = getPeriodoNombre(periodoActual);
+            document.getElementById('resumenVentasSub').textContent = `Transacciones en ${periodoNombre.toLowerCase()}`;
+            document.getElementById('resumenIngresosSub').textContent = `Valor total en ${periodoNombre.toLowerCase()}`;
+            document.getElementById('resumenPromedioSub').textContent = `Por transacción en ${periodoNombre.toLowerCase()}`;
+            document.getElementById('resumenProductosSub').textContent = `Unidades vendidas en ${periodoNombre.toLowerCase()}`;
+        }
+        
+        function renderTablaHistorial(ventas) {
+            const tbody = document.getElementById('historialBody');
+            
+            if (!ventas || ventas.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-search" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                            <h3 style="color: var(--gris-medio); margin-bottom: 10px;">No se encontraron ventas</h3>
+                            <p style="color: var(--gris-claro);">Intenta cambiar los filtros o el período seleccionado.</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            ventas.forEach(venta => {
+                // Limitar productos mostrados a 3
+                const productos = venta.productos || [];
+                const productosMostrar = productos.slice(0, 3);
+                const productosExtra = productos.length > 3 ? `+${productos.length - 3} más` : '';
+                
+                const tr = document.createElement('tr');
+                
+                tr.innerHTML = `
+                    <td class="venta-id">#${venta.numero_venta || venta.id.toString().padStart(6, '0')}</td>
+                    <td>
+                        <div class="cliente-cell">
+                            <div class="cliente-nombre">${venta.nombre_cliente || 'Cliente no registrado'}</div>
+                            <div class="cliente-info">
+                                <small><i class="fas fa-${venta.usuario_tipo === 'cliente' ? 'user' : 'truck'}"></i> ${venta.usuario_tipo === 'cliente' ? 'Cliente' : 'Proveedor'}</small>
+                                <br>
+                                <small>${venta.telefono_cliente || 'Sin teléfono'}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="fecha-cell">${formatDateTime(venta.fecha_dia, venta.fecha_hora)}</td>
+                    <td class="productos-cell">
+                        ${productosMostrar.map(producto => `
+                            <div class="producto-item">
+                                <span class="producto-nombre">${producto.nombre || 'Producto'}</span>
+                                <span class="producto-cantidad">${producto.cantidad || 0}x</span>
+                                <span class="producto-precio">${formatCurrency(producto.precio_unitario || 0)}</span>
+                            </div>
+                        `).join('')}
+                        ${productosExtra ? `<div style="font-size: 11px; color: var(--gris-medio); text-align: center; padding-top: 5px;">${productosExtra}</div>` : ''}
+                    </td>
+                    <td class="total-cell">${formatCurrency(venta.total || 0)}</td>
+                    <td class="pago-cell">
+                        <div class="pago-badge ${getPagoBadgeClass(venta.tipo_pago)}">
+                            <i class="fas ${getPagoIcon(venta.tipo_pago)}"></i> ${venta.tipo_pago || 'No especificado'}
+                        </div>
+                    </td>
+                    <td class="acciones-cell">
+                        <button class="btn btn-primary" style="padding: 8px 12px; font-size: 13px;" onclick="obtenerDetalleVenta(${venta.id})">
+                            <i class="fas fa-eye"></i> Ver Detalle
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            // Actualizar paginación
+            updatePagination(ventas.length);
+        }
+        
+        function updatePagination(totalItems) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let html = '';
+            
+            // Botón anterior
+            html += `
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Páginas
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Botón siguiente
+            html += `
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePage(page) {
+            const totalPages = Math.ceil(ventasActuales.length / itemsPerPage);
+            
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            renderTablaHistorial(ventasActuales);
+            window.scrollTo({ top: document.getElementById('historialTable').offsetTop - 100, behavior: 'smooth' });
+        }
+        
+        function mostrarModalDetalle(venta) {
+            const modalBody = document.getElementById('modalDetalleBody');
+            
+            // Calcular totales
+            const subtotal = venta.total || 0;
+            const iva = subtotal * 0.19; // 19% de IVA
+            const total = subtotal + iva;
+            
+            modalBody.innerHTML = `
+                <div class="detalle-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Información de la Venta
+                    </h3>
+                    <div class="detalle-grid">
+                        <div class="detalle-item">
+                            <div class="detalle-label">ID de Venta</div>
+                            <div class="detalle-value">#${venta.numero_venta || venta.id.toString().padStart(6, '0')}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Fecha y Hora</div>
+                            <div class="detalle-value">${formatDateTime(venta.fecha_dia, venta.fecha_hora)}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Método de Pago</div>
+                            <div class="detalle-value">
+                                <span class="pago-badge ${getPagoBadgeClass(venta.tipo_pago)}">
+                                    ${venta.tipo_pago || 'No especificado'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detalle-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Información del ${venta.usuario_tipo === 'cliente' ? 'Cliente' : 'Proveedor'}
+                    </h3>
+                    <div class="detalle-grid">
+                        <div class="detalle-item">
+                            <div class="detalle-label">Nombre</div>
+                            <div class="detalle-value">${venta.nombre_cliente || 'No registrado'}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Tipo</div>
+                            <div class="detalle-value">${venta.usuario_tipo === 'cliente' ? 'Cliente' : 'Proveedor'}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Cédula/NIT</div>
+                            <div class="detalle-value">${venta.cliente_cedula || 'No registrado'}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Teléfono</div>
+                            <div class="detalle-value">${venta.telefono_cliente || 'No registrado'}</div>
+                        </div>
+                        <div class="detalle-item" style="grid-column: 1 / -1;">
+                            <div class="detalle-label">Dirección</div>
+                            <div class="detalle-value">${venta.direccion_cliente || venta.cliente_direccion_completa || 'No registrada'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detalle-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-boxes"></i>
+                        Productos Vendidos
+                    </h3>
+                    <table class="productos-detalle">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(venta.productos || []).map(producto => `
+                                <tr>
+                                    <td>
+                                        <strong>${producto.nombre || 'Producto'}</strong><br>
+                                        <small style="color: var(--gris-medio);">${producto.presentacion || ''}</small>
+                                    </td>
+                                    <td>${producto.categoria || ''}</td>
+                                    <td>${producto.cantidad || 0}</td>
+                                    <td>${formatCurrency(producto.precio_unitario || 0)}</td>
+                                    <td>${formatCurrency(producto.subtotal || 0)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="detalle-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-calculator"></i>
+                        Resumen Financiero
+                    </h3>
+                    <div class="detalle-grid">
+                        <div class="detalle-item">
+                            <div class="detalle-label">Subtotal</div>
+                            <div class="detalle-value">${formatCurrency(subtotal)}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">IVA (19%)</div>
+                            <div class="detalle-value">${formatCurrency(iva)}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Descuento</div>
+                            <div class="detalle-value">${formatCurrency(venta.descuento || 0)}</div>
+                        </div>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-label">TOTAL</div>
+                        <div class="total-valor">${formatCurrency(total)}</div>
+                    </div>
+                </div>
+                
+                ${venta.credito ? `
+                <div class="detalle-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-credit-card"></i>
+                        Información del Crédito
+                    </h3>
+                    <div class="detalle-grid">
+                        <div class="detalle-item">
+                            <div class="detalle-label">Estado</div>
+                            <div class="detalle-value">
+                                <span style="color: ${venta.credito.estado === 'pendiente' ? '#f39c12' : venta.credito.estado === 'pagado' ? '#27ae60' : '#e74c3c'}">
+                                    ${venta.credito.estado || 'pendiente'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Saldo Pendiente</div>
+                            <div class="detalle-value">${formatCurrency(venta.credito.saldo_pendiente || 0)}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Fecha Vencimiento</div>
+                            <div class="detalle-value">${venta.credito.fecha_vencimiento || 'No especificada'}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Días de Crédito</div>
+                            <div class="detalle-value">${venta.credito.dias_credito || 0} días</div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="imprimirFacturaHTML(${venta.id})">
+                        <i class="fas fa-print"></i> Imprimir Factura
+                    </button>   
+                    <button class="btn btn-success" onclick="enviarFactura(${venta.id})">
+                        <i class="fas fa-paper-plane"></i> Enviar por Email
+                    </button>
+                </div>
+            `;
+            
+            // Mostrar modal
+            document.getElementById('modalDetalle').style.display = 'flex';
+        }
+        
+        function cerrarModal() {
+            document.getElementById('modalDetalle').style.display = 'none';
+        }
+        
+        function actualizarGraficos(ventasPorPago, tendenciaVentas) {
+            // Gráfico de ventas por tipo de pago
+            if (chartTipoPago) {
+                chartTipoPago.destroy();
+            }
+            
+            if (ventasPorPago && ventasPorPago.length > 0) {
+                const ctx1 = document.getElementById('chartTipoPago').getContext('2d');
+                chartTipoPago = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ventasPorPago.map(v => v.tipo_pago),
+                        datasets: [{
+                            data: ventasPorPago.map(v => v.cantidad),
+                            backgroundColor: ventasPorPago.map(v => {
+                                const colores = {
+                                    'De Contado': 'rgba(39, 174, 96, 0.8)',
+                                    'Crédito': 'rgba(52, 152, 219, 0.8)',
+                                    'Nequi': 'rgba(155, 89, 182, 0.8)',
+                                    'Transferencia': 'rgba(241, 196, 15, 0.8)',
+                                    'Tarjeta': 'rgba(231, 76, 60, 0.8)'
+                                };
+                                return colores[v.tipo_pago] || 'rgba(149, 165, 166, 0.8)';
+                            }),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        const pagoInfo = ventasPorPago.find(v => v.tipo_pago === label);
+                                        const monto = pagoInfo ? pagoInfo.monto_total : 0;
+                                        return `${label}: ${value} ventas (${percentage}%) - ${formatCurrency(monto)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Gráfico de tendencia de ventas
+            if (chartTendencia) {
+                chartTendencia.destroy();
+            }
+            
+            if (tendenciaVentas && tendenciaVentas.length > 0) {
+                const ctx2 = document.getElementById('chartTendencia').getContext('2d');
+                chartTendencia = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: tendenciaVentas.map(v => formatDateShort(v.fecha_dia)),
+                        datasets: [{
+                            label: 'Ventas Diarias',
+                            data: tendenciaVentas.map(v => v.total_dia || 0),
+                            borderColor: 'rgba(31, 138, 134, 1)',
+                            backgroundColor: 'rgba(31, 138, 134, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // ===== FUNCIONES DE EXPORTACIÓN =====
+        function limpiarFiltros() {
+            document.getElementById('filterTipoPago').value = '';
+            document.getElementById('filterTipoUsuario').value = '';
+            document.getElementById('filterUsuario').value = '';
+            document.getElementById('filterProducto').value = '';
+            
+            // Volver al período "hoy"
+            document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.periodo-btn[data-periodo="hoy"]').classList.add('active');
+            document.getElementById('dateRange').style.display = 'none';
+            
+            cargarPeriodoRapido('hoy');
+            mostrarExito('Filtros limpiados');
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar fechas por defecto
+            const hoy = new Date();
+            const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+            
+            document.getElementById('fechaInicio').value = inicioMes.toISOString().split('T')[0];
+            document.getElementById('fechaFin').value = hoy.toISOString().split('T')[0];
+            
+            // Configurar botones de período
+            document.querySelectorAll('.periodo-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover active de todos
+                    document.querySelectorAll('.periodo-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Agregar active al clickeado
+                    this.classList.add('active');
+                    const periodo = this.dataset.periodo;
+                    
+                    // Mostrar/ocultar date range
+                    const dateRange = document.getElementById('dateRange');
+                    if (periodo === 'personalizado') {
+                        dateRange.style.display = 'flex';
+                    } else {
+                        dateRange.style.display = 'none';
+                        cargarPeriodoRapido(periodo);
+                    }
+                });
+            });
+            
+            // Configurar aplicar fechas personalizadas
+            document.getElementById('aplicarFechas').addEventListener('click', function() {
+                aplicarFiltrosAvanzados();
+            });
+            
+            // Configurar filtros
+            document.getElementById('filterTipoPago').addEventListener('change', function() {
+                aplicarFiltrosAvanzados();
+            });
+            
+            document.getElementById('filterTipoUsuario').addEventListener('change', function() {
+                aplicarFiltrosAvanzados();
+            });
+            
+            document.getElementById('filterUsuario').addEventListener('change', function() {
+                aplicarFiltrosAvanzados();
+            });
+            
+            document.getElementById('filterProducto').addEventListener('change', function() {
+                aplicarFiltrosAvanzados();
+            });
+            
+            // Configurar limpiar filtros
+            document.getElementById('limpiarFiltros').addEventListener('click', limpiarFiltros);
+            
+            // Configurar botones de exportación
+            document.getElementById('btnExportarExcel').addEventListener('click', exportarExcel);
+            document.getElementById('btnExportarResumen').addEventListener('click', exportarResumenExcel);
+            document.getElementById('btnRefrescar').addEventListener('click', function() {
+                cargarPeriodoRapido(periodoActual);
+                mostrarExito('Datos refrescados');
+            });
+            
+            // Configurar modal
+            document.getElementById('cerrarModal').addEventListener('click', cerrarModal);
+            document.getElementById('modalDetalle').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModal();
+                }
+            });
+            
+            // Agregar estilos de animación
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                .resumen-card, .filters-container, .historial-table tr {
+                    animation: fadeIn 0.3s ease forwards;
+                }
+                
+                /* Estilos para los gráficos */
+                canvas {
+                    max-height: 300px;
+                    width: 100% !important;
+                }
+                
+                /* Animación para modal */
+                .modal-content {
+                    animation: modalFadeIn 0.3s ease forwards;
+                }
+                
+                @keyframes modalFadeIn {
+                    from { opacity: 0; transform: scale(0.9); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Cargar datos iniciales
+            cargarPeriodoRapido('hoy');
+            cargarFiltrosAvanzados();
+            
+            // Verificar conexión
+            console.log('Historial de ventas cargado correctamente');
+        });
+    </script>
+</body>
+</html>

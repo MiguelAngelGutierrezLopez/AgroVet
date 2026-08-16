@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Ventas - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+            --info: #3498db;
+        }
+        
+        /* ===== ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: var(--teal);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+        .sidebar.collapsed { display: none; }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .logo-agro { color: white; }
+        .logo-vet { color: var(--mostaza); }
+        .slogan { font-size: 11px; opacity: 0.8; margin-top: 5px; }
+        
+        .nav-menu { padding: 0 15px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.05);
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 3px solid var(--mostaza);
+        }
+        .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+        .nav-text { font-size: 14px; font-weight: 500; }
+        
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 50%;
+            right: -15px;
+            background: var(--mostaza);
+            color: var(--gris-oscuro);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            z-index: 1001;
+        }
+        .toggle-sidebar-collapsed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--teal);
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            z-index: 999;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .main-content.expanded { margin-left: 0; }
+        
+        /* ===== HEADER ===== */
+        .top-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--gris-claro);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        .header-stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .stat-badge {
+            background: var(--celeste-fondo);
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        .stat-value.ingresos { color: var(--exito); }
+        .stat-value.ventas { color: var(--info); }
+        .stat-value.utilidad { color: var(--turquesa); }
+        .stat-label { font-size: 12px; color: var(--gris-medio); }
+        
+        /* ===== PERÍODO ===== */
+        .periodo-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gris-claro);
+        }
+        .periodo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .periodo-title {
+            font-size: 18px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .periodo-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .periodo-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .periodo-btn {
+            padding: 8px 15px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gris-oscuro);
+        }
+        .periodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--blanco-hueso);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--gris-claro);
+        }
+        .date-input {
+            padding: 6px 10px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--teal); color: white; }
+        .btn-primary:hover { background: #167a76; }
+        .btn-secondary { background: var(--gris-claro); color: var(--gris-oscuro); }
+        .btn-secondary:hover { background: #d5d8dd; }
+        .btn-success { background: var(--exito); color: white; }
+        .btn-success:hover { background: #219a52; }
+        .btn-danger { background: var(--error); color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-warning { background: var(--advertencia); color: white; }
+        .btn-warning:hover { background: #e08e0b; }
+        
+        /* ===== FILTROS ===== */
+        .filters-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gris-claro);
+        }
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .filters-title {
+            font-size: 16px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filter-label {
+            font-size: 13px;
+            color: var(--gris-oscuro);
+            font-weight: 500;
+        }
+        .filter-select, .filter-input {
+            padding: 10px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+        }
+        
+        /* ===== FILTROS ACTIVOS BADGE ===== */
+        .filtros-activos {
+            background: var(--celeste-fondo);
+            border: 1px solid var(--teal);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: var(--teal);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .filtros-activos .count {
+            background: var(--teal);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        /* ===== DASHBOARD ===== */
+        .dashboard-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gris-claro);
+        }
+        .dashboard-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .dashboard-card {
+            background: var(--blanco-hueso);
+            border-radius: 8px;
+            padding: 20px;
+            border-top: 4px solid;
+            border: 1px solid var(--gris-claro);
+        }
+        .card-1 { border-top-color: var(--exito); }
+        .card-2 { border-top-color: var(--info); }
+        .card-3 { border-top-color: var(--advertencia); }
+        .card-4 { border-top-color: var(--turquesa); }
+        .card-5 { border-top-color: #17a2b8; }
+        
+        .dashboard-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .icon-1 { background: var(--exito); }
+        .icon-2 { background: var(--info); }
+        .icon-3 { background: var(--advertencia); }
+        .icon-4 { background: var(--turquesa); }
+        .icon-5 { background: #17a2b8; }
+        
+        .dashboard-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .dashboard-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--gris-oscuro);
+            margin: 8px 0;
+        }
+        .dashboard-description {
+            font-size: 11px;
+            color: var(--gris-medio);
+            margin-top: 8px;
+            line-height: 1.4;
+            border-top: 1px solid var(--gris-claro);
+            padding-top: 8px;
+        }
+        .dashboard-subvalue {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-top: 4px;
+        }
+        .dashboard-subvalue .valor {
+            font-weight: bold;
+            color: var(--gris-oscuro);
+        }
+        
+        /* ===== GRÁFICO ===== */
+        .charts-container {
+            margin-bottom: 25px;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--gris-claro);
+        }
+        .chart-title {
+            font-size: 16px;
+            color: var(--teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+        }
+        
+        /* ===== TABLA ===== */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--gris-claro);
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .historial-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+        .historial-table th {
+            background: var(--gris-claro);
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 13px;
+            border-bottom: 2px solid var(--teal);
+        }
+        .historial-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+        .historial-table tr:hover { background: var(--blanco-hueso); }
+        
+        .venta-id { font-weight: 600; color: var(--teal); }
+        .cliente-nombre { font-weight: 600; }
+        .cliente-info { font-size: 11px; color: var(--gris-medio); }
+        .total-cell { font-weight: bold; text-align: right; }
+        .utilidad-realizada { color: var(--exito); font-weight: bold; }
+        .utilidad-proyectada { color: var(--advertencia); font-weight: bold; }
+        
+        .pago-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .pago-contado { background: rgba(39, 174, 96, 0.1); color: var(--exito); }
+        .pago-credito { background: rgba(52, 152, 219, 0.1); color: var(--info); }
+        .pago-nequi { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
+        .pago-transferencia { background: rgba(241, 196, 15, 0.1); color: var(--advertencia); }
+        .pago-tarjeta { background: rgba(231, 76, 60, 0.1); color: var(--error); }
+        .pago-apartado { background: rgba(142, 68, 173, 0.1); color: #8e44ad; }
+        
+        .estado-credito {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        .estado-pendiente { background: rgba(243, 156, 18, 0.1); color: var(--advertencia); }
+        .estado-pagado { background: rgba(39, 174, 96, 0.1); color: var(--exito); }
+        .estado-vencido { background: rgba(231, 76, 60, 0.1); color: var(--error); }
+        
+        .acciones-group {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .acciones-group .btn { padding: 5px 10px; font-size: 11px; }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .page-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        .page-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        /* ===== MODALES ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-small { max-width: 500px; }
+        .modal-header {
+            background: var(--teal);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header.danger { background: var(--error); }
+        .modal-header.warning { background: var(--advertencia); }
+        .modal-title { font-size: 20px; font-weight: 600; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+        .modal-body { padding: 25px; }
+        
+        /* ===== ESTADOS ===== */
+        .mensaje-error, .mensaje-exito {
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .mensaje-error {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        .mensaje-exito {
+            background: rgba(39, 174, 96, 0.08);
+            border: 1px solid var(--exito);
+            color: var(--exito);
+        }
+        
+        .cargando {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .cargando i {
+            font-size: 40px;
+            color: var(--teal);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .skeleton-card {
+            height: 160px;
+            background: var(--gris-claro);
+            border-radius: 4px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 420px;
+            width: 90vw;
+        }
+        .toast {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            animation: slideInRight 0.3s ease-out;
+            overflow: hidden;
+        }
+        .toast-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .toast-header.success { background: var(--exito); }
+        .toast-header.error { background: var(--error); }
+        .toast-header.warning { background: var(--advertencia); }
+        .toast-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .toast-body { padding: 14px 16px; font-size: 13px; color: var(--gris-oscuro); }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 992px) {
+            .sidebar { width: 60px; }
+            .logo span, .slogan, .nav-text { display: none; }
+            .nav-item { justify-content: center; padding: 12px; }
+            .main-content { margin-left: 60px; padding: 20px; }
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .top-header { flex-direction: column; text-align: center; }
+            .header-stats { justify-content: center; }
+            .dashboard-grid { grid-template-columns: 1fr 1fr; }
+            .filters-grid { grid-template-columns: 1fr; }
+            .periodo-actions { flex-direction: column; align-items: stretch; }
+            .date-range { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .stat-badge { min-width: 80px; padding: 6px 10px; }
+            .periodo-btn { padding: 6px 10px; font-size: 11px; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-sidebar-btn" id="toggleSidebar" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/" class="nav-item"><i class="nav-icon fas fa-home"></i><span class="nav-text">Inicio</span></a>
+            <a href="/venta" class="nav-item"><i class="nav-icon fas fa-cash-register"></i><span class="nav-text">Nueva Venta</span></a>
+            <a href="/productos" class="nav-item"><i class="nav-icon fas fa-boxes"></i><span class="nav-text">Productos</span></a>
+            <a href="/usuarios" class="nav-item"><i class="nav-icon fas fa-users"></i><span class="nav-text">Clientes</span></a>
+            <a href="/historial_venta" class="nav-item active"><i class="nav-icon fas fa-history"></i><span class="nav-text">Historial</span></a>
+            <a href="/inventario" class="nav-item"><i class="nav-icon fas fa-warehouse"></i><span class="nav-text">Inventario</span></a>
+            <a href="/reporte_caja" class="nav-item"><i class="nav-icon fas fa-chart-bar"></i><span class="nav-text">Reportes</span></a>
+        </nav>
+    </div>
+    
+    <!-- BOTÓN SIDEBAR COLAPSADO -->
+    <button class="toggle-sidebar-collapsed" id="toggleSidebarCollapsed" onclick="toggleSidebar()" style="display:none">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content" id="mainContent">
+        <!-- HEADER -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Historial de Ventas</h1>
+                <p>Dashboard financiero y gestión de ventas</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <div class="stat-value ventas" id="totalVentasPeriodo">0</div>
+                    <div class="stat-label">Ventas Totales</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value ingresos" id="ingresosCobradosHeader">$0</div>
+                    <div class="stat-label">Ingresos Cobrados</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value utilidad" id="utilidadRealizadaHeader">$0</div>
+                    <div class="stat-label">Utilidad Realizada</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- MENSAJES -->
+        <div class="mensaje-error" id="mensajeError">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="textoError">Error al cargar datos</span>
+        </div>
+        <div class="mensaje-exito" id="mensajeExito">
+            <i class="fas fa-check-circle"></i>
+            <span id="textoExito">Operación exitosa</span>
+        </div>
+        
+        <!-- CONTROLES DE PERÍODO -->
+        <div class="periodo-container">
+            <div class="periodo-header">
+                <h2 class="periodo-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Seleccionar Período
+                </h2>
+                <div class="periodo-actions">
+                    <div class="periodo-buttons">
+                        <button class="periodo-btn active" data-periodo="hoy">Hoy</button>
+                        <button class="periodo-btn" data-periodo="semana">Esta Semana</button>
+                        <button class="periodo-btn" data-periodo="mes">Mes</button>
+                        <button class="periodo-btn" data-periodo="anio">Año</button>
+                        <button class="periodo-btn" data-periodo="personalizado">Personalizado</button>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <select class="filter-select" id="selectMes" style="display:none; min-width:120px;">
+                            <option value="">Seleccionar mes</option>
+                        </select>
+                        <select class="filter-select" id="selectAnio" style="display:none; min-width:100px;">
+                            <option value="">Seleccionar año</option>
+                        </select>
+                    </div>
+                    <div class="date-range" id="dateRange" style="display:none;">
+                        <input type="date" class="date-input" id="fechaInicio">
+                        <span>hasta</span>
+                        <input type="date" class="date-input" id="fechaFin">
+                        <button class="btn btn-primary" id="aplicarFechas"><i class="fas fa-check"></i> Aplicar</button>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <label style="display:flex; flex-direction:column; font-size:12px; color:var(--gris-medio);">
+                            Hora inicial
+                            <input type="time" class="date-input" id="horaInicio" style="min-width:120px;">
+                        </label>
+                        <label style="display:flex; flex-direction:column; font-size:12px; color:var(--gris-medio);">
+                            Hora final
+                            <input type="time" class="date-input" id="horaFin" style="min-width:120px;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FILTROS AVANZADOS -->
+            <div class="filters-container">
+                <div class="filters-header">
+                    <h3 class="filters-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros de Búsqueda
+                    </h3>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <div class="filtros-activos" id="filtrosActivos">
+                            <i class="fas fa-filter"></i>
+                            <span id="filtrosTexto">Filtros: Ninguno</span>
+                            <span class="count" id="filtrosCount" style="display:none;">0</span>
+                        </div>
+                        <button class="btn btn-secondary" id="limpiarFiltros"><i class="fas fa-broom"></i> Limpiar Filtros</button>
+                        <button class="btn btn-warning" id="btnRefrescar"><i class="fas fa-sync-alt"></i> Refrescar</button>
+                    </div>
+                </div>
+                
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo de Pago</label>
+                        <select class="filter-select" id="filterTipoPago">
+                            <option value="">Todos los tipos</option>
+                            <option value="APARTADO">APARTADO</option>
+                            <option value="CONTADO">CONTADO</option>
+                            <option value="CRÉDITO">CRÉDITO</option>
+                            <option value="NEQUI">NEQUI</option>
+                            <option value="TRANSACCIÓN">TRANSACCIÓN</option>
+                            <option value="TARJETA">TARJETA</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Cliente</label>
+                        <select class="filter-select" id="filterUsuario"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Producto</label>
+                        <select class="filter-select" id="filterProducto"><option value="">Cargando...</option></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DASHBOARD FINANCIERO -->
+        <div class="dashboard-container">
+            <h2 class="dashboard-title">
+                <i class="fas fa-chart-line"></i>
+                Dashboard Financiero
+                <span id="periodoActual" style="font-size:16px; color:var(--gris-medio); margin-left:10px;">(Hoy)</span>
+            </h2>
+            <div class="dashboard-grid" id="dashboardGrid">
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+            </div>
+        </div>
+        
+        <!-- GRÁFICO DE TENDENCIA -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    Tendencia de Ventas
+                    <span id="graficoPeriodo" style="font-size:13px; color:var(--gris-medio); font-weight:normal;"></span>
+                </h3>
+                <div class="chart-wrapper">
+                    <canvas id="chartTendencia"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TABLA DE HISTORIAL -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="periodo-title">
+                    <i class="fas fa-list-alt"></i>
+                    Historial de Ventas
+                </h2>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="btnExportarExcel"><i class="fas fa-file-excel"></i> Exportar Excel</button>
+                    <button class="btn btn-secondary" id="btnExportarResumen"><i class="fas fa-chart-bar"></i> Exportar Resumen</button>
+                    <button class="btn btn-warning" id="btnSeleccionMultiple"><i class="fas fa-check-square"></i> Selección Múltiple</button>
+                </div>
+            </div>
+            
+            <table class="historial-table" id="historialTable">
+                <thead>
+                    <tr>
+                        <th style="width:30px;"><input type="checkbox" id="selectAll" style="display:none; width:18px; height:18px; cursor:pointer;"></th>
+                        <th>ID Venta</th>
+                        <th>Cliente</th>
+                        <th>Fecha y Hora</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Utilidad</th>
+                        <th>Método de Pago</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="historialBody">
+                    <tr><td colspan="9" style="text-align:center; padding:40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--teal);"></i>
+                        <p style="margin-top:10px; color:var(--gris-medio);">Cargando datos...</p>
+                    </td></tr>
+                </tbody>
+            </table>
+            
+            <div class="pagination" id="pagination" style="display:none;"></div>
+        </div>
+    </div>
+    
+    <!-- SELECCIÓN MÚLTIPLE -->
+    <div class="seleccion-multiple" id="seleccionMultiple" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--teal); color:white; padding:12px 20px; border-radius:6px; display:none; align-items:center; gap:12px; z-index:100;">
+        <div class="contador-seleccion" id="contadorSeleccion" style="background:white; color:var(--teal); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">0</div>
+        <span id="textoSeleccion">0 ventas seleccionadas</span>
+        <button class="btn btn-secondary" id="btnDeseleccionarTodo"><i class="fas fa-times"></i> Deseleccionar</button>
+        <button class="btn btn-danger" id="btnEliminarSeleccionadas"><i class="fas fa-trash"></i> Eliminar Seleccionadas</button>
+    </div>
+    
+    <!-- MODALES -->
+    <div class="modal-overlay" id="modalDetalle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalle de Venta</h2>
+                <button class="modal-close" id="cerrarModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalDetalleBody"></div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="modalConfirmarEliminar">
+        <div class="modal-content modal-small">
+            <div class="modal-header danger">
+                <h2 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h2>
+                <button class="modal-close" onclick="cerrarModalEliminar()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalConfirmarEliminarBody"></div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="modalConfirmarEliminarMultiple">
+        <div class="modal-content modal-small">
+            <div class="modal-header warning">
+                <h2 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Eliminar Ventas Múltiples</h2>
+                <button class="modal-close" onclick="cerrarModalEliminarMultiple()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalConfirmarEliminarMultipleBody"></div>
+        </div>
+    </div>
+    
+    <!-- OVERLAY CARGA -->
+    <div class="cargando" id="cargandoOverlay">
+        <i class="fas fa-spinner"></i>
+        <div>Cargando datos...</div>
+    </div>
+    
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script>
+    // ============================================================
+    //  CONFIGURACIÓN
+    // ============================================================
+    const CONFIG = {
+        itemsPerPage: 10,
+        debounceDelay: 300,
+        cacheTTL: 5 * 60 * 1000,
+        maxRetries: 2
+    };
+
+    // ============================================================
+    //  ESTADO GLOBAL
+    // ============================================================
+    const AppState = {
+        currentPage: 1,
+        periodoActual: 'hoy',
+        ventasActuales: [],
+        estadisticas: null,
+        tendenciaActual: [],
+        cache: new Map(),
+        filtrosActivos: {},
+        chartInstance: null,
+        modoSeleccionMultiple: false,
+        ventasSeleccionadas: new Set()
+    };
+
+    // ============================================================
+    //  UTILIDADES
+    // ============================================================
+    function formatCurrency(valor) {
+        if (valor === null || valor === undefined) return '$0';
+        const num = parseFloat(valor);
+        if (isNaN(num)) return '$0';
+        return `$${num.toLocaleString('es-CO', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+    }
+
+    function formatPercent(valor) {
+        if (valor === null || valor === undefined) return '0%';
+        const num = parseFloat(valor);
+        if (isNaN(num)) return '0%';
+        return `${num.toFixed(1)}%`;
+    }
+
+    function formatDateTime(fechaStr, horaStr) {
+        if (!fechaStr) return 'Sin fecha';
+        try {
+            let d;
+            if (typeof fechaStr === 'string') {
+                d = new Date(fechaStr);
+            } else if (fechaStr instanceof Date) {
+                d = fechaStr;
+            } else {
+                return String(fechaStr);
+            }
+            if (isNaN(d.getTime())) return fechaStr;
+            
+            const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+            let result = `${d.getDate().toString().padStart(2,'0')} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+            
+            if (horaStr && typeof horaStr === 'string' && horaStr !== '00:00:00') {
+                const partes = horaStr.split(':');
+                if (partes.length >= 2) {
+                    let hora = parseInt(partes[0], 10);
+                    const minuto = partes[1];
+                    if (!isNaN(hora)) {
+                        const ampm = hora >= 12 ? 'PM' : 'AM';
+                        hora = hora % 12 || 12;
+                        result += ` ${hora.toString().padStart(2,'0')}:${minuto.padStart(2,'0')} ${ampm}`;
+                    }
+                }
+            }
+            return result;
+        } catch {
+            return fechaStr;
+        }
+    }
+
+    function getPagoBadge(tipo) {
+        if (!tipo) return 'pago-contado';
+        const map = {
+            'CONTADO': 'pago-contado',
+            'CRÉDITO': 'pago-credito',
+            'NEQUI': 'pago-nequi',
+            'TRANSACCIÓN': 'pago-transferencia',
+            'TARJETA': 'pago-tarjeta',
+            'APARTADO': 'pago-apartado'
+        };
+        return map[tipo.toUpperCase()] || 'pago-contado';
+    }
+
+    function getPagoIcon(tipo) {
+        if (!tipo) return 'fa-money-bill-wave';
+        const map = {
+            'CONTADO': 'fa-money-bill-wave',
+            'CRÉDITO': 'fa-credit-card',
+            'NEQUI': 'fa-mobile-alt',
+            'TRANSACCIÓN': 'fa-exchange-alt',
+            'TARJETA': 'fa-credit-card',
+            'APARTADO': 'fa-hand-holding-usd'
+        };
+        return map[tipo.toUpperCase()] || 'fa-money-bill-wave';
+    }
+
+    function getEstadoCredito(estado) {
+        if (!estado) return 'estado-pendiente';
+        const map = {
+            'pendiente': 'estado-pendiente',
+            'pagado': 'estado-pagado',
+            'vencido': 'estado-vencido'
+        };
+        return map[estado.toLowerCase()] || 'estado-pendiente';
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    }
+
+    // ============================================================
+    //  API
+    // ============================================================
+    const API = {
+        async fetch(url, options = {}) {
+            const cacheKey = url + JSON.stringify(options);
+            const cached = AppState.cache.get(cacheKey);
+            if (cached && (Date.now() - cached.timestamp) < CONFIG.cacheTTL) {
+                return cached.data;
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                AppState.cache.set(cacheKey, { data, timestamp: Date.now() });
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        },
+
+        async getVentasPorPeriodo(periodo, params = {}) {
+            const query = new URLSearchParams({ periodo, ...params });
+            return this.fetch(`/api/historial-ventas/periodo/rapido?${query}`);
+        },
+
+        async getVentasFiltradas(params = {}) {
+            const query = new URLSearchParams(params);
+            return this.fetch(`/api/historial-ventas/filtrar?${query}`);
+        },
+
+        async getEstadisticas(params = {}) {
+            const query = new URLSearchParams(params);
+            return this.fetch(`/api/historial-ventas/estadisticas-financieras?${query}`);
+        },
+
+        async getDetalleVenta(id) {
+            return this.fetch(`/api/historial-ventas/${id}`);
+        },
+
+        async getFiltros() {
+            const [clientes, productos] = await Promise.all([
+                this.fetch('/api/historial-ventas/filtros/clientes'),
+                this.fetch('/api/historial-ventas/filtros/productos')
+            ]);
+            return { clientes: clientes.usuarios || [], productos: productos.productos || [] };
+        },
+
+        async eliminarVenta(id, recuperar = false) {
+            const response = await fetch(`/api/historial-ventas/${id}/eliminar?recuperar_productos=${recuperar}`, {
+                method: 'DELETE'
+            });
+            return response.json();
+        },
+
+        async eliminarMultiples(ids, recuperar = false) {
+            const response = await fetch('/api/historial-ventas/multiple-eliminar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ventas_ids: ids, recuperar_productos: recuperar })
+            });
+            return response.json();
+        },
+
+        async verificarEliminar(id) {
+            return this.fetch(`/api/historial-ventas/${id}/verificar`);
+        }
+    };
+
+    // ============================================================
+    //  UI HELPERS
+    // ============================================================
+    function mostrarCargando(mostrar) {
+        document.getElementById('cargandoOverlay').style.display = mostrar ? 'flex' : 'none';
+    }
+
+    function mostrarError(mensaje, duracion = 5000) {
+        const el = document.getElementById('mensajeError');
+        document.getElementById('textoError').textContent = mensaje;
+        el.style.display = 'flex';
+        setTimeout(() => el.style.display = 'none', duracion);
+    }
+
+    function mostrarExito(mensaje, duracion = 3000) {
+        const el = document.getElementById('mensajeExito');
+        document.getElementById('textoExito').textContent = mensaje;
+        el.style.display = 'flex';
+        setTimeout(() => el.style.display = 'none', duracion);
+    }
+
+    function actualizarBadgeFiltros() {
+        const filtros = obtenerFiltrosActivos();
+        const indicador = document.getElementById('filtrosActivos');
+        const texto = document.getElementById('filtrosTexto');
+        const countEl = document.getElementById('filtrosCount');
+        
+        const activos = Object.keys(filtros).filter(k => filtros[k] && filtros[k] !== '');
+        if (activos.length > 0) {
+            texto.textContent = `Filtros: ${activos.join(', ')}`;
+            countEl.style.display = 'inline';
+            countEl.textContent = activos.length;
+            indicador.style.display = 'flex';
+        } else {
+            texto.textContent = 'Filtros: Ninguno';
+            countEl.style.display = 'none';
+            indicador.style.display = 'none';
+        }
+    }
+
+    function obtenerFiltrosActivos() {
+        const filtros = {};
+        const tipoPago = document.getElementById('filterTipoPago').value;
+        const usuario = document.getElementById('filterUsuario').value;
+        const producto = document.getElementById('filterProducto').value;
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        const fechaFin = document.getElementById('fechaFin').value;
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        
+        if (tipoPago) filtros['Tipo Pago'] = tipoPago;
+        if (usuario) filtros['Cliente'] = usuario;
+        if (producto) filtros['Producto'] = producto;
+        if (fechaInicio || fechaFin) filtros['Fechas'] = `${fechaInicio || '...'} → ${fechaFin || '...'}`;
+        if (horaInicio || horaFin) filtros['Horas'] = `${horaInicio || '...'} → ${horaFin || '...'}`;
+        return filtros;
+    }
+
+    // ============================================================
+    //  GRÁFICO - CORREGIDO
+    // ============================================================
+    const Grafico = {
+        instance: null,
+
+        destruir() {
+            if (this.instance) {
+                this.instance.destroy();
+                this.instance = null;
+            }
+        },
+
+        // ============================================================
+        //  CORRECCIÓN: Construir tendencia desde ventas
+        // ============================================================
+        construirDesdeVentas(ventas) {
+            if (!ventas || ventas.length === 0) return [];
+            
+            const agrupado = {};
+            ventas.forEach(v => {
+                const fecha = v.fecha_dia || v.fecha || '';
+                if (fecha) {
+                    if (!agrupado[fecha]) {
+                        agrupado[fecha] = { fecha_dia: fecha, total_dia: 0, cantidad_ventas: 0 };
+                    }
+                    agrupado[fecha].total_dia += parseFloat(v.total || 0);
+                    agrupado[fecha].cantidad_ventas += 1;
+                }
+            });
+            
+            const result = Object.values(agrupado).sort((a, b) => {
+                return new Date(a.fecha_dia) - new Date(b.fecha_dia);
+            });
+            
+            // Si hay un solo día, agregar día anterior con valor 0 para que se vea algo
+            if (result.length === 1) {
+                const fecha = new Date(result[0].fecha_dia);
+                const diaAnterior = new Date(fecha);
+                diaAnterior.setDate(diaAnterior.getDate() - 1);
+                result.unshift({
+                    fecha_dia: diaAnterior.toISOString().split('T')[0],
+                    total_dia: 0,
+                    cantidad_ventas: 0
+                });
+            }
+            
+            return result;
+        },
+
+        // ============================================================
+        //  CORRECCIÓN: Crear gráfico con datos
+        // ============================================================
+        crear(datos) {
+            const canvas = document.getElementById('chartTendencia');
+            if (!canvas) return;
+            
+            this.destruir();
+            
+            let tendencia = [];
+            
+            // Determinar la fuente de datos
+            if (Array.isArray(datos)) {
+                tendencia = datos;
+            } else if (datos && datos.tendencia_ventas) {
+                tendencia = datos.tendencia_ventas;
+            } else if (datos && datos.ventas) {
+                tendencia = this.construirDesdeVentas(datos.ventas);
+            } else if (datos && datos.tendencia) {
+                tendencia = datos.tendencia;
+            } else {
+                // Fallback: intentar construir desde ventas actuales
+                tendencia = this.construirDesdeVentas(AppState.ventasActuales);
+            }
+            
+            // Si no hay datos, mostrar mensaje
+            if (!tendencia || tendencia.length === 0) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#7f8c8d';
+                ctx.textAlign = 'center';
+                ctx.fillText('No hay datos para mostrar', canvas.width / 2, canvas.height / 2);
+                ctx.font = '13px Arial';
+                ctx.fillStyle = '#bdc3c7';
+                ctx.fillText('Aplica filtros o cambia el período', canvas.width / 2, canvas.height / 2 + 30);
+                
+                document.getElementById('graficoPeriodo').textContent = '(sin datos)';
+                return;
+            }
+            
+            const labels = tendencia.map(item => {
+                const fechaStr = item.fecha_dia || item.fecha || '';
+                return fechaStr ? formatDateTime(fechaStr, null) : 'Sin fecha';
+            });
+            
+            const valores = tendencia.map(item => {
+                const valor = parseFloat(item.total_dia || item.total || item.monto || item.ventas || 0);
+                return isNaN(valor) ? 0 : valor;
+            });
+            
+            // Actualizar etiqueta del período
+            const labelPeriodo = document.getElementById('graficoPeriodo');
+            if (tendencia.length > 0) {
+                const first = tendencia[0].fecha_dia || '';
+                const last = tendencia[tendencia.length - 1].fecha_dia || '';
+                if (first && last) {
+                    labelPeriodo.textContent = `(${formatDateTime(first, null)} → ${formatDateTime(last, null)})`;
+                }
+            }
+            
+            this.instance = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas Diarias',
+                        data: valores,
+                        borderColor: 'rgba(31, 138, 134, 1)',
+                        backgroundColor: 'rgba(31, 138, 134, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'rgba(31, 138, 134, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return `Ventas: ${formatCurrency(ctx.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return '$' + (value / 1000).toFixed(1) + 'K';
+                                    return '$' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { maxRotation: 45, minRotation: 45 }
+                        }
+                    },
+                    animation: { duration: 800, easing: 'easeOutQuart' }
+                }
+            });
+        },
+
+        actualizar(datos) {
+            this.crear(datos);
+        }
+    };
+
+    // ============================================================
+    //  DASHBOARD
+    // ============================================================
+    function actualizarDashboard(estadisticas) {
+        const grid = document.getElementById('dashboardGrid');
+        if (!estadisticas) {
+            grid.innerHTML = `
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+                <div class="dashboard-card skeleton-card"></div>
+            `;
+            return;
+        }
+        
+        const e = estadisticas;
+        const ingresosCobrados = (e.ventas_contado || 0) + (e.abonos_cobrados || 0) + (e.anticipos_cobrados || 0);
+        
+        grid.innerHTML = `
+            <div class="dashboard-card card-1">
+                <div class="dashboard-icon icon-1"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="dashboard-label">Ingresos Cobrados</div>
+                <div class="dashboard-value">${formatCurrency(ingresosCobrados)}</div>
+                <div class="dashboard-description">Contado: <span class="valor">${formatCurrency(e.ventas_contado || 0)}</span> · Abonos: <span class="valor">${formatCurrency(e.abonos_cobrados || 0)}</span></div>
+            </div>
+            <div class="dashboard-card card-2">
+                <div class="dashboard-icon icon-2"><i class="fas fa-credit-card"></i></div>
+                <div class="dashboard-label">Pendientes</div>
+                <div class="dashboard-value">${formatCurrency(e.ventas_credito_pendientes || 0)}</div>
+                <div class="dashboard-description">${e.creditos_pendientes_count || 0} créditos activos</div>
+            </div>
+            <div class="dashboard-card card-3">
+                <div class="dashboard-icon icon-3"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="dashboard-label">Saldo por Cobrar</div>
+                <div class="dashboard-value">${formatCurrency(e.saldo_por_cobrar || 0)}</div>
+                <div class="dashboard-description">Vencidos: <span class="valor" style="color:var(--error);">${formatCurrency(e.creditos_vencidos || 0)}</span></div>
+            </div>
+            <div class="dashboard-card card-4">
+                <div class="dashboard-icon icon-4"><i class="fas fa-chart-line"></i></div>
+                <div class="dashboard-label">Utilidad Realizada</div>
+                <div class="dashboard-value">${formatCurrency(e.utilidad_realizada || 0)}</div>
+                <div class="dashboard-description">${e.total_ventas || 0} ventas procesadas</div>
+            </div>
+            <div class="dashboard-card card-5">
+                <div class="dashboard-icon icon-5"><i class="fas fa-chart-bar"></i></div>
+                <div class="dashboard-label">Utilidad Proyectada</div>
+                <div class="dashboard-value">${formatCurrency(e.utilidad_proyectada || 0)}</div>
+                <div class="dashboard-description">Pendiente: <span class="valor">${formatCurrency(e.valor_ventas_pendientes || 0)}</span></div>
+            </div>
+        `;
+        
+        // Actualizar header
+        document.getElementById('totalVentasPeriodo').textContent = e.total_ventas || 0;
+        document.getElementById('ingresosCobradosHeader').textContent = formatCurrency(ingresosCobrados);
+        document.getElementById('utilidadRealizadaHeader').textContent = formatCurrency(e.utilidad_realizada || 0);
+    }
+
+    // ============================================================
+    //  TABLA
+    // ============================================================
+    function renderizarTabla(ventas) {
+        const tbody = document.getElementById('historialBody');
+        const selectAll = document.getElementById('selectAll');
+        
+        if (!ventas || ventas.length === 0) {
+            const filtros = obtenerFiltrosActivos();
+            let detalles = Object.entries(filtros).map(([k, v]) => `${k}: ${v}`).join(' · ');
+            
+            tbody.innerHTML = `
+                <tr><td colspan="9" style="text-align:center; padding:40px;">
+                    <i class="fas fa-search" style="font-size:48px; color:var(--gris-medio); margin-bottom:15px; display:block;"></i>
+                    <h3 style="color:var(--gris-medio); margin-bottom:10px;">No se encontraron ventas</h3>
+                    ${detalles ? `<p style="color:var(--gris-medio); font-size:14px; margin-bottom:10px;">Filtros: ${detalles}</p>` : ''}
+                    <p style="color:var(--gris-claro); font-size:13px;">Intenta cambiar los filtros o el período seleccionado.</p>
+                    <button class="btn btn-secondary" onclick="limpiarFiltros()" style="margin-top:15px;"><i class="fas fa-undo"></i> Limpiar filtros</button>
+                </td></tr>
+            `;
+            document.getElementById('pagination').style.display = 'none';
+            if (selectAll) selectAll.style.display = 'none';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        const start = (AppState.currentPage - 1) * CONFIG.itemsPerPage;
+        const end = start + CONFIG.itemsPerPage;
+        const pagina = ventas.slice(start, end);
+        
+        if (selectAll) {
+            selectAll.style.display = AppState.modoSeleccionMultiple ? 'inline-block' : 'none';
+        }
+        
+        pagina.forEach(v => {
+            const productos = v.productos || [];
+            const prodsMostrar = productos.slice(0, 3);
+            const prodsExtra = productos.length > 3 ? `+${productos.length - 3} más` : '';
+            
+            const esCredito = (v.tipo_pago || '').toUpperCase() === 'CRÉDITO';
+            const creditoPagado = v.estado_credito === 'pagado';
+            const esMixta = v.es_mixta || false;
+            
+            let utilidad = v.utilidad || 0;
+            let claseUtilidad = 'utilidad-realizada';
+            let labelUtilidad = 'Utilidad';
+            
+            if (esCredito && !creditoPagado) {
+                utilidad = v.utilidad_proyectada || utilidad;
+                claseUtilidad = 'utilidad-proyectada';
+                labelUtilidad = 'Proyectada';
+            } else {
+                utilidad = v.utilidad_realizada || utilidad;
+            }
+            
+            const seleccionada = AppState.ventasSeleccionadas.has(v.id);
+            const fecha = v.fecha_completa || formatDateTime(v.fecha_dia, v.fecha_hora);
+            
+            const tr = document.createElement('tr');
+            if (seleccionada) tr.classList.add('seleccionado');
+            
+            tr.innerHTML = `
+                <td>${AppState.modoSeleccionMultiple ? `<input type="checkbox" class="checkbox-seleccion" data-venta-id="${v.id}" ${seleccionada ? 'checked' : ''} onchange="toggleSeleccionVenta(${v.id}, this)">` : ''}</td>
+                <td class="venta-id">#${v.numero_venta || v.id.toString().padStart(6,'0')}</td>
+                <td><div class="cliente-nombre">${v.nombre_cliente || 'CLIENTE FINAL'}</div><div class="cliente-info">${v.telefono_cliente || ''}</div></td>
+                <td>${fecha}</td>
+                <td>${prodsMostrar.map(p => `<div style="font-size:12px;">${p.nombre || 'Producto'} x${p.cantidad || 0}</div>`).join('')}${prodsExtra ? `<div style="font-size:11px;color:var(--gris-medio);">${prodsExtra}</div>` : ''}</td>
+                <td class="total-cell">${formatCurrency(v.total)}</td>
+                <td class="${claseUtilidad}">${formatCurrency(utilidad)}<div style="font-size:10px;font-weight:normal;opacity:0.7;">${labelUtilidad}</div></td>
+                <td>
+                    <span class="pago-badge ${getPagoBadge(v.tipo_pago)}"><i class="fas ${getPagoIcon(v.tipo_pago)}"></i> ${v.tipo_pago || 'N/A'}${esMixta ? ' (MIXTA)' : ''}</span>
+                    ${esCredito ? `<div class="estado-credito ${getEstadoCredito(v.estado_credito)}">${v.estado_credito || 'pendiente'}</div>` : ''}
+                </td>
+                <td>
+                    <div class="acciones-group">
+                        <button class="btn btn-primary" onclick="verDetalle(${v.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-danger" onclick="confirmarEliminar(${v.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
+        
+        actualizarPaginacion(ventas.length);
+        actualizarBarraSeleccion();
+    }
+
+    function actualizarPaginacion(total) {
+        const container = document.getElementById('pagination');
+        const totalPages = Math.ceil(total / CONFIG.itemsPerPage);
+        
+        if (totalPages <= 1) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.style.display = 'flex';
+        let html = `<button class="page-btn ${AppState.currentPage === 1 ? 'disabled' : ''}" onclick="irPagina(${AppState.currentPage - 1})" ${AppState.currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+        
+        let start = Math.max(1, AppState.currentPage - 2);
+        let end = Math.min(totalPages, start + 4);
+        if (end - start < 4) start = Math.max(1, end - 4);
+        
+        for (let i = start; i <= end; i++) {
+            html += `<button class="page-btn ${i === AppState.currentPage ? 'active' : ''}" onclick="irPagina(${i})">${i}</button>`;
+        }
+        
+        html += `<button class="page-btn ${AppState.currentPage === totalPages ? 'disabled' : ''}" onclick="irPagina(${AppState.currentPage + 1})" ${AppState.currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+        html += `<span style="font-size:13px;color:var(--gris-medio);margin-left:15px;">${(AppState.currentPage-1)*CONFIG.itemsPerPage+1}-${Math.min(AppState.currentPage*CONFIG.itemsPerPage, total)} de ${total}</span>`;
+        
+        container.innerHTML = html;
+    }
+
+    function irPagina(page) {
+        const total = Math.ceil(AppState.ventasActuales.length / CONFIG.itemsPerPage);
+        if (page < 1 || page > total) return;
+        AppState.currentPage = page;
+        renderizarTabla(AppState.ventasActuales);
+        document.getElementById('historialTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ============================================================
+    //  FUNCIONES PRINCIPALES
+    // ============================================================
+    async function cargarDatos() {
+        mostrarCargando(true);
+        
+        try {
+            const periodo = AppState.periodoActual;
+            const params = {};
+            
+            const selectMes = document.getElementById('selectMes');
+            const selectAnio = document.getElementById('selectAnio');
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFin = document.getElementById('horaFin').value;
+            
+            if (periodo === 'mes' && selectMes && selectMes.value) params.mes = selectMes.value;
+            if ((periodo === 'mes' || periodo === 'anio') && selectAnio && selectAnio.value) params.anio = selectAnio.value;
+            if (horaInicio) params.hora_inicio = horaInicio;
+            if (horaFin) params.hora_fin = horaFin;
+            
+            const data = await API.getVentasPorPeriodo(periodo, params);
+            
+            if (data.success) {
+                AppState.ventasActuales = data.ventas || [];
+                AppState.estadisticas = data.estadisticas_financieras || null;
+                
+                // ============================================================
+                //  CORRECCIÓN: Actualizar gráfico con tendencia o desde ventas
+                // ============================================================
+                if (data.tendencia_ventas && data.tendencia_ventas.length > 0) {
+                    Grafico.actualizar(data.tendencia_ventas);
+                } else if (AppState.ventasActuales.length > 0) {
+                    Grafico.actualizar({ ventas: AppState.ventasActuales });
+                } else {
+                    Grafico.actualizar([]);
+                }
+                
+                actualizarDashboard(AppState.estadisticas);
+                renderizarTabla(AppState.ventasActuales);
+                actualizarBadgeFiltros();
+                
+                document.getElementById('periodoActual').textContent = `(${getPeriodoNombre(periodo)})`;
+                
+            } else {
+                mostrarError(data.error || 'Error al cargar datos');
+            }
+        } catch (error) {
+            console.error('Error cargando datos:', error);
+            mostrarError('Error de conexión con el servidor');
+        } finally {
+            mostrarCargando(false);
+        }
+    }
+
+    async function aplicarFiltros() {
+        mostrarCargando(true);
+        
+        try {
+            const params = {};
+            const tipoPago = document.getElementById('filterTipoPago').value;
+            const usuario = document.getElementById('filterUsuario').value;
+            const producto = document.getElementById('filterProducto').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFin = document.getElementById('horaFin').value;
+            
+            if (fechaInicio) params.fecha_inicio = fechaInicio;
+            if (fechaFin) params.fecha_fin = fechaFin;
+            if (horaInicio) params.hora_inicio = horaInicio;
+            if (horaFin) params.hora_fin = horaFin;
+            if (tipoPago) params.tipo_pago = tipoPago;
+            if (usuario) params.cliente_cedula = usuario;
+            if (producto) params.producto_id = producto;
+            
+            AppState.periodoActual = 'personalizado';
+            AppState.currentPage = 1;
+            
+            // Limpiar caché para forzar actualización
+            AppState.cache.clear();
+            
+            const [ventasData, statsData] = await Promise.all([
+                API.getVentasFiltradas(params),
+                API.getEstadisticas(params)
+            ]);
+            
+            if (ventasData.success) {
+                AppState.ventasActuales = ventasData.ventas || [];
+            }
+            
+            if (statsData.success) {
+                AppState.estadisticas = statsData.estadisticas || null;
+            }
+            
+            // ============================================================
+            //  CORRECCIÓN: Actualizar gráfico con los datos filtrados
+            // ============================================================
+            if (AppState.ventasActuales.length > 0) {
+                Grafico.actualizar({ ventas: AppState.ventasActuales });
+            } else {
+                Grafico.actualizar([]);
+            }
+            
+            actualizarDashboard(AppState.estadisticas);
+            renderizarTabla(AppState.ventasActuales);
+            actualizarBadgeFiltros();
+            document.getElementById('periodoActual').textContent = '(Filtros aplicados)';
+            
+            mostrarExito(`Filtro aplicado: ${AppState.ventasActuales.length} ventas encontradas`);
+            
+        } catch (error) {
+            console.error('Error aplicando filtros:', error);
+            mostrarError('Error al aplicar filtros');
+        } finally {
+            mostrarCargando(false);
+        }
+    }
+
+    function limpiarFiltros() {
+        document.getElementById('filterTipoPago').value = '';
+        document.getElementById('filterUsuario').value = '';
+        document.getElementById('filterProducto').value = '';
+        document.getElementById('fechaInicio').value = '';
+        document.getElementById('fechaFin').value = '';
+        document.getElementById('horaInicio').value = '';
+        document.getElementById('horaFin').value = '';
+        
+        document.querySelectorAll('.periodo-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.periodo-btn[data-periodo="hoy"]').classList.add('active');
+        document.getElementById('dateRange').style.display = 'none';
+        
+        AppState.cache.clear();
+        AppState.periodoActual = 'hoy';
+        AppState.currentPage = 1;
+        
+        cargarDatos();
+        mostrarExito('Filtros limpiados');
+    }
+
+    function getPeriodoNombre(periodo) {
+        const map = {
+            'hoy': 'Hoy',
+            'semana': 'Esta Semana',
+            'mes': 'Mes',
+            'anio': 'Año',
+            'personalizado': 'Personalizado'
+        };
+        return map[periodo] || periodo;
+    }
+
+    // ============================================================
+    //  DETALLE Y ELIMINACIÓN
+    // ============================================================
+    async function verDetalle(id) {
+        try {
+            mostrarCargando(true);
+            const data = await API.getDetalleVenta(id);
+            
+            if (data.success && data.venta) {
+                const v = data.venta;
+                const total = v.total || 0;
+                
+                document.getElementById('modalDetalleBody').innerHTML = `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                        <div><strong>Número:</strong> #${v.numero_venta || v.id}</div>
+                        <div><strong>Fecha:</strong> ${formatDateTime(v.fecha_dia, v.fecha_hora)}</div>
+                        <div><strong>Cliente:</strong> ${v.nombre_cliente || 'CLIENTE FINAL'}</div>
+                        <div><strong>Teléfono:</strong> ${v.telefono_cliente || 'No registrado'}</div>
+                        <div><strong>Tipo Pago:</strong> <span class="pago-badge ${getPagoBadge(v.tipo_pago)}">${v.tipo_pago || 'N/A'}</span></div>
+                        <div><strong>Total:</strong> <strong style="color:var(--teal);">${formatCurrency(total)}</strong></div>
+                    </div>
+                    <h4 style="margin:15px 0 10px; color:var(--teal);"><i class="fas fa-boxes"></i> Productos</h4>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead><tr style="background:var(--gris-claro);"><th style="padding:8px 10px;text-align:left;">Producto</th><th style="padding:8px 10px;text-align:center;">Cantidad</th><th style="padding:8px 10px;text-align:right;">Precio</th><th style="padding:8px 10px;text-align:right;">Subtotal</th></tr></thead>
+                        <tbody>${(v.productos || []).map(p => `<tr><td style="padding:8px 10px;">${p.nombre || 'Producto'}</td><td style="padding:8px 10px;text-align:center;">${p.cantidad || 0}</td><td style="padding:8px 10px;text-align:right;">${formatCurrency(p.precio_unitario || 0)}</td><td style="padding:8px 10px;text-align:right;">${formatCurrency((p.precio_unitario || 0) * (p.cantidad || 0))}</td></tr>`).join('')}</tbody>
+                        <tfoot><tr style="border-top:2px solid var(--teal);font-weight:bold;"><td colspan="3" style="padding:10px;text-align:right;">TOTAL:</td><td style="padding:10px;text-align:right;color:var(--teal);font-size:16px;">${formatCurrency(total)}</td></tr></tfoot>
+                    </table>
+                `;
+                document.getElementById('modalDetalle').style.display = 'flex';
+            } else {
+                mostrarError(data.error || 'Error al cargar detalle');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error al cargar el detalle');
+        } finally {
+            mostrarCargando(false);
+        }
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalDetalle').style.display = 'none';
+    }
+
+    async function confirmarEliminar(id) {
+        try {
+            const data = await API.verificarEliminar(id);
+            if (!data.success || !data.venta) {
+                mostrarError('Venta no encontrada');
+                return;
+            }
+            
+            const v = data.venta;
+            const puedeRecuperar = v.puede_recuperar_productos;
+            const dias = v.dias_pasados || 0;
+            
+            document.getElementById('modalConfirmarEliminarBody').innerHTML = `
+                <div style="text-align:center; margin-bottom:20px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:48px; color:var(--error);"></i>
+                    <h3 style="margin:15px 0 10px;">¿Eliminar venta #${v.numero_venta || v.id}?</h3>
+                    <p style="color:var(--gris-medio);">Cliente: <strong>${v.cliente || 'CLIENTE FINAL'}</strong><br>Total: <strong>${formatCurrency(v.total)}</strong></p>
+                    ${dias > 7 ? `<p style="color:var(--error);margin-top:10px;"><i class="fas fa-clock"></i> Venta de hace ${dias} días. No se pueden recuperar productos.</p>` : ''}
+                </div>
+                ${puedeRecuperar ? `
+                <div style="background:rgba(39,174,96,0.08); padding:12px 16px; border-radius:6px; margin-bottom:15px;">
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                        <input type="checkbox" id="recuperarProductos" checked>
+                        <span><i class="fas fa-boxes" style="color:var(--exito);"></i> Recuperar productos al inventario</span>
+                    </label>
+                </div>
+                ` : ''}
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button class="btn btn-secondary" onclick="cerrarModalEliminar()">Cancelar</button>
+                    <button class="btn btn-danger" onclick="eliminarVenta(${id})"><i class="fas fa-trash"></i> Eliminar</button>
+                </div>
+            `;
+            
+            document.getElementById('modalConfirmarEliminar').style.display = 'flex';
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error al cargar información');
+        }
+    }
+
+    function cerrarModalEliminar() {
+        document.getElementById('modalConfirmarEliminar').style.display = 'none';
+    }
+
+    function cerrarModalEliminarMultiple() {
+        document.getElementById('modalConfirmarEliminarMultiple').style.display = 'none';
+    }
+
+    async function eliminarVenta(id) {
+        const recuperar = document.getElementById('recuperarProductos')?.checked || false;
+        
+        try {
+            mostrarCargando(true);
+            const result = await API.eliminarVenta(id, recuperar);
+            if (result.success) {
+                mostrarExito(result.message || 'Venta eliminada');
+                cerrarModalEliminar();
+                await cargarDatos();
+            } else {
+                mostrarError(result.error || 'Error al eliminar');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error al eliminar la venta');
+        } finally {
+            mostrarCargando(false);
+        }
+    }
+
+    // ============================================================
+    //  SELECCIÓN MÚLTIPLE
+    // ============================================================
+    function toggleSeleccionVenta(id, checkbox) {
+        if (checkbox.checked) {
+            AppState.ventasSeleccionadas.add(id);
+        } else {
+            AppState.ventasSeleccionadas.delete(id);
+        }
+        const tr = checkbox.closest('tr');
+        if (tr) tr.classList.toggle('seleccionado', checkbox.checked);
+        actualizarBarraSeleccion();
+    }
+
+    function toggleModoSeleccionMultiple() {
+        AppState.modoSeleccionMultiple = !AppState.modoSeleccionMultiple;
+        if (!AppState.modoSeleccionMultiple) {
+            AppState.ventasSeleccionadas.clear();
+        }
+        
+        const btn = document.getElementById('btnSeleccionMultiple');
+        if (AppState.modoSeleccionMultiple) {
+            btn.innerHTML = '<i class="fas fa-times"></i> Salir Selección';
+            btn.classList.remove('btn-warning');
+            btn.classList.add('btn-secondary');
+        } else {
+            btn.innerHTML = '<i class="fas fa-check-square"></i> Selección Múltiple';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-warning');
+        }
+        
+        renderizarTabla(AppState.ventasActuales);
+        actualizarBarraSeleccion();
+    }
+
+    function actualizarBarraSeleccion() {
+        const barra = document.getElementById('seleccionMultiple');
+        const contador = document.getElementById('contadorSeleccion');
+        const texto = document.getElementById('textoSeleccion');
+        const count = AppState.ventasSeleccionadas.size;
+        
+        if (!AppState.modoSeleccionMultiple || count === 0) {
+            barra.style.display = 'none';
+            return;
+        }
+        
+        contador.textContent = count;
+        texto.textContent = `${count} venta${count !== 1 ? 's' : ''} seleccionada${count !== 1 ? 's' : ''}`;
+        barra.style.display = 'flex';
+    }
+
+    async function eliminarSeleccionadas() {
+        const ids = Array.from(AppState.ventasSeleccionadas);
+        if (ids.length === 0) {
+            mostrarError('No hay ventas seleccionadas');
+            return;
+        }
+        
+        document.getElementById('modalConfirmarEliminarMultipleBody').innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size:48px; color:var(--advertencia);"></i>
+                <h3 style="margin:15px 0 10px;">¿Eliminar ${ids.length} venta${ids.length !== 1 ? 's' : ''}?</h3>
+                <p style="color:var(--gris-medio);">Esta acción eliminará permanentemente ${ids.length} venta${ids.length !== 1 ? 's' : ''}.</p>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button class="btn btn-secondary" onclick="cerrarModalEliminarMultiple()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminarMultiple()"><i class="fas fa-trash"></i> Eliminar ${ids.length}</button>
+            </div>
+        `;
+        document.getElementById('modalConfirmarEliminarMultiple').style.display = 'flex';
+    }
+
+    async function confirmarEliminarMultiple() {
+        const ids = Array.from(AppState.ventasSeleccionadas);
+        try {
+            mostrarCargando(true);
+            const result = await API.eliminarMultiples(ids, false);
+            if (result.success) {
+                mostrarExito(result.message || `${result.eliminadas || ids.length} ventas eliminadas`);
+                cerrarModalEliminarMultiple();
+                AppState.ventasSeleccionadas.clear();
+                AppState.modoSeleccionMultiple = false;
+                await cargarDatos();
+                toggleModoSeleccionMultiple();
+            } else {
+                mostrarError(result.error || 'Error al eliminar');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error al eliminar las ventas');
+        } finally {
+            mostrarCargando(false);
+        }
+    }
+
+    // ============================================================
+    //  EXPORTAR
+    // ============================================================
+    function exportarExcel() {
+        const params = new URLSearchParams();
+        const tipoPago = document.getElementById('filterTipoPago').value;
+        const usuario = document.getElementById('filterUsuario').value;
+        const producto = document.getElementById('filterProducto').value;
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        const fechaFin = document.getElementById('fechaFin').value;
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        
+        if (fechaInicio) params.append('fecha_inicio', fechaInicio);
+        if (fechaFin) params.append('fecha_fin', fechaFin);
+        if (horaInicio) params.append('hora_inicio', horaInicio);
+        if (horaFin) params.append('hora_fin', horaFin);
+        if (tipoPago) params.append('tipo_pago', tipoPago);
+        if (usuario) params.append('cliente_cedula', usuario);
+        if (producto) params.append('producto_id', producto);
+        
+        if (AppState.periodoActual !== 'personalizado') {
+            params.append('periodo', AppState.periodoActual);
+        }
+        
+        window.open(`/api/historial-ventas/exportar/excel?${params}`, '_blank');
+        mostrarExito('Exportando a Excel...');
+    }
+
+    function exportarResumen() {
+        const params = new URLSearchParams();
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        const fechaFin = document.getElementById('fechaFin').value;
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        
+        if (fechaInicio) params.append('fecha_inicio', fechaInicio);
+        if (fechaFin) params.append('fecha_fin', fechaFin);
+        if (horaInicio) params.append('hora_inicio', horaInicio);
+        if (horaFin) params.append('hora_fin', horaFin);
+        
+        if (AppState.periodoActual !== 'personalizado') {
+            params.append('periodo', AppState.periodoActual);
+        }
+        
+        window.open(`/api/historial-ventas/exportar/resumen-excel?${params}`, '_blank');
+        mostrarExito('Exportando resumen...');
+    }
+
+    // ============================================================
+    //  SIDEBAR
+    // ============================================================
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('mainContent');
+        const btn = document.getElementById('toggleSidebar');
+        const collapsedBtn = document.getElementById('toggleSidebarCollapsed');
+        
+        sidebar.classList.toggle('collapsed');
+        main.classList.toggle('expanded');
+        
+        if (sidebar.classList.contains('collapsed')) {
+            btn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            collapsedBtn.style.display = 'block';
+            localStorage.setItem('sidebarCollapsed', 'true');
+        } else {
+            btn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            collapsedBtn.style.display = 'none';
+            localStorage.setItem('sidebarCollapsed', 'false');
+        }
+    }
+
+    function cargarEstadoSidebar() {
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.getElementById('sidebar').classList.add('collapsed');
+            document.getElementById('mainContent').classList.add('expanded');
+            document.getElementById('toggleSidebar').innerHTML = '<i class="fas fa-chevron-right"></i>';
+            document.getElementById('toggleSidebarCollapsed').style.display = 'block';
+        }
+    }
+
+    function markActiveNav() {
+        const current = window.location.pathname;
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && (current === href || current.startsWith(href + '/'))) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    // ============================================================
+    //  CARGAR FILTROS
+    // ============================================================
+    async function cargarFiltros() {
+        try {
+            const data = await API.getFiltros();
+            
+            const clienteSelect = document.getElementById('filterUsuario');
+            if (data.clientes && data.clientes.length > 0) {
+                clienteSelect.innerHTML = '<option value="">Todos los clientes</option>' +
+                    data.clientes.map(c => {
+                        const valor = c.tipo === 'cliente_final' ? `final|${c.nombre}|${c.telefono || ''}` : c.id;
+                        return `<option value="${valor}">${c.nombre}</option>`;
+                    }).join('');
+            }
+            
+            const productoSelect = document.getElementById('filterProducto');
+            if (data.productos && data.productos.length > 0) {
+                productoSelect.innerHTML = '<option value="">Todos los productos</option>' +
+                    data.productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+            }
+        } catch (error) {
+            console.error('Error cargando filtros:', error);
+        }
+    }
+
+    // ============================================================
+    //  INICIALIZACIÓN
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const hoy = new Date();
+        const selectMes = document.getElementById('selectMes');
+        const selectAnio = document.getElementById('selectAnio');
+        
+        if (selectMes) {
+            const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            selectMes.innerHTML = '<option value="">Seleccionar mes</option>' +
+                meses.map((m, i) => `<option value="${i+1}" ${i+1 === hoy.getMonth()+1 ? 'selected' : ''}>${m}</option>`).join('');
+        }
+        
+        if (selectAnio) {
+            const anio = hoy.getFullYear();
+            let opts = '';
+            for (let a = 2020; a <= anio + 1; a++) {
+                opts += `<option value="${a}" ${a === anio ? 'selected' : ''}>${a}</option>`;
+            }
+            selectAnio.innerHTML = '<option value="">Seleccionar año</option>' + opts;
+        }
+        
+        document.getElementById('fechaInicio').value = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().split('T')[0];
+        document.getElementById('fechaFin').value = hoy.toISOString().split('T')[0];
+        
+        // Eventos de período
+        document.querySelectorAll('.periodo-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.periodo-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const periodo = this.dataset.periodo;
+                AppState.periodoActual = periodo;
+                AppState.currentPage = 1;
+                AppState.cache.clear();
+                
+                // Resetear filtros visuales
+                document.getElementById('filterTipoPago').value = '';
+                document.getElementById('filterUsuario').value = '';
+                document.getElementById('filterProducto').value = '';
+                document.getElementById('fechaInicio').value = '';
+                document.getElementById('fechaFin').value = '';
+                document.getElementById('horaInicio').value = '';
+                document.getElementById('horaFin').value = '';
+                
+                const mes = document.getElementById('selectMes');
+                const anio = document.getElementById('selectAnio');
+                if (mes) mes.style.display = periodo === 'mes' ? 'inline-block' : 'none';
+                if (anio) anio.style.display = periodo === 'anio' ? 'inline-block' : 'none';
+                
+                const dateRange = document.getElementById('dateRange');
+                dateRange.style.display = periodo === 'personalizado' ? 'flex' : 'none';
+                
+                if (periodo !== 'personalizado') {
+                    cargarDatos();
+                }
+            });
+        });
+        
+        // Eventos de filtros
+        const filtrosDebounced = debounce(() => {
+            const tipoPago = document.getElementById('filterTipoPago').value;
+            const usuario = document.getElementById('filterUsuario').value;
+            const producto = document.getElementById('filterProducto').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFin = document.getElementById('horaFin').value;
+            
+            // Si hay algún filtro aplicado, ejecutar búsqueda
+            if (tipoPago || usuario || producto || fechaInicio || fechaFin || horaInicio || horaFin) {
+                aplicarFiltros();
+            } else {
+                // Si no hay filtros, recargar el período actual
+                cargarDatos();
+            }
+        }, CONFIG.debounceDelay);
+        
+        document.getElementById('filterTipoPago').addEventListener('change', filtrosDebounced);
+        document.getElementById('filterUsuario').addEventListener('change', filtrosDebounced);
+        document.getElementById('filterProducto').addEventListener('change', filtrosDebounced);
+        document.getElementById('horaInicio').addEventListener('change', filtrosDebounced);
+        document.getElementById('horaFin').addEventListener('change', filtrosDebounced);
+        document.getElementById('selectMes').addEventListener('change', function() {
+            if (AppState.periodoActual === 'mes') cargarDatos();
+        });
+        document.getElementById('selectAnio').addEventListener('change', function() {
+            if (AppState.periodoActual === 'anio' || AppState.periodoActual === 'mes') cargarDatos();
+        });
+        document.getElementById('aplicarFechas').addEventListener('click', filtrosDebounced);
+        
+        // Botones
+        document.getElementById('limpiarFiltros').addEventListener('click', limpiarFiltros);
+        document.getElementById('btnRefrescar').addEventListener('click', function() {
+            AppState.cache.clear();
+            cargarDatos();
+            mostrarExito('Datos actualizados');
+        });
+        document.getElementById('btnExportarExcel').addEventListener('click', exportarExcel);
+        document.getElementById('btnExportarResumen').addEventListener('click', exportarResumen);
+        document.getElementById('btnSeleccionMultiple').addEventListener('click', toggleModoSeleccionMultiple);
+        document.getElementById('btnDeseleccionarTodo').addEventListener('click', function() {
+            AppState.ventasSeleccionadas.clear();
+            renderizarTabla(AppState.ventasActuales);
+            actualizarBarraSeleccion();
+        });
+        document.getElementById('btnEliminarSeleccionadas').addEventListener('click', eliminarSeleccionadas);
+        document.getElementById('cerrarModal').addEventListener('click', cerrarModal);
+        document.getElementById('modalDetalle').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+        
+        // Cargar datos iniciales
+        cargarEstadoSidebar();
+        markActiveNav();
+        cargarFiltros();
+        cargarDatos();
+    });
+    </script>
+</body>
+</html>

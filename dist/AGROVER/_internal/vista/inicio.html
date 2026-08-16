@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrovet Yacuanquer - Sistema POS</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+        }
+        
+        .welcome-section h1 {
+            color: var(--teal);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .welcome-section p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .status-info {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+        
+        .status-dot.online {
+            background: #27ae60;
+        }
+        
+        .status-dot.offline {
+            background: #e74c3c;
+        }
+        
+        /* ===== TARJETAS DE RESÚMEN ===== */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border-top: 4px solid;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-1 { border-color: var(--teal); }
+        .card-2 { border-color: var(--terracota); }
+        .card-3 { border-color: var(--turquesa); }
+        .card-4 { border-color: var(--mostaza); }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .icon-1 { background: var(--teal); }
+        .icon-2 { background: var(--terracota); }
+        .icon-3 { background: var(--turquesa); }
+        .icon-4 { background: var(--mostaza); }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gris-oscuro);
+            margin: 10px 0;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+            color: #27ae60;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* ===== BOTONES DE ACCIÓN RÁPIDA ===== */
+        .quick-actions {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: var(--teal);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--terracota);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: 2px solid var(--gris-claro);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--gris-oscuro);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--teal);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(31, 138, 134, 0.1);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+        
+        .action-1 { background: var(--teal); }
+        .action-2 { background: var(--terracota); }
+        .action-3 { background: var(--turquesa); }
+        .action-4 { background: var(--verde-oliva); }
+        .action-5 { background: var(--rojo-rosado); }
+        .action-6 { background: var(--mostaza); }
+        
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .action-desc {
+            font-size: 12px;
+            color: var(--gris-medio);
+            line-height: 1.4;
+        }
+        
+        /* ===== SECCIÓN DE ACTIVIDAD RECIENTE ===== */
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .activity-list {
+            margin-top: 20px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .activity-content h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .activity-content p {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        .activity-time {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+            text-align: center;
+            color: var(--gris-medio);
+            font-size: 12px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .nav-icon {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .status-info {
+                justify-content: center;
+            }
+        }
+    </style>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item active">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="welcome-section">
+                <h1>¡Bienvenido a Agrovet Yacuanquer!</h1>
+                <p>Sistema de Punto de Venta - Gestión completa de tu tienda agropecuaria</p>
+            </div>
+            <div class="status-info">
+                <div class="status-item">
+                    <div class="status-dot online"></div>
+                    <span>MySQL Conectado</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-database"></i>
+                    <span>Base: agrovet</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-user"></i>
+                    <span>Usuario: Administrador</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- TARJETAS DE ESTADÍSTICAS -->
+        <div class="stats-container">
+            <div class="stat-card card-1">
+                <div class="stat-header">
+                    <h3 class="stat-title">Productos en Inventario</h3>
+                    <div class="stat-icon icon-1">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="total-productos">0</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Actualizado hoy</span>
+                </div>
+            </div>
+            
+            <div class="stat-card card-2">
+                <div class="stat-header">
+                    <h3 class="stat-title">Ventas Hoy</h3>
+                    <div class="stat-icon icon-2">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="ventas-hoy">0</div>
+                <div class="stat-change">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Hoy</span>
+                </div>
+            </div>
+            
+            <div class="stat-card card-3">
+                <div class="stat-header">
+                    <h3 class="stat-title">Clientes Registrados</h3>
+                    <div class="stat-icon icon-3">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="total-clientes">0</div>
+                <div class="stat-change">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Activos</span>
+                </div>
+            </div>
+            
+            <div class="stat-card card-4">
+                <div class="stat-header">
+                    <h3 class="stat-title">Stock Bajo</h3>
+                    <div class="stat-icon icon-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="stock-bajo">0</div>
+                <div class="stat-change">
+                    <i class="fas fa-bell"></i>
+                    <span>Necesita atención</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BOTONES DE ACCIÓN RÁPIDA -->
+        <section class="quick-actions">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Acciones Rápidas
+            </h2>
+            
+            <div class="actions-grid">
+                <a href="/venta" class="action-btn">
+                    <div class="action-icon action-1">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3 class="action-title">Nueva Venta</h3>
+                    <p class="action-desc">Registrar una nueva venta rápida</p>
+                </a>
+                
+                <a href="/productos" class="action-btn">
+                    <div class="action-icon action-2">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3 class="action-title">Agregar Producto</h3>
+                    <p class="action-desc">Añadir nuevo producto al inventario</p>
+                </a>
+                
+                <a href="/usuarios" class="action-btn">
+                    <div class="action-icon action-3">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3 class="action-title">Nuevo Cliente</h3>
+                    <p class="action-desc">Registrar nuevo cliente en el sistema</p>
+                </a>
+                
+                <a href="/reporte_caja" class="action-btn">
+                    <div class="action-icon action-4">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3 class="action-title">Reporte Caja</h3>
+                    <p class="action-desc">Ver reporte de caja del día</p>
+                </a>
+                
+                <a href="/historial_venta" class="action-btn">
+                    <div class="action-icon action-5">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="action-title">Historial Ventas</h3>
+                    <p class="action-desc">Consultar ventas anteriores</p>
+                </a>
+                
+                <a href="/productos" class="action-btn">
+                    <div class="action-icon action-6">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h3 class="action-title">Inventariado</h3>
+                    <p class="action-desc">Consultar el inventariado</p>
+                </a>
+            </div>
+        </section>
+        
+        <!-- ACTIVIDAD RECIENTE -->
+        <section class="recent-activity">
+            <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Actividad Reciente
+            </h2>
+            
+            <div class="activity-list" id="activity-list">
+                <!-- Actividades se cargarán aquí -->
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: var(--teal);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>Sistema iniciado correctamente</h4>
+                        <p>Agrovet POS está listo para usar</p>
+                    </div>
+                    <div class="activity-time">Ahora</div>
+                </div>
+                
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: var(--turquesa);">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>MySQL conectado</h4>
+                        <p>Base de datos: agrovet</p>
+                    </div>
+                    <div class="activity-time">Hace 1 min</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>© 2024 Agrovet Yacuanquer - Sistema POS | Tel: 3217470975</p>
+            <div class="footer-links">
+                <a href="/configuracion">Configuración</a>
+                <a href="#">Ayuda</a>
+                <a href="#">Acerca de</a>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Actualizar estadísticas (simuladas por ahora)
+        function actualizarEstadisticas() {
+            // Estos valores vendrán de la base de datos después
+            document.getElementById('total-productos').textContent = '125';
+            document.getElementById('ventas-hoy').textContent = '15';
+            document.getElementById('total-clientes').textContent = '42';
+            document.getElementById('stock-bajo').textContent = '8';
+        }
+        
+        // Actualizar hora en tiempo real
+        function actualizarHora() {
+            const ahora = new Date();
+            const opciones = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            
+            // Actualizar elementos con hora
+            const elementosHora = document.querySelectorAll('.activity-time');
+            if (elementosHora.length > 0) {
+                elementosHora[0].textContent = ahora.toLocaleDateString('es-ES', opciones).split(',')[1];
+            }
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            actualizarEstadisticas();
+            actualizarHora();
+            setInterval(actualizarHora, 1000);
+            
+            // Simular carga de actividades
+            setTimeout(() => {
+                const activityList = document.getElementById('activity-list');
+                const nuevasActividades = [
+                    {
+                        icon: 'fa-box',
+                        color: 'var(--mostaza)',
+                        title: 'Producto agregado',
+                        desc: 'Concentrado Bovino 20%',
+                        time: 'Hace 5 min'
+                    },
+                    {
+                        icon: 'fa-user-plus',
+                        color: 'var(--verde-oliva)',
+                        title: 'Cliente registrado',
+                        desc: 'Hacienda Santa María',
+                        time: 'Hace 10 min'
+                    },
+                    {
+                        icon: 'fa-cash-register',
+                        color: 'var(--rojo-rosado)',
+                        title: 'Venta realizada',
+                        desc: 'Ticket #0015 - $55,000',
+                        time: 'Hace 15 min'
+                    }
+                ];
+                
+                nuevasActividades.forEach(act => {
+                    const div = document.createElement('div');
+                    div.className = 'activity-item';
+                    div.innerHTML = `
+                        <div class="activity-icon" style="background: ${act.color};">
+                            <i class="fas ${act.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>${act.title}</h4>
+                            <p>${act.desc}</p>
+                        </div>
+                        <div class="activity-time">${act.time}</div>
+                    `;
+                    activityList.appendChild(div);
+                });
+            }, 2000);
+        });
+        
+        // Navegación activa
+        const currentPath = window.location.pathname;
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

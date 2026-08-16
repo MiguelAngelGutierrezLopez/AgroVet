@@ -1,0 +1,3366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Venta - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+            --azul-mix: #3498db;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: var(--teal);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            left: 0;
+        }
+        
+        .sidebar.collapsed {
+            width: 0;
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar.collapsed .slogan {
+            opacity: 0;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.05);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 3px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .nav-text {
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+        }
+        
+        /* BOTÓN PARA OCULTAR/MOSTRAR SIDEBAR */
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 50%;
+            right: -15px;
+            background: var(--mostaza);
+            color: var(--gris-oscuro);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            background: var(--terracota);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .toggle-sidebar-btn.collapsed {
+            right: -40px;
+            background: var(--teal);
+            color: white;
+        }
+        
+        /* BOTÓN FLOTANTE CUANDO EL SIDEBAR ESTÁ OCULTO */
+        .toggle-sidebar-collapsed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--teal);
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-sidebar-collapsed:hover {
+            background: var(--mostaza);
+            color: var(--gris-oscuro);
+            transform: scale(1.1);
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        /* ===== SELECTOR DE TIPO DE VENTA ===== */
+        .tipo-venta-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin: 25px 25px 0 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--azul-mix);
+        }
+        
+        .selector-left h2 {
+            color: var(--teal);
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        
+        .selector-left p {
+            color: var(--gris-medio);
+            font-size: 13px;
+        }
+        
+        .tipo-venta-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tipo-venta-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tipo-venta-btn:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+        }
+        
+        .tipo-venta-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .tipo-venta-btn.mixta.active {
+            background: var(--azul-mix);
+            border-color: var(--azul-mix);
+        }
+        
+        .tipo-venta-icon {
+            font-size: 16px;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin: 15px 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--terracota);
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 13px;
+        }
+        
+        .ticket-info {
+            background: var(--celeste-fondo);
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .ticket-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .ticket-label {
+            font-size: 11px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== LAYOUT DE DOS COLUMNAS ===== */
+        .venta-container {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 25px;
+            padding: 0 25px 25px;
+            flex: 1;
+        }
+        
+        /* ===== COLUMNA IZQUIERDA: PRODUCTOS ===== */
+        .productos-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--terracota);
+        }
+        
+        /* BUSCADOR DE PRODUCTOS */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-medio);
+            font-size: 16px;
+        }
+        
+        /* LISTA DE PRODUCTOS */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        
+        .producto-card {
+            background: var(--blanco-hueso);
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .producto-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .producto-nombre {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+        }
+        
+        .producto-precio {
+            color: var(--teal);
+            font-weight: bold;
+            font-size: 16px;
+            margin: 8px 0;
+        }
+        
+        .producto-stock {
+            font-size: 11px;
+            color: var(--gris-medio);
+            background: var(--gris-claro);
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+        
+        .stock-bajo {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .stock-medio {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--advertencia);
+        }
+        
+        .stock-alto {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        /* LOADER PARA PRODUCTOS */
+        .loader {
+            text-align: center;
+            padding: 30px;
+            color: var(--gris-medio);
+        }
+        
+        .loader i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--teal);
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--error);
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        /* ===== COLUMNA DERECHA: VENTA NORMAL ===== */
+        .venta-normal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .venta-mixta-container {
+            display: none;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .resumen-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+        
+        /* INFORMACIÓN CLIENTE */
+        .cliente-section {
+            margin-bottom: 20px;
+        }
+        
+        .cliente-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn:hover {
+            border-color: var(--teal);
+        }
+        
+        .toggle-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .cliente-busqueda {
+            margin-top: 12px;
+        }
+        
+        .cliente-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .resultados-clientes {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .cliente-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--gris-claro);
+            font-size: 13px;
+        }
+        
+        .cliente-item:hover {
+            background: var(--celeste-fondo);
+        }
+        
+        .cliente-nombre {
+            font-weight: 600;
+        }
+        
+        .cliente-cedula {
+            font-size: 11px;
+            color: var(--gris-medio);
+        }
+        
+        .cliente-info {
+            background: var(--celeste-fondo);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        /* INFORMACIÓN DEL CAJERO */
+        .cajero-section {
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: var(--celeste-fondo);
+            border-radius: 8px;
+        }
+        
+        .cajero-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 13px;
+            background-color: white;
+            margin-top: 5px;
+        }
+        
+        .cajero-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .cajero-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .cajero-btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+        
+        .cajero-btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .cajero-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* LISTA DE PRODUCTOS AGREGADOS */
+        .productos-agregados {
+            margin: 20px 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .productos-agregados table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .productos-agregados th {
+            background: var(--gris-claro);
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .productos-agregados td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .cantidad-input {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .precio-input {
+            width: 90px;
+            padding: 5px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 4px;
+            text-align: right;
+            font-size: 13px;
+        }
+        
+        .eliminar-producto {
+            color: var(--rojo-rosado);
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            transition: color 0.2s ease;
+        }
+        
+        .eliminar-producto:hover {
+            color: #c0392b;
+        }
+        
+        /* RESUMEN DE PAGO */
+        .resumen-pago {
+            background: var(--blanco-hueso);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .resumen-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--gris-claro);
+            font-size: 14px;
+        }
+        
+        .resumen-label {
+            color: var(--gris-medio);
+        }
+        
+        .resumen-valor {
+            font-weight: 600;
+        }
+        
+        .resumen-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--teal);
+        }
+        
+        .descuento-input, .anticipo-input, .dinero-entregado-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 5px;
+            text-align: right;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        
+        /* ===== SECCIÓN VENTA MIXTA ===== */
+        .mixta-seccion {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--azul-mix);
+        }
+        
+        .mixta-seccion-title {
+            font-size: 16px;
+            color: var(--azul-mix);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mixta-monto-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .mixta-monto-label {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            min-width: 120px;
+        }
+        
+        .mixta-monto-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .mixta-monto-input:focus {
+            outline: none;
+            border-color: var(--azul-mix);
+        }
+        
+        .mixta-monto-restante {
+            background: var(--celeste-fondo);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--teal);
+            font-weight: 600;
+        }
+        
+        .mixta-banco-opciones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .mixta-banco-btn {
+            padding: 10px 5px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .mixta-banco-btn:hover {
+            border-color: var(--azul-mix);
+        }
+        
+        .mixta-banco-btn.active {
+            background: var(--azul-mix);
+            color: white;
+            border-color: var(--azul-mix);
+        }
+        
+        .mixta-dinero-entregado {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .mixta-dinero-label {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            min-width: 120px;
+        }
+        
+        .mixta-dinero-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: right;
+        }
+        
+        .mixta-cambio {
+            background: var(--celeste-fondo);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        
+        .mixta-cambio-label {
+            color: var(--gris-medio);
+        }
+        
+        .mixta-cambio-valor {
+            font-weight: 600;
+            color: var(--teal);
+        }
+        
+        .mixta-validacion {
+            background: rgba(39, 174, 96, 0.1);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--exito);
+            display: none;
+        }
+        
+        .mixta-validacion.error {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .mixta-validacion.info {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--azul-mix);
+        }
+        
+        /* MÉTODOS DE PAGO */
+        .metodos-pago {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .metodos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .metodo-btn {
+            padding: 9px 4px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .metodo-btn:hover {
+            border-color: var(--teal);
+        }
+        
+        .metodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .submetodo-banco {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        
+        .submetodo-btn {
+            padding: 7px 2px;
+            font-size: 11px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .submetodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .credito-dias {
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .dias-input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        
+        /* BOTONES DE ACCIÓN */
+        .acciones-venta {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1a7572;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(31, 138, 134, 0.2);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        .btn-mixta {
+            background: var(--azul-mix);
+            color: white;
+        }
+        
+        .btn-mixta:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+        
+        .notification.info {
+            background: var(--turquesa);
+            color: white;
+        }
+        
+        .notification.warning {
+            background: var(--advertencia);
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .venta-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar:not(.collapsed) {
+                width: 70px;
+            }
+            
+            .sidebar:not(.collapsed) .nav-text,
+            .sidebar:not(.collapsed) .slogan {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .toggle-sidebar-btn {
+                right: -10px;
+            }
+            
+            .resumen-section {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .productos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .metodos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .acciones-venta {
+                flex-direction: column;
+            }
+            
+            .top-header, .tipo-venta-selector {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                margin: 15px;
+            }
+            
+            .venta-container {
+                padding: 0 15px 15px;
+                gap: 15px;
+            }
+            
+            .tipo-venta-buttons {
+                width: 100%;
+            }
+            
+            .tipo-venta-btn {
+                flex: 1;
+            }
+            
+            .mixta-monto-container, .mixta-dinero-entregado {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .mixta-monto-label, .mixta-dinero-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .productos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .toggle-sidebar-collapsed {
+                top: 10px;
+                left: 10px;
+                width: 35px;
+                height: 35px;
+            }
+            
+            .mixta-banco-opciones {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- BOTÓN FLOTANTE PARA SIDEBAR OCULTO -->
+    <button class="toggle-sidebar-collapsed" id="toggleSidebarCollapsed" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-sidebar-btn" id="toggleSidebar" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item active">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content" id="mainContent">
+        <!-- SELECTOR DE TIPO DE VENTA -->
+        <div class="tipo-venta-selector">
+            <div class="selector-left">
+                <h2>Nueva Venta</h2>
+                <p>Selecciona el tipo de venta a realizar</p>
+            </div>
+            <div class="tipo-venta-buttons">
+                <button class="tipo-venta-btn active" id="btnVentaNormal">
+                    <i class="fas fa-receipt tipo-venta-icon"></i>
+                    Venta Normal
+                </button>
+                <button class="tipo-venta-btn mixta" id="btnVentaMixta">
+                    <i class="fas fa-random tipo-venta-icon"></i>
+                    Venta Mixta
+                </button>
+            </div>
+        </div>
+        
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1 id="tituloVenta">Nueva Venta Normal</h1>
+                <p id="subtituloVenta">Registra una nueva venta en el sistema</p>
+            </div>
+            <div class="ticket-info">
+                <div class="ticket-number">Ticket #<span id="ticketNumero">0015</span></div>
+                <div class="ticket-label">Número de venta</div>
+            </div>
+        </header>
+        
+        <!-- CONTENIDO DE VENTA -->
+        <div class="venta-container">
+            <!-- COLUMNA IZQUIERDA: PRODUCTOS -->
+            <div class="productos-section">
+                <h2 class="section-title">
+                    <i class="fas fa-search"></i>
+                    Buscar Productos
+                </h2>
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" 
+                           class="search-input" 
+                           placeholder="Buscar producto por nombre..."
+                           id="searchProducto">
+                </div>
+                
+                <h3 class="section-title" style="font-size: 16px;">
+                    <i class="fas fa-box"></i>
+                    Productos Disponibles
+                </h3>
+                
+                <div class="productos-grid" id="productosGrid">
+                    <div class="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando productos...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUMNA DERECHA: VENTA NORMAL -->
+            <div class="venta-normal-container" id="ventaNormalContainer">
+                <!-- SECCIÓN CLIENTE -->
+                <div class="resumen-section">
+                    <div class="cliente-section">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-user"></i>
+                            Cliente
+                        </h3>
+                        
+                        <div class="cliente-toggle">
+                            <button class="toggle-btn active" id="btnClienteFinal" data-tipo="final">
+                                Cliente Final
+                            </button>
+                            <button class="toggle-btn" id="btnClienteEspecifico" data-tipo="especifico">
+                                Cliente Específico
+                            </button>
+                        </div>
+                        
+                        <div class="cliente-busqueda" id="clienteBusqueda" style="display: none;">
+                            <div class="search-container" style="position: relative;">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" 
+                                       class="cliente-input" 
+                                       placeholder="Buscar cliente por nombre o cédula..."
+                                       id="searchCliente"
+                                       autocomplete="off">
+                                <div class="resultados-clientes" id="resultadosClientes"></div>
+                            </div>
+                            
+                            <div class="cliente-info" id="clienteInfo" style="display: none;">
+                                <strong>Cliente seleccionado:</strong><br>
+                                <span id="clienteNombre"></span><br>
+                                <span id="clienteCedula"></span><br>
+                                <span id="clienteTelefono"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- INFORMACIÓN DEL CAJERO -->
+                    <div class="cajero-section">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-user-tie"></i>
+                            Información del Cajero
+                        </h3>
+                        
+                        <input type="text" 
+                               class="cajero-input" 
+                               id="inputCajero" 
+                               placeholder="Nombre del cajero"
+                               value="SISTEMA">
+                        
+                        <div class="cajero-buttons">
+                            <button class="cajero-btn cajero-btn-primary" id="btnCambiarCajero">
+                                <i class="fas fa-edit"></i> Cambiar Cajero
+                            </button>
+                            <button class="cajero-btn cajero-btn-secondary" id="btnResetCajero">
+                                <i class="fas fa-redo"></i> Resetear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- PRODUCTOS AGREGADOS -->
+                    <div class="productos-agregados">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-shopping-cart"></i>
+                            Productos en la Venta
+                        </h3>
+                        
+                        <table id="tablaProductos">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cant.</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="productosAgregados">
+                                <!-- Productos agregados aparecerán aquí -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="sinProductos" style="text-align: center; padding: 20px; color: var(--gris-medio);">
+                            <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>No hay productos agregados</p>
+                        </div>
+                    </div>
+                    
+                    <!-- RESUMEN DE PAGO -->
+                    <div class="resumen-pago">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 15px;">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Resumen de Pago
+                        </h3>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Sub Total</span>
+                            <span class="resumen-valor" id="subtotal">$ 0.00</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <div>
+                                <span class="resumen-label">Descuento</span>
+                                <input type="text" 
+                                       class="descuento-input" 
+                                       id="descuentoInput" 
+                                       value="$ 0.00"
+                                       placeholder="$ 0.00">
+                            </div>
+                            <span class="resumen-valor" id="descuentoValor">$ 0.00</span>
+                        </div>
+                        
+                        <!-- CAMPO PARA ANTICIPO (SOLO CRÉDITO) -->
+                        <div class="resumen-item" id="anticipoContainer" style="display: none;">
+                            <div>
+                                <span class="resumen-label">Anticipo</span>
+                                <input type="text" 
+                                       class="anticipo-input" 
+                                       id="anticipoInput" 
+                                       value="$ 0.00"
+                                       placeholder="$ 0.00">
+                            </div>
+                            <span class="resumen-valor" id="anticipoValor">$ 0.00</span>
+                        </div>
+                        
+                        <!-- CAMPO PARA DINERO ENTREGADO (SOLO CONTADO) -->
+                        <div class="resumen-item" id="dineroEntregadoContainer" style="display: none;">
+                            <div>
+                                <span class="resumen-label">Dinero Entregado</span>
+                                <input type="text" 
+                                       class="dinero-entregado-input" 
+                                       id="dineroEntregadoInput" 
+                                       value="$ 0.00"
+                                       placeholder="$ 0.00">
+                            </div>
+                            <span class="resumen-valor" id="dineroEntregadoValor">$ 0.00</span>
+                        </div>
+                        
+                        <!-- CAMPO PARA CAMBIO (SOLO CONTADO) -->
+                        <div class="resumen-item" id="cambioContainer" style="display: none;">
+                            <span class="resumen-label">Cambio</span>
+                            <span class="resumen-valor" id="cambioValor">$ 0.00</span>
+                        </div>
+                        
+                        <div class="resumen-item resumen-total">
+                            <span>TOTAL</span>
+                            <span id="totalVenta">$ 0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- MÉTODOS DE PAGO -->
+                    <div class="metodos-pago">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-credit-card"></i>
+                            Método de Pago
+                        </h3>
+                        
+                        <div class="metodos-grid">
+                            <button class="metodo-btn" data-metodo="contado">
+                                Contado
+                            </button>
+                            <button class="metodo-btn" data-metodo="credito">
+                                Crédito
+                            </button>
+                            <button class="metodo-btn" data-metodo="banco">
+                                Banco
+                            </button>
+                        </div>
+                        
+                        <!-- Sub-métodos para Banco -->
+                        <div class="submetodo-banco" id="submetodoBanco">
+                            <button class="submetodo-btn" data-submetodo="nequi">
+                                Nequi
+                            </button>
+                            <button class="submetodo-btn" data-submetodo="transaccion">
+                                Transacción
+                            </button>
+                            <button class="submetodo-btn" data-submetodo="tarjeta">
+                                Tarjeta
+                            </button>
+                        </div>
+                        
+                        <!-- Días de crédito -->
+                        <div class="credito-dias" id="creditoDias">
+                            <input type="number" 
+                                   class="dias-input" 
+                                   id="diasCreditoInput"
+                                   placeholder="Número de días de crédito"
+                                   min="1"
+                                   value="30">
+                        </div>
+                    </div>
+                    
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="acciones-venta">
+                        <button class="btn btn-secondary" id="btnCancelarNormal">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button class="btn btn-primary" id="btnFinalizarNormal">
+                            <i class="fas fa-check"></i> Finalizar Venta
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUMNA DERECHA: VENTA MIXTA -->
+            <div class="venta-mixta-container" id="ventaMixtaContainer">
+                <!-- CLIENTE Y CAJERO (COMPARTIDOS) -->
+                <div class="resumen-section">
+                    <div class="cliente-section">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-user"></i>
+                            Cliente
+                        </h3>
+                        
+                        <div class="cliente-toggle">
+                            <button class="toggle-btn active" id="btnClienteFinalMixta" data-tipo="final">
+                                Cliente Final
+                            </button>
+                            <button class="toggle-btn" id="btnClienteEspecificoMixta" data-tipo="especifico">
+                                Cliente Específico
+                            </button>
+                        </div>
+                        
+                        <div class="cliente-busqueda" id="clienteBusquedaMixta" style="display: none;">
+                            <div class="search-container" style="position: relative;">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" 
+                                       class="cliente-input" 
+                                       placeholder="Buscar cliente por nombre o cédula..."
+                                       id="searchClienteMixta"
+                                       autocomplete="off">
+                                <div class="resultados-clientes" id="resultadosClientesMixta"></div>
+                            </div>
+                            
+                            <div class="cliente-info" id="clienteInfoMixta" style="display: none;">
+                                <strong>Cliente seleccionado:</strong><br>
+                                <span id="clienteNombreMixta"></span><br>
+                                <span id="clienteCedulaMixta"></span><br>
+                                <span id="clienteTelefonoMixta"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- INFORMACIÓN DEL CAJERO -->
+                    <div class="cajero-section">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-user-tie"></i>
+                            Información del Cajero
+                        </h3>
+                        
+                        <input type="text" 
+                               class="cajero-input" 
+                               id="inputCajeroMixta" 
+                               placeholder="Nombre del cajero"
+                               value="SISTEMA">
+                        
+                        <div class="cajero-buttons">
+                            <button class="cajero-btn cajero-btn-primary" id="btnCambiarCajeroMixta">
+                                <i class="fas fa-edit"></i> Cambiar Cajero
+                            </button>
+                            <button class="cajero-btn cajero-btn-secondary" id="btnResetCajeroMixta">
+                                <i class="fas fa-redo"></i> Resetear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- PRODUCTOS AGREGADOS -->
+                    <div class="productos-agregados">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                            <i class="fas fa-shopping-cart"></i>
+                            Productos en la Venta
+                        </h3>
+                        
+                        <table id="tablaProductosMixta">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cant.</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="productosAgregadosMixta">
+                                <!-- Productos agregados aparecerán aquí -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="sinProductosMixta" style="text-align: center; padding: 20px; color: var(--gris-medio);">
+                            <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>No hay productos agregados</p>
+                        </div>
+                    </div>
+                    
+                    <!-- RESUMEN DE PAGO -->
+                    <div class="resumen-pago">
+                        <h3 class="section-title" style="font-size: 16px; margin-bottom: 15px;">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Resumen de Pago Mixto
+                        </h3>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Sub Total</span>
+                            <span class="resumen-valor" id="subtotalMixta">$ 0.00</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <div>
+                                <span class="resumen-label">Descuento</span>
+                                <input type="text" 
+                                       class="descuento-input" 
+                                       id="descuentoInputMixta" 
+                                       value="$ 0.00"
+                                       placeholder="$ 0.00">
+                            </div>
+                            <span class="resumen-valor" id="descuentoValorMixta">$ 0.00</span>
+                        </div>
+                        
+                        <div class="resumen-item resumen-total">
+                            <span>TOTAL</span>
+                            <span id="totalVentaMixta">$ 0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SECCIÓN DE PAGO CONTADO -->
+                <div class="mixta-seccion">
+                    <h3 class="mixta-seccion-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Pago en Contado
+                    </h3>
+                    
+                    <div class="mixta-monto-container">
+                        <span class="mixta-monto-label">Monto en Contado:</span>
+                        <input type="text" 
+                               class="mixta-monto-input" 
+                               id="montoContadoInput"
+                               value="$ 0.00"
+                               placeholder="$ 0.00">
+                        <div class="mixta-monto-restante" id="restanteContado">
+                            Restante: $ 0.00
+                        </div>
+                    </div>
+                    
+                    <div class="mixta-dinero-entregado">
+                        <span class="mixta-dinero-label">Dinero Entregado:</span>
+                        <input type="text" 
+                               class="mixta-dinero-input" 
+                               id="dineroEntregadoContadoInput"
+                               value="$ 0.00"
+                               placeholder="$ 0.00">
+                    </div>
+                    
+                    <div class="mixta-cambio">
+                        <span class="mixta-cambio-label">Cambio:</span>
+                        <span class="mixta-cambio-valor" id="cambioContadoValor">$ 0.00</span>
+                    </div>
+                </div>
+                
+                <!-- SECCIÓN DE PAGO BANCO -->
+                <div class="mixta-seccion">
+                    <h3 class="mixta-seccion-title">
+                        <i class="fas fa-university"></i>
+                        Pago por Banco
+                    </h3>
+                    
+                    <div class="mixta-monto-container">
+                        <span class="mixta-monto-label">Monto por Banco:</span>
+                        <input type="text" 
+                               class="mixta-monto-input" 
+                               id="montoBancoInput"
+                               value="$ 0.00"
+                               placeholder="$ 0.00">
+                        <div class="mixta-monto-restante" id="restanteBanco">
+                            Restante: $ 0.00
+                        </div>
+                    </div>
+                    
+                    <div class="mixta-banco-opciones">
+                        <button class="mixta-banco-btn active" data-submetodo="nequi">
+                            Nequi
+                        </button>
+                        <button class="mixta-banco-btn" data-submetodo="transaccion">
+                            Transacción
+                        </button>
+                        <button class="mixta-banco-btn" data-submetodo="tarjeta">
+                            Tarjeta
+                        </button>
+                    </div>
+                    
+                    <div class="mixta-validacion" id="validacionMixta">
+                        Los montos coinciden con el total ✓
+                    </div>
+                </div>
+                
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="acciones-venta">
+                    <button class="btn btn-secondary" id="btnCancelarMixta">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn btn-mixta" id="btnFinalizarMixta">
+                        <i class="fas fa-random"></i> Finalizar Venta Mixta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // ===== VARIABLES GLOBALES =====
+    let productosVentaNormal = [];
+    let productosVentaMixta = [];
+    let productosDisponibles = [];
+    let clienteEspecifico = false;
+    let clienteSeleccionado = null;
+    let clienteEspecificoMixta = false;
+    let clienteSeleccionadoMixta = null;
+    let metodoPago = "contado";
+    let submetodoBanco = null;
+    let diasCredito = 30;
+    let descuento = 0;
+    let descuentoMixta = 0;
+    let anticipo = 0;
+    let dineroEntregado = 0;
+    let cambio = 0;
+    let sidebarCollapsed = false;
+    let cajeroActual = "SISTEMA";
+    let cajeroActualMixta = "SISTEMA";
+    let tipoVentaActual = "normal"; // 'normal' o 'mixta'
+    
+    // ===== PAGO MIXTA =====
+    let montoContado = 0;
+    let montoBanco = 0;
+    let dineroEntregadoContado = 0;
+    let cambioContado = 0;
+    let submetodoBancoMixta = "nequi";
+    let totalVentaMixta = 0;
+    
+    // ===== TOGGLE SIDEBAR =====
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const toggleBtnCollapsed = document.getElementById('toggleSidebarCollapsed');
+        
+        sidebarCollapsed = !sidebarCollapsed;
+        
+        if (sidebarCollapsed) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('expanded');
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            toggleBtnCollapsed.style.display = 'flex';
+            localStorage.setItem('sidebarCollapsed', 'true');
+        } else {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            toggleBtnCollapsed.style.display = 'none';
+            localStorage.setItem('sidebarCollapsed', 'false');
+        }
+    }
+    
+    // ===== CARGAR ESTADO DEL SIDEBAR AL INICIAR =====
+    function cargarEstadoSidebar() {
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.getElementById('sidebar').classList.add('collapsed');
+            document.getElementById('mainContent').classList.add('expanded');
+            document.getElementById('toggleSidebar').innerHTML = '<i class="fas fa-chevron-right"></i>';
+            document.getElementById('toggleSidebarCollapsed').style.display = 'flex';
+            sidebarCollapsed = true;
+        }
+    }
+    
+    // ===== FUNCIONES DE CÁLCULO =====
+    function formatCurrency(valor) {
+        return `$ ${parseFloat(valor).toLocaleString('es-CO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+    
+    function parseCurrency(str) {
+        return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+    
+    // ===== CALCULAR TOTALES VENTA NORMAL =====
+    function calcularTotales() {
+        let subtotal = 0;
+        
+        productosVentaNormal.forEach(producto => {
+            subtotal += producto.total;
+        });
+        
+        const total = subtotal - descuento;
+        
+        document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+        document.getElementById('descuentoValor').textContent = formatCurrency(descuento);
+        document.getElementById('totalVenta').textContent = formatCurrency(total);
+        
+        // Calcular cambio si es pago contado
+        if (metodoPago === 'contado') {
+            cambio = dineroEntregado - total;
+            if (cambio < 0) cambio = 0;
+            document.getElementById('cambioValor').textContent = formatCurrency(cambio);
+        }
+        
+        // Mostrar/ocultar mensaje de sin productos
+        const sinProductos = document.getElementById('sinProductos');
+        if (productosVentaNormal.length === 0) {
+            sinProductos.style.display = 'block';
+        } else {
+            sinProductos.style.display = 'none';
+        }
+        
+        return total;
+    }
+    
+    // ===== CALCULAR TOTALES VENTA MIXTA =====
+    function calcularTotalesMixta() {
+        let subtotal = 0;
+        
+        productosVentaMixta.forEach(producto => {
+            subtotal += producto.total;
+        });
+        
+        const total = subtotal - descuentoMixta;
+        totalVentaMixta = total;
+        
+        document.getElementById('subtotalMixta').textContent = formatCurrency(subtotal);
+        document.getElementById('descuentoValorMixta').textContent = formatCurrency(descuentoMixta);
+        document.getElementById('totalVentaMixta').textContent = formatCurrency(total);
+        
+        // Calcular montos restantes
+        const restanteContado = total - montoBanco;
+        const restanteBanco = total - montoContado;
+        
+        document.getElementById('restanteContado').textContent = `Restante: ${formatCurrency(restanteContado)}`;
+        document.getElementById('restanteBanco').textContent = `Restante: ${formatCurrency(restanteBanco)}`;
+        
+        // Calcular cambio para contado
+        cambioContado = dineroEntregadoContado - montoContado;
+        if (cambioContado < 0) cambioContado = 0;
+        document.getElementById('cambioContadoValor').textContent = formatCurrency(cambioContado);
+        
+        // Validar que montos coincidan con total
+        const sumaMontos = montoContado + montoBanco;
+        const validacion = document.getElementById('validacionMixta');
+        
+        if (Math.abs(sumaMontos - total) < 0.01) { // Tolerancia de 1 centavo
+            validacion.textContent = "Los montos coinciden con el total ✓";
+            validacion.className = "mixta-validacion";
+            validacion.style.display = 'block';
+        } else if (sumaMontos < total) {
+            const faltante = total - sumaMontos;
+            validacion.textContent = `Faltan ${formatCurrency(faltante)} para completar el total`;
+            validacion.className = "mixta-validacion info";
+            validacion.style.display = 'block';
+        } else {
+            const exceso = sumaMontos - total;
+            validacion.textContent = `Exceso de ${formatCurrency(exceso)} sobre el total`;
+            validacion.className = "mixta-validacion error";
+            validacion.style.display = 'block';
+        }
+        
+        // Mostrar/ocultar mensaje de sin productos
+        const sinProductos = document.getElementById('sinProductosMixta');
+        if (productosVentaMixta.length === 0) {
+            sinProductos.style.display = 'block';
+        } else {
+            sinProductos.style.display = 'none';
+        }
+        
+        return total;
+    }
+    
+    function getStockClass(cantidad) {
+        cantidad = parseInt(cantidad) || 0;
+        if (cantidad < 10) return 'stock-bajo';
+        if (cantidad < 20) return 'stock-medio';
+        return 'stock-alto';
+    }
+    
+    // ===== CARGAR PRODUCTOS DE LA API =====
+    async function cargarProductosDisponibles() {
+        try {
+            const response = await fetch('/api/ventas/productos/buscar?q=');
+            const data = await response.json();
+            
+            if (data.success) {
+                productosDisponibles = data.productos;
+                renderProductosDisponibles(productosDisponibles);
+            } else {
+                mostrarErrorProductos('Error al cargar productos');
+            }
+        } catch (error) {
+            console.error('Error cargando productos:', error);
+            mostrarErrorProductos('Error de conexión al cargar productos');
+        }
+    }
+    
+    function renderProductosDisponibles(productos) {
+        const grid = document.getElementById('productosGrid');
+        
+        if (!productos || productos.length === 0) {
+            grid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-box-open"></i>
+                    <p>No se encontraron productos</p>
+                    <button onclick="cargarProductosDisponibles()" style="margin-top: 10px; padding: 5px 10px; background: var(--teal); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-redo"></i> Ver todos los productos
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        productos.forEach(producto => {
+            const productoId = producto.id || producto.producto_id;
+            const precioVenta = producto.precio_venta || producto.precio || 0;
+            const nombre = producto.nombre || producto.producto_nombre || 'Sin nombre';
+            const descripcion = producto.descripcion || '';
+            const presentacion = producto.presentacion || 'Sin especificar';
+            const cantidad = producto.cantidad || 0;
+            
+            const stockClass = getStockClass(cantidad);
+            const stockText = cantidad > 0 ? `${cantidad} unidades` : 'Sin stock';
+            
+            html += `
+                <div class="producto-card" 
+                     data-id="${productoId}" 
+                     data-precio="${precioVenta}"
+                     data-nombre="${nombre.replace(/"/g, '&quot;')}"
+                     data-presentacion="${presentacion.replace(/"/g, '&quot;')}"
+                     ${cantidad <= 0 ? 'style="opacity: 0.6;"' : ''}>
+                    <div class="producto-nombre" title="${nombre}">
+                        ${nombre.length > 20 ? nombre.substring(0, 20) + '...' : nombre}
+                    </div>
+                    ${descripcion ? `<div style="font-size: 11px; color: var(--gris-medio); margin-bottom: 5px;">${descripcion.substring(0, 40)}${descripcion.length > 40 ? '...' : ''}</div>` : ''}
+                    <div class="producto-precio">${formatCurrency(precioVenta)}</div>
+                    <div class="producto-stock ${stockClass}">${stockText}</div>
+                    <div style="font-size: 11px; color: var(--gris-medio); margin-top: 3px;">
+                        ${presentacion}
+                    </div>
+                </div>
+            `;
+        });
+        
+        grid.innerHTML = html;
+        
+        // Agregar event listeners a los nuevos productos
+        agregarEventListenersProductosDisponibles();
+    }
+    
+    function agregarEventListenersProductosDisponibles() {
+        const productos = document.querySelectorAll('.producto-card');
+        
+        productos.forEach(producto => {
+            producto.addEventListener('click', async function() {
+                const id = parseInt(this.dataset.id);
+                const precio = parseFloat(this.dataset.precio);
+                const nombre = this.dataset.nombre;
+                const presentacion = this.dataset.presentacion;
+                
+                // Verificar si el producto tiene precio válido
+                if (precio <= 0) {
+                    showNotification('Este producto no tiene precio definido', 'error');
+                    return;
+                }
+                
+                // Verificar si el producto tiene la clase de stock bajo
+                const stockElement = this.querySelector('.producto-stock');
+                if (stockElement && stockElement.textContent.includes('Sin stock')) {
+                    showNotification('Producto sin stock disponible', 'error');
+                    return;
+                }
+                
+                // Verificar stock mediante API
+                try {
+                    const response = await fetch(`/api/producto/${id}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.producto) {
+                        const productoCompleto = data.producto;
+                        
+                        if (productoCompleto.cantidad <= 0) {
+                            showNotification('Producto sin stock disponible', 'error');
+                            return;
+                        }
+                        
+                        if (tipoVentaActual === 'normal') {
+                            agregarProductoVenta(id, nombre, precio, presentacion);
+                        } else {
+                            agregarProductoVentaMixta(id, nombre, precio, presentacion);
+                        }
+                        showNotification('Producto agregado a la venta', 'success');
+                    } else {
+                        // Si falla la API, agregar de todos modos
+                        if (tipoVentaActual === 'normal') {
+                            agregarProductoVenta(id, nombre, precio, presentacion);
+                        } else {
+                            agregarProductoVentaMixta(id, nombre, precio, presentacion);
+                        }
+                        showNotification('Producto agregado (verificar stock manualmente)', 'warning');
+                    }
+                } catch (error) {
+                    console.error('Error verificando producto:', error);
+                    // Si falla la API, agregar de todos modos
+                    if (tipoVentaActual === 'normal') {
+                        agregarProductoVenta(id, nombre, precio, presentacion);
+                    } else {
+                        agregarProductoVentaMixta(id, nombre, precio, presentacion);
+                    }
+                    showNotification('Producto agregado (verificar stock manualmente)', 'warning');
+                }
+            });
+        });
+    }
+    
+    function mostrarErrorProductos(mensaje) {
+        const grid = document.getElementById('productosGrid');
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${mensaje}</p>
+                <button onclick="cargarProductosDisponibles()" style="margin-top: 10px; padding: 5px 10px; background: var(--teal); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-redo"></i> Reintentar
+                </button>
+            </div>
+        `;
+    }
+    
+    // ===== MANEJO DE PRODUCTOS EN VENTA NORMAL =====
+    function agregarProductoVenta(id, nombre, precio, presentacion) {
+        const existe = productosVentaNormal.find(p => p.id === id);
+        
+        if (existe) {
+            existe.cantidad += 1;
+            existe.total = existe.cantidad * existe.precio;
+        } else {
+            const nuevoProducto = {
+                id,
+                nombre,
+                cantidad: 1,
+                precio,
+                total: precio,
+                presentacion
+            };
+            productosVentaNormal.push(nuevoProducto);
+        }
+        
+        actualizarTablaProductosVenta();
+        calcularTotales();
+    }
+    
+    function actualizarTablaProductosVenta() {
+        const tbody = document.getElementById('productosAgregados');
+        tbody.innerHTML = '';
+        
+        productosVentaNormal.forEach(producto => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="font-weight: 500;">${producto.nombre}</div>
+                    <small style="color: var(--gris-medio);">${producto.presentacion}</small>
+                </td>
+                <td>
+                    <input type="number" 
+                           class="cantidad-input" 
+                           value="${producto.cantidad}" 
+                           min="1"
+                           data-id="${producto.id}">
+                </td>
+                <td>
+                    <input type="text" 
+                           class="precio-input" 
+                           value="${formatCurrency(producto.precio)}"
+                           data-id="${producto.id}">
+                </td>
+                <td>${formatCurrency(producto.total)}</td>
+                <td class="eliminar-producto" data-id="${producto.id}" title="Eliminar producto">
+                    <i class="fas fa-trash"></i>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        agregarEventListenersProductosVenta();
+    }
+    
+    function agregarEventListenersProductosVenta() {
+        document.querySelectorAll('.cantidad-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const id = parseInt(this.dataset.id);
+                const cantidad = parseInt(this.value);
+                
+                const producto = productosVentaNormal.find(p => p.id === id);
+                if (producto && cantidad > 0) {
+                    producto.cantidad = cantidad;
+                    producto.total = cantidad * producto.precio;
+                    actualizarTablaProductosVenta();
+                    calcularTotales();
+                } else if (producto) {
+                    this.value = producto.cantidad;
+                    showNotification('La cantidad debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.precio-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const id = parseInt(this.dataset.id);
+                const nuevoPrecio = parseCurrency(this.value);
+                
+                const producto = productosVentaNormal.find(p => p.id === id);
+                if (producto && !isNaN(nuevoPrecio) && nuevoPrecio > 0) {
+                    producto.precio = nuevoPrecio;
+                    producto.total = producto.cantidad * nuevoPrecio;
+                    actualizarTablaProductosVenta();
+                    calcularTotales();
+                } else if (producto) {
+                    this.value = formatCurrency(producto.precio);
+                    showNotification('El precio debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.eliminar-producto').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                productosVentaNormal = productosVentaNormal.filter(p => p.id !== id);
+                actualizarTablaProductosVenta();
+                calcularTotales();
+                showNotification('Producto eliminado de la venta', 'info');
+            });
+        });
+    }
+    
+    // ===== MANEJO DE PRODUCTOS EN VENTA MIXTA =====
+    function agregarProductoVentaMixta(id, nombre, precio, presentacion) {
+        const existe = productosVentaMixta.find(p => p.id === id);
+        
+        if (existe) {
+            existe.cantidad += 1;
+            existe.total = existe.cantidad * existe.precio;
+        } else {
+            const nuevoProducto = {
+                id,
+                nombre,
+                cantidad: 1,
+                precio,
+                total: precio,
+                presentacion
+            };
+            productosVentaMixta.push(nuevoProducto);
+        }
+        
+        actualizarTablaProductosVentaMixta();
+        calcularTotalesMixta();
+    }
+    
+    function actualizarTablaProductosVentaMixta() {
+        const tbody = document.getElementById('productosAgregadosMixta');
+        tbody.innerHTML = '';
+        
+        productosVentaMixta.forEach(producto => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="font-weight: 500;">${producto.nombre}</div>
+                    <small style="color: var(--gris-medio);">${producto.presentacion}</small>
+                </td>
+                <td>
+                    <input type="number" 
+                           class="cantidad-input" 
+                           value="${producto.cantidad}" 
+                           min="1"
+                           data-id="${producto.id}">
+                </td>
+                <td>
+                    <input type="text" 
+                           class="precio-input" 
+                           value="${formatCurrency(producto.precio)}"
+                           data-id="${producto.id}">
+                </td>
+                <td>${formatCurrency(producto.total)}</td>
+                <td class="eliminar-producto" data-id="${producto.id}" title="Eliminar producto">
+                    <i class="fas fa-trash"></i>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        agregarEventListenersProductosVentaMixta();
+    }
+    
+    function agregarEventListenersProductosVentaMixta() {
+        document.querySelectorAll('#productosAgregadosMixta .cantidad-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const id = parseInt(this.dataset.id);
+                const cantidad = parseInt(this.value);
+                
+                const producto = productosVentaMixta.find(p => p.id === id);
+                if (producto && cantidad > 0) {
+                    producto.cantidad = cantidad;
+                    producto.total = cantidad * producto.precio;
+                    actualizarTablaProductosVentaMixta();
+                    calcularTotalesMixta();
+                } else if (producto) {
+                    this.value = producto.cantidad;
+                    showNotification('La cantidad debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('#productosAgregadosMixta .precio-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const id = parseInt(this.dataset.id);
+                const nuevoPrecio = parseCurrency(this.value);
+                
+                const producto = productosVentaMixta.find(p => p.id === id);
+                if (producto && !isNaN(nuevoPrecio) && nuevoPrecio > 0) {
+                    producto.precio = nuevoPrecio;
+                    producto.total = producto.cantidad * nuevoPrecio;
+                    actualizarTablaProductosVentaMixta();
+                    calcularTotalesMixta();
+                } else if (producto) {
+                    this.value = formatCurrency(producto.precio);
+                    showNotification('El precio debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('#productosAgregadosMixta .eliminar-producto').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                productosVentaMixta = productosVentaMixta.filter(p => p.id !== id);
+                actualizarTablaProductosVentaMixta();
+                calcularTotalesMixta();
+                showNotification('Producto eliminado de la venta', 'info');
+            });
+        });
+    }
+    
+    // ===== MANEJO DE CLIENTES (NORMAL Y MIXTA) =====
+    async function buscarClientesAPI(query) {
+        try {
+            const response = await fetch(`/api/ventas/clientes/buscar?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            return data.success ? data.clientes : [];
+        } catch (error) {
+            console.error('Error buscando clientes:', error);
+            return [];
+        }
+    }
+    
+    function mostrarResultadosClientes(clientes, tipo = 'normal') {
+        const contenedorId = tipo === 'normal' ? 'resultadosClientes' : 'resultadosClientesMixta';
+        const contenedor = document.getElementById(contenedorId);
+        contenedor.innerHTML = '';
+        
+        if (clientes.length === 0) {
+            contenedor.innerHTML = '<div class="cliente-item">No se encontraron clientes</div>';
+        } else {
+            clientes.forEach(cliente => {
+                const div = document.createElement('div');
+                div.className = 'cliente-item';
+                div.dataset.cedula = cliente.cedula;
+                div.dataset.nombre = cliente.nombre;
+                div.dataset.telefono = cliente.telefono || '';
+                
+                div.innerHTML = `
+                    <div class="cliente-nombre">${cliente.nombre}</div>
+                    <div class="cliente-cedula">Identificador: ${cliente.cedula}</div>
+                    ${cliente.telefono ? `<div>Tel: ${cliente.telefono}</div>` : ''}
+                `;
+                
+                div.addEventListener('click', function() {
+                    seleccionarCliente(cliente, tipo);
+                    contenedor.style.display = 'none';
+                });
+                
+                contenedor.appendChild(div);
+            });
+        }
+        
+        contenedor.style.display = 'block';
+    }
+    
+    function seleccionarCliente(cliente, tipo = 'normal') {
+        if (tipo === 'normal') {
+            clienteSeleccionado = cliente;
+            
+            document.getElementById('clienteNombre').textContent = cliente.nombre;
+            document.getElementById('clienteCedula').textContent = `Identificador: ${cliente.cedula}`;
+            document.getElementById('clienteTelefono').textContent = cliente.telefono ? `Tel: ${cliente.telefono}` : '';
+            
+            document.getElementById('clienteInfo').style.display = 'block';
+            document.getElementById('searchCliente').value = cliente.nombre;
+        } else {
+            clienteSeleccionadoMixta = cliente;
+            
+            document.getElementById('clienteNombreMixta').textContent = cliente.nombre;
+            document.getElementById('clienteCedulaMixta').textContent = `Identificador: ${cliente.cedula}`;
+            document.getElementById('clienteTelefonoMixta').textContent = cliente.telefono ? `Tel: ${cliente.telefono}` : '';
+            
+            document.getElementById('clienteInfoMixta').style.display = 'block';
+            document.getElementById('searchClienteMixta').value = cliente.nombre;
+        }
+        
+        showNotification('Cliente seleccionado', 'success');
+    }
+    
+    function toggleCliente(tipo, ventaTipo = 'normal') {
+        if (ventaTipo === 'normal') {
+            const btnFinal = document.getElementById('btnClienteFinal');
+            const btnEspecifico = document.getElementById('btnClienteEspecifico');
+            const busqueda = document.getElementById('clienteBusqueda');
+            const info = document.getElementById('clienteInfo');
+            
+            if (tipo === 'especifico') {
+                clienteEspecifico = true;
+                btnFinal.classList.remove('active');
+                btnEspecifico.classList.add('active');
+                busqueda.style.display = 'block';
+            } else {
+                clienteEspecifico = false;
+                btnFinal.classList.add('active');
+                btnEspecifico.classList.remove('active');
+                busqueda.style.display = 'none';
+                info.style.display = 'none';
+                clienteSeleccionado = null;
+                document.getElementById('searchCliente').value = '';
+                document.getElementById('resultadosClientes').style.display = 'none';
+                
+                // Si estaba seleccionado crédito, cambiar a contado
+                if (metodoPago === 'credito') {
+                    document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+                }
+            }
+        } else {
+            const btnFinal = document.getElementById('btnClienteFinalMixta');
+            const btnEspecifico = document.getElementById('btnClienteEspecificoMixta');
+            const busqueda = document.getElementById('clienteBusquedaMixta');
+            const info = document.getElementById('clienteInfoMixta');
+            
+            if (tipo === 'especifico') {
+                clienteEspecificoMixta = true;
+                btnFinal.classList.remove('active');
+                btnEspecifico.classList.add('active');
+                busqueda.style.display = 'block';
+            } else {
+                clienteEspecificoMixta = false;
+                btnFinal.classList.add('active');
+                btnEspecifico.classList.remove('active');
+                busqueda.style.display = 'none';
+                info.style.display = 'none';
+                clienteSeleccionadoMixta = null;
+                document.getElementById('searchClienteMixta').value = '';
+                document.getElementById('resultadosClientesMixta').style.display = 'none';
+            }
+        }
+    }
+    
+    // ===== BÚSQUEDA DE PRODUCTOS EN TIEMPO REAL =====
+    async function buscarProductosAPI(query) {
+        try {
+            const response = await fetch(`/api/ventas/productos/buscar?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            return data.success ? data.productos : [];
+        } catch (error) {
+            console.error('Error buscando productos:', error);
+            return [];
+        }
+    }
+    
+    // ===== MANEJO DEL CAJERO =====
+    function setupCajero() {
+        const inputCajero = document.getElementById('inputCajero');
+        const btnCambiarCajero = document.getElementById('btnCambiarCajero');
+        const btnResetCajero = document.getElementById('btnResetCajero');
+        
+        const inputCajeroMixta = document.getElementById('inputCajeroMixta');
+        const btnCambiarCajeroMixta = document.getElementById('btnCambiarCajeroMixta');
+        const btnResetCajeroMixta = document.getElementById('btnResetCajeroMixta');
+        
+        // Cargar cajero de localStorage si existe
+        const cajeroGuardado = localStorage.getItem('cajero_actual');
+        if (cajeroGuardado) {
+            inputCajero.value = cajeroGuardado;
+            inputCajeroMixta.value = cajeroGuardado;
+            cajeroActual = cajeroGuardado;
+            cajeroActualMixta = cajeroGuardado;
+        }
+        
+        // Función para actualizar cajero
+        function actualizarCajero(nuevoCajero, tipo = 'ambos') {
+            if (tipo === 'normal' || tipo === 'ambos') {
+                inputCajero.value = nuevoCajero;
+                cajeroActual = nuevoCajero;
+            }
+            if (tipo === 'mixta' || tipo === 'ambos') {
+                inputCajeroMixta.value = nuevoCajero;
+                cajeroActualMixta = nuevoCajero;
+            }
+            localStorage.setItem('cajero_actual', nuevoCajero);
+        }
+        
+        // Event listeners para venta normal
+        btnCambiarCajero.addEventListener('click', function() {
+            const nuevoCajero = prompt('Ingrese el nombre del cajero:', inputCajero.value);
+            if (nuevoCajero !== null && nuevoCajero.trim() !== '') {
+                actualizarCajero(nuevoCajero.trim(), 'ambos');
+                showNotification('Cajero actualizado: ' + nuevoCajero.trim(), 'success');
+            }
+        });
+        
+        btnResetCajero.addEventListener('click', function() {
+            actualizarCajero('SISTEMA', 'ambos');
+            showNotification('Cajero reseteado a SISTEMA', 'info');
+        });
+        
+        inputCajero.addEventListener('change', function() {
+            actualizarCajero(this.value.trim() || 'SISTEMA', 'normal');
+        });
+        
+        // Event listeners para venta mixta
+        btnCambiarCajeroMixta.addEventListener('click', function() {
+            const nuevoCajero = prompt('Ingrese el nombre del cajero:', inputCajeroMixta.value);
+            if (nuevoCajero !== null && nuevoCajero.trim() !== '') {
+                actualizarCajero(nuevoCajero.trim(), 'ambos');
+                showNotification('Cajero actualizado: ' + nuevoCajero.trim(), 'success');
+            }
+        });
+        
+        btnResetCajeroMixta.addEventListener('click', function() {
+            actualizarCajero('SISTEMA', 'ambos');
+            showNotification('Cajero reseteado a SISTEMA', 'info');
+        });
+        
+        inputCajeroMixta.addEventListener('change', function() {
+            actualizarCajero(this.value.trim() || 'SISTEMA', 'mixta');
+        });
+    }
+    
+    // ===== MANEJO DE DESCUENTOS =====
+    function setupDescuento() {
+        const input = document.getElementById('descuentoInput');
+        const inputMixta = document.getElementById('descuentoInputMixta');
+        
+        function configurarDescuento(inputElement, esMixta = false) {
+            inputElement.addEventListener('focus', function() {
+                if (this.value === '$ 0.00') {
+                    this.value = '';
+                }
+            });
+            
+            inputElement.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.value = '$ 0.00';
+                    if (esMixta) {
+                        descuentoMixta = 0;
+                    } else {
+                        descuento = 0;
+                    }
+                } else {
+                    const valor = parseCurrency(this.value);
+                    if (!isNaN(valor) && valor >= 0) {
+                        const total = esMixta ? 
+                            productosVentaMixta.reduce((sum, p) => sum + p.total, 0) :
+                            productosVentaNormal.reduce((sum, p) => sum + p.total, 0);
+                        
+                        if (valor > total) {
+                            showNotification('El descuento no puede ser mayor al subtotal', 'error');
+                            this.value = formatCurrency(esMixta ? descuentoMixta : descuento);
+                        } else {
+                            if (esMixta) {
+                                descuentoMixta = valor;
+                            } else {
+                                descuento = valor;
+                            }
+                            this.value = formatCurrency(valor);
+                        }
+                    } else {
+                        this.value = formatCurrency(esMixta ? descuentoMixta : descuento);
+                        showNotification('El descuento debe ser un número positivo', 'error');
+                    }
+                }
+                
+                if (esMixta) {
+                    calcularTotalesMixta();
+                } else {
+                    calcularTotales();
+                }
+            });
+            
+            inputElement.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+        }
+        
+        configurarDescuento(input, false);
+        configurarDescuento(inputMixta, true);
+    }
+    
+    // ===== MANEJO DE ANTICIPO =====
+    function setupAnticipo() {
+        const input = document.getElementById('anticipoInput');
+        
+        input.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                anticipo = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    const total = productosVentaNormal.reduce((sum, p) => sum + p.total, 0) - descuento;
+                    
+                    if (valor > total) {
+                        showNotification('El anticipo no puede ser mayor al total', 'error');
+                        this.value = formatCurrency(anticipo);
+                    } else {
+                        anticipo = valor;
+                        this.value = formatCurrency(valor);
+                        document.getElementById('anticipoValor').textContent = formatCurrency(valor);
+                    }
+                } else {
+                    this.value = formatCurrency(anticipo);
+                    showNotification('El anticipo debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotales();
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+    }
+    
+    // ===== MANEJO DE DINERO ENTREGADO Y CAMBIO =====
+    function setupDineroEntregado() {
+        const input = document.getElementById('dineroEntregadoInput');
+        
+        input.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                dineroEntregado = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    dineroEntregado = valor;
+                    this.value = formatCurrency(valor);
+                    document.getElementById('dineroEntregadoValor').textContent = formatCurrency(valor);
+                } else {
+                    this.value = formatCurrency(dineroEntregado);
+                    showNotification('El monto debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotales();
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+    }
+    
+    // ===== MANEJO DE PAGO MIXTA =====
+    function setupPagoMixta() {
+        const montoContadoInput = document.getElementById('montoContadoInput');
+        const montoBancoInput = document.getElementById('montoBancoInput');
+        const dineroEntregadoContadoInput = document.getElementById('dineroEntregadoContadoInput');
+        const bancoBtns = document.querySelectorAll('.mixta-banco-btn');
+        
+        // Configurar monto contado
+        montoContadoInput.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        montoContadoInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                montoContado = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    montoContado = valor;
+                    this.value = formatCurrency(valor);
+                } else {
+                    this.value = formatCurrency(montoContado);
+                    showNotification('El monto debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotalesMixta();
+            
+            // Auto-ajustar monto banco
+            const total = totalVentaMixta;
+            const nuevoMontoBanco = total - montoContado;
+            if (nuevoMontoBanco >= 0) {
+                montoBancoInput.value = formatCurrency(nuevoMontoBanco);
+                montoBanco = nuevoMontoBanco;
+                calcularTotalesMixta();
+            }
+        });
+        
+        // Configurar monto banco
+        montoBancoInput.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        montoBancoInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                montoBanco = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    montoBanco = valor;
+                    this.value = formatCurrency(valor);
+                } else {
+                    this.value = formatCurrency(montoBanco);
+                    showNotification('El monto debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotalesMixta();
+            
+            // Auto-ajustar monto contado
+            const total = totalVentaMixta;
+            const nuevoMontoContado = total - montoBanco;
+            if (nuevoMontoContado >= 0) {
+                montoContadoInput.value = formatCurrency(nuevoMontoContado);
+                montoContado = nuevoMontoContado;
+                calcularTotalesMixta();
+            }
+        });
+        
+        // Configurar dinero entregado contado
+        dineroEntregadoContadoInput.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        dineroEntregadoContadoInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                dineroEntregadoContado = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    dineroEntregadoContado = valor;
+                    this.value = formatCurrency(valor);
+                } else {
+                    this.value = formatCurrency(dineroEntregadoContado);
+                    showNotification('El monto debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotalesMixta();
+        });
+        
+        // Configurar botones de banco
+        bancoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                bancoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                submetodoBancoMixta = this.dataset.submetodo;
+            });
+        });
+        
+        // Permitir Enter en inputs
+        [montoContadoInput, montoBancoInput, dineroEntregadoContadoInput].forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+        });
+    }
+    
+    // ===== MANEJO DE MÉTODOS DE PAGO =====
+    function setupMetodosPago() {
+        const metodoBtns = document.querySelectorAll('.metodo-btn');
+        const submetodoBtns = document.querySelectorAll('.submetodo-btn');
+        
+        metodoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                metodoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const metodo = this.dataset.metodo;
+                metodoPago = metodo;
+                
+                const submetodoDiv = document.getElementById('submetodoBanco');
+                const creditoDiv = document.getElementById('creditoDias');
+                const anticipoDiv = document.getElementById('anticipoContainer');
+                const dineroEntregadoDiv = document.getElementById('dineroEntregadoContainer');
+                const cambioDiv = document.getElementById('cambioContainer');
+                
+                if (metodo === 'banco') {
+                    submetodoDiv.style.display = 'grid';
+                    creditoDiv.style.display = 'none';
+                    anticipoDiv.style.display = 'none';
+                    dineroEntregadoDiv.style.display = 'none';
+                    cambioDiv.style.display = 'none';
+                    submetodoBtns[0].classList.add('active');
+                    submetodoBanco = submetodoBtns[0].dataset.submetodo;
+                } else if (metodo === 'credito') {
+                    submetodoDiv.style.display = 'none';
+                    creditoDiv.style.display = 'block';
+                    anticipoDiv.style.display = 'flex';
+                    dineroEntregadoDiv.style.display = 'none';
+                    cambioDiv.style.display = 'none';
+                    submetodoBanco = null;
+                    
+                    // Validar que hay cliente seleccionado para crédito
+                    if (!clienteEspecifico || !clienteSeleccionado) {
+                        showNotification('Para venta a crédito debe seleccionar un cliente específico', 'error');
+                        // Volver a contado
+                        document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+                        return;
+                    }
+                } else if (metodo === 'contado') {
+                    submetodoDiv.style.display = 'none';
+                    creditoDiv.style.display = 'none';
+                    anticipoDiv.style.display = 'none';
+                    dineroEntregadoDiv.style.display = 'flex';
+                    cambioDiv.style.display = 'flex';
+                    submetodoBanco = null;
+                }
+            });
+        });
+        
+        submetodoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                submetodoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                submetodoBanco = this.dataset.submetodo;
+            });
+        });
+        
+        document.getElementById('diasCreditoInput').addEventListener('change', function() {
+            diasCredito = parseInt(this.value) || 30;
+            if (diasCredito < 1) {
+                this.value = 30;
+                diasCredito = 30;
+                showNotification('Los días de crédito deben ser mayor a 0', 'error');
+            }
+        });
+    }
+    
+    // ===== BÚSQUEDA EN TIEMPO REAL =====
+    function setupBusquedaProductos() {
+        const searchInput = document.getElementById('searchProducto');
+        let timeoutId;
+        
+        searchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase().trim();
+            
+            clearTimeout(timeoutId);
+            
+            timeoutId = setTimeout(async () => {
+                if (term.length >= 2) {
+                    const productosFiltrados = await buscarProductosAPI(term);
+                    renderProductosDisponibles(productosFiltrados);
+                } else if (term === '') {
+                    // Cuando se limpia la búsqueda, volver a cargar todos los productos
+                    if (productosDisponibles.length > 0) {
+                        renderProductosDisponibles(productosDisponibles);
+                    } else {
+                        await cargarProductosDisponibles();
+                    }
+                }
+            }, 300);
+        });
+        
+        // Permitir Enter para buscar
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const term = this.value.toLowerCase().trim();
+                buscarProductosAPI(term).then(renderProductosDisponibles);
+            }
+        });
+    }
+    
+    // ===== OBTENER ÚLTIMO TICKET =====
+    async function actualizarNumeroTicket() {
+        try {
+            const response = await fetch('/api/ventas/ultimo-ticket');
+            const data = await response.json();
+            
+            if (data.success) {
+                const numero = String(data.ticket_numero + 1).padStart(4, '0');
+                document.getElementById('ticketNumero').textContent = numero;
+            }
+        } catch (error) {
+            console.error('Error actualizando ticket:', error);
+        }
+    }
+    
+    // ===== NOTIFICACIONES =====
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // ===== FINALIZAR VENTA NORMAL =====
+    async function finalizarVenta() {
+        const productos = tipoVentaActual === 'normal' ? productosVentaNormal : productosVentaMixta;
+        
+        if (productos.length === 0) {
+            showNotification('Agrega al menos un producto para finalizar la venta.', 'error');
+            return;
+        }
+        
+        // Validar stock antes de finalizar
+        for (const producto of productos) {
+            try {
+                const response = await fetch(`/api/producto/${producto.id}`);
+                const data = await response.json();
+                
+                if (data.success && data.producto) {
+                    const productoOriginal = data.producto;
+                    if (producto.cantidad > productoOriginal.cantidad) {
+                        showNotification(`Stock insuficiente para ${producto.nombre}. Disponible: ${productoOriginal.cantidad}`, 'error');
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error('Error verificando stock:', error);
+                // Continuar sin verificación si falla la API
+            }
+        }
+        
+        if (tipoVentaActual === 'normal') {
+            await finalizarVentaNormal();
+        } else {
+            await finalizarVentaMixta();
+        }
+    }
+    
+    async function finalizarVentaNormal() {
+        const subtotal = productosVentaNormal.reduce((sum, p) => sum + p.total, 0);
+        const total = subtotal - descuento;
+        
+        if (total <= 0) {
+            showNotification('El total de la venta debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        // VALIDACIÓN 1: Si es crédito, debe tener cliente seleccionado
+        if (metodoPago === 'credito') {
+            if (!clienteEspecifico || !clienteSeleccionado) {
+                showNotification('Para venta a crédito debe seleccionar un cliente específico', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 2: Validar días de crédito
+            if (diasCredito < 1) {
+                showNotification('Debe especificar los días de crédito válidos', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 3: Anticipo debe ser mayor o igual a 0 (puede ser 0)
+            if (anticipo < 0) {
+                showNotification('El anticipo no puede ser negativo', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 4: Validar anticipo no mayor al total
+            if (anticipo > total) {
+                showNotification('El anticipo no puede ser mayor al total de la venta', 'error');
+                return;
+            }
+        }
+        
+        // VALIDACIÓN para contado: dinero entregado suficiente
+        if (metodoPago === 'contado') {
+            if (dineroEntregado < total) {
+                showNotification('El dinero entregado es insuficiente para cubrir el total', 'error');
+                return;
+            }
+        }
+        
+        // Preparar datos para enviar al backend
+        const datosVenta = {
+            productos: productosVentaNormal.map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                cantidad: p.cantidad,
+                precio: p.precio
+            })),
+            subtotal: subtotal,
+            descuento: descuento,
+            total: total,
+            metodo_pago: metodoPago,
+            cliente_cedula: clienteEspecifico && clienteSeleccionado ? clienteSeleccionado.cedula : 'final',
+            dias_credito: metodoPago === 'credito' ? diasCredito : null,
+            submetodo_banco: metodoPago === 'banco' ? submetodoBanco : null,
+            anticipo: metodoPago === 'credito' ? anticipo : 0,
+            dinero_entregado: metodoPago === 'contado' ? dineroEntregado : total
+        };
+        
+        // Agregar datos del cliente si está seleccionado
+        if (clienteSeleccionado) {
+            datosVenta.cliente_nombre = clienteSeleccionado.nombre;
+            datosVenta.cliente_telefono = clienteSeleccionado.telefono || '';
+        }
+        
+        if (confirm('¿Estás seguro de finalizar esta venta normal?')) {
+            try {
+                const response = await fetch('/api/ventas/nueva', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosVenta)
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    const ventaId = resultado.venta_id;
+                    
+                    showNotification('Venta registrada exitosamente!', 'success');
+                    
+                    // Preparar parámetros para el PDF según tipo de pago
+                    const cajero = document.getElementById('inputCajero').value || 'SISTEMA';
+                    let pdfParams = `cajero=${encodeURIComponent(cajero)}`;
+                    
+                    if (metodoPago === 'credito') {
+                        pdfParams += `&dias_credito=${diasCredito}&anticipo=${anticipo}`;
+                    } else if (metodoPago === 'contado') {
+                        pdfParams += `&pago_recibido=${dineroEntregado}`;
+                    }
+                    
+                    // Abrir PDF en nueva pestaña
+                    const pdfUrl = `/api/ventas/${ventaId}/factura-pdf?${pdfParams}`;
+                    window.open(pdfUrl, '_blank');
+                    
+                    resetearFormularioVenta();
+                    await actualizarNumeroTicket();
+                    await cargarProductosDisponibles();
+                } else {
+                    showNotification('Error: ' + resultado.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error al procesar la venta. Verifique la conexión.', 'error');
+                console.error('Error:', error);
+            }
+        }
+    }
+    
+    // ===== FINALIZAR VENTA MIXTA =====
+    async function finalizarVentaMixta() {
+        const subtotal = productosVentaMixta.reduce((sum, p) => sum + p.total, 0);
+        const total = subtotal - descuentoMixta;
+        
+        if (total <= 0) {
+            showNotification('El total de la venta debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        // Validar que montos coincidan con total
+        const sumaMontos = montoContado + montoBanco;
+        if (Math.abs(sumaMontos - total) > 0.01) {
+            showNotification('La suma de montos no coincide con el total de la venta', 'error');
+            return;
+        }
+        
+        // Validar dinero entregado para contado
+        if (dineroEntregadoContado < montoContado) {
+            showNotification('El dinero entregado debe ser mayor o igual al monto en contado', 'error');
+            return;
+        }
+        
+        // Validar que haya seleccionado un submetodo para banco
+        if (montoBanco > 0 && !submetodoBancoMixta) {
+            showNotification('Debe seleccionar un medio bancario', 'error');
+            return;
+        }
+        
+        // Preparar datos para venta mixta
+        const datosVenta = {
+            productos: productosVentaMixta.map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                cantidad: p.cantidad,
+                precio: p.precio
+            })),
+            subtotal: subtotal,
+            descuento: descuentoMixta,
+            total: total,
+            metodo_pago: 'contado', // Por defecto, pero será 'mixto' por es_mixta
+            cliente_cedula: clienteEspecificoMixta && clienteSeleccionadoMixta ? clienteSeleccionadoMixta.cedula : 'final',
+            es_mixta: true,
+            metodos_mixtos: [
+                {
+                    metodo: 'contado',
+                    categoria: 'CONTADO',
+                    monto: montoContado,
+                    dinero_entregado: dineroEntregadoContado,
+                    cambio: cambioContado
+                },
+                {
+                    metodo: 'banco',
+                    categoria: 'BANCO',
+                    monto: montoBanco,
+                    submetodo: submetodoBancoMixta
+                }
+            ]
+        };
+        
+        // Agregar datos del cliente si está seleccionado
+        if (clienteSeleccionadoMixta) {
+            datosVenta.cliente_nombre = clienteSeleccionadoMixta.nombre;
+            datosVenta.cliente_telefono = clienteSeleccionadoMixta.telefono || '';
+        }
+        
+        if (confirm('¿Estás seguro de finalizar esta venta mixta?')) {
+            try {
+                const response = await fetch('/api/ventas/nueva', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosVenta)
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    const ventaId = resultado.venta_id;
+                    
+                    showNotification('Venta mixta registrada exitosamente!', 'success');
+                    
+                    // Preparar parámetros para el PDF
+                    const cajero = document.getElementById('inputCajeroMixta').value || 'SISTEMA';
+                    const pdfParams = `cajero=${encodeURIComponent(cajero)}&pago_recibido=${dineroEntregadoContado}`;
+                    
+                    // Abrir PDF en nueva pestaña
+                    const pdfUrl = `/api/ventas/${ventaId}/factura-pdf?${pdfParams}`;
+                    window.open(pdfUrl, '_blank');
+                    
+                    resetearFormularioVentaMixta();
+                    await actualizarNumeroTicket();
+                    await cargarProductosDisponibles();
+                } else {
+                    showNotification('Error: ' + resultado.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error al procesar la venta mixta. Verifique la conexión.', 'error');
+                console.error('Error:', error);
+            }
+        }
+    }
+    
+    // ===== RESETEAR FORMULARIOS =====
+    function resetearFormularioVenta() {
+        productosVentaNormal = [];
+        clienteSeleccionado = null;
+        clienteEspecifico = false;
+        descuento = 0;
+        anticipo = 0;
+        dineroEntregado = 0;
+        cambio = 0;
+        diasCredito = 30;
+        submetodoBanco = null;
+        
+        actualizarTablaProductosVenta();
+        calcularTotales();
+        
+        document.getElementById('descuentoInput').value = '$ 0.00';
+        document.getElementById('anticipoInput').value = '$ 0.00';
+        document.getElementById('dineroEntregadoInput').value = '$ 0.00';
+        document.getElementById('diasCreditoInput').value = '30';
+        document.getElementById('clienteInfo').style.display = 'none';
+        document.getElementById('searchCliente').value = '';
+        document.getElementById('resultadosClientes').style.display = 'none';
+        
+        // Ocultar campos
+        document.getElementById('anticipoContainer').style.display = 'none';
+        document.getElementById('dineroEntregadoContainer').style.display = 'none';
+        document.getElementById('cambioContainer').style.display = 'none';
+        document.getElementById('submetodoBanco').style.display = 'none';
+        document.getElementById('creditoDias').style.display = 'none';
+        
+        // Resetear todos los botones de método de pago
+        document.querySelectorAll('.metodo-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.submetodo-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Resetear cliente a "Final"
+        document.getElementById('btnClienteFinal').classList.add('active');
+        document.getElementById('btnClienteEspecifico').classList.remove('active');
+        clienteEspecifico = false;
+        
+        // Resetear método de pago a "Contado"
+        document.querySelector('.metodo-btn[data-metodo="contado"]').classList.add('active');
+        metodoPago = 'contado';
+        
+        // Limpiar búsqueda de productos
+        document.getElementById('searchProducto').value = '';
+        if (productosDisponibles.length > 0) {
+            renderProductosDisponibles(productosDisponibles);
+        }
+    }
+    
+    function resetearFormularioVentaMixta() {
+        productosVentaMixta = [];
+        clienteSeleccionadoMixta = null;
+        clienteEspecificoMixta = false;
+        descuentoMixta = 0;
+        montoContado = 0;
+        montoBanco = 0;
+        dineroEntregadoContado = 0;
+        cambioContado = 0;
+        submetodoBancoMixta = "nequi";
+        
+        actualizarTablaProductosVentaMixta();
+        calcularTotalesMixta();
+        
+        document.getElementById('descuentoInputMixta').value = '$ 0.00';
+        document.getElementById('montoContadoInput').value = '$ 0.00';
+        document.getElementById('montoBancoInput').value = '$ 0.00';
+        document.getElementById('dineroEntregadoContadoInput').value = '$ 0.00';
+        document.getElementById('clienteInfoMixta').style.display = 'none';
+        document.getElementById('searchClienteMixta').value = '';
+        document.getElementById('resultadosClientesMixta').style.display = 'none';
+        document.getElementById('validacionMixta').style.display = 'none';
+        
+        // Resetear botones de banco
+        document.querySelectorAll('.mixta-banco-btn').forEach((btn, index) => {
+            if (index === 0) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Resetear cliente a "Final"
+        document.getElementById('btnClienteFinalMixta').classList.add('active');
+        document.getElementById('btnClienteEspecificoMixta').classList.remove('active');
+        clienteEspecificoMixta = false;
+        
+        // Limpiar búsqueda de productos
+        document.getElementById('searchProducto').value = '';
+        if (productosDisponibles.length > 0) {
+            renderProductosDisponibles(productosDisponibles);
+        }
+    }
+    
+    // ===== CAMBIAR ENTRE VENTA NORMAL Y MIXTA =====
+    function cambiarTipoVenta(tipo) {
+        tipoVentaActual = tipo;
+        
+        const btnNormal = document.getElementById('btnVentaNormal');
+        const btnMixta = document.getElementById('btnVentaMixta');
+        const containerNormal = document.getElementById('ventaNormalContainer');
+        const containerMixta = document.getElementById('ventaMixtaContainer');
+        const titulo = document.getElementById('tituloVenta');
+        const subtitulo = document.getElementById('subtituloVenta');
+        
+        if (tipo === 'normal') {
+            btnNormal.classList.add('active');
+            btnMixta.classList.remove('active');
+            containerNormal.style.display = 'flex';
+            containerMixta.style.display = 'none';
+            titulo.textContent = 'Nueva Venta Normal';
+            subtitulo.textContent = 'Registra una nueva venta en el sistema';
+        } else {
+            btnNormal.classList.remove('active');
+            btnMixta.classList.add('active');
+            containerNormal.style.display = 'none';
+            containerMixta.style.display = 'flex';
+            titulo.textContent = 'Nueva Venta Mixta';
+            subtitulo.textContent = 'Registra una venta con pago mixto (contado + banco)';
+        }
+        
+        // Si hay productos en el otro modo, preguntar si quiere transferirlos
+        if (tipo === 'normal' && productosVentaMixta.length > 0 && productosVentaNormal.length === 0) {
+            if (confirm('¿Deseas transferir los productos agregados a la venta mixta a la venta normal?')) {
+                productosVentaNormal = [...productosVentaMixta];
+                productosVentaMixta = [];
+                actualizarTablaProductosVenta();
+                calcularTotales();
+                resetearFormularioVentaMixta();
+                showNotification('Productos transferidos a venta normal', 'info');
+            }
+        } else if (tipo === 'mixta' && productosVentaNormal.length > 0 && productosVentaMixta.length === 0) {
+            if (confirm('¿Deseas transferir los productos agregados a la venta normal a la venta mixta?')) {
+                productosVentaMixta = [...productosVentaNormal];
+                productosVentaNormal = [];
+                actualizarTablaProductosVentaMixta();
+                calcularTotalesMixta();
+                resetearFormularioVenta();
+                showNotification('Productos transferidos a venta mixta', 'info');
+            }
+        }
+    }
+    
+    // ===== INICIALIZACIÓN =====
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarEstadoSidebar();
+        
+        // Configurar selector de tipo de venta
+        document.getElementById('btnVentaNormal').addEventListener('click', () => cambiarTipoVenta('normal'));
+        document.getElementById('btnVentaMixta').addEventListener('click', () => cambiarTipoVenta('mixta'));
+        
+        // Configurar clientes para venta normal
+        document.getElementById('btnClienteFinal').addEventListener('click', () => toggleCliente('final', 'normal'));
+        document.getElementById('btnClienteEspecifico').addEventListener('click', () => toggleCliente('especifico', 'normal'));
+        
+        // Configurar clientes para venta mixta
+        document.getElementById('btnClienteFinalMixta').addEventListener('click', () => toggleCliente('final', 'mixta'));
+        document.getElementById('btnClienteEspecificoMixta').addEventListener('click', () => toggleCliente('especifico', 'mixta'));
+        
+        // Búsqueda de clientes en tiempo real (normal)
+        document.getElementById('searchCliente').addEventListener('input', async function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                const clientes = await buscarClientesAPI(query);
+                mostrarResultadosClientes(clientes, 'normal');
+            } else {
+                document.getElementById('resultadosClientes').style.display = 'none';
+            }
+        });
+        
+        // Búsqueda de clientes en tiempo real (mixta)
+        document.getElementById('searchClienteMixta').addEventListener('input', async function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                const clientes = await buscarClientesAPI(query);
+                mostrarResultadosClientes(clientes, 'mixta');
+            } else {
+                document.getElementById('resultadosClientesMixta').style.display = 'none';
+            }
+        });
+        
+        setupCajero();
+        setupDescuento();
+        setupAnticipo();
+        setupDineroEntregado();
+        setupMetodosPago();
+        setupPagoMixta();
+        setupBusquedaProductos();
+        agregarEventListenersProductosVenta();
+        agregarEventListenersProductosVentaMixta();
+        calcularTotales();
+        calcularTotalesMixta();
+        actualizarNumeroTicket();
+        
+        // Cargar productos disponibles
+        cargarProductosDisponibles();
+        
+        // Botones Cancelar
+        document.getElementById('btnCancelarNormal').addEventListener('click', function() {
+            if (productosVentaNormal.length > 0 && confirm('¿Estás seguro de cancelar esta venta normal?')) {
+                resetearFormularioVenta();
+                showNotification('Venta normal cancelada', 'info');
+            }
+        });
+        
+        document.getElementById('btnCancelarMixta').addEventListener('click', function() {
+            if (productosVentaMixta.length > 0 && confirm('¿Estás seguro de cancelar esta venta mixta?')) {
+                resetearFormularioVentaMixta();
+                showNotification('Venta mixta cancelada', 'info');
+            }
+        });
+        
+        // Botones Finalizar
+        document.getElementById('btnFinalizarNormal').addEventListener('click', () => finalizarVenta());
+        document.getElementById('btnFinalizarMixta').addEventListener('click', () => finalizarVenta());
+        
+        // Ocultar resultados de búsqueda al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.cliente-busqueda')) {
+                document.getElementById('resultadosClientes').style.display = 'none';
+            }
+            if (!e.target.closest('#clienteBusquedaMixta')) {
+                document.getElementById('resultadosClientesMixta').style.display = 'none';
+            }
+        });
+        
+        // Ajustar sidebar para responsive
+        function ajustarResponsive() {
+            const toggleBtn = document.getElementById('toggleSidebar');
+            if (window.innerWidth <= 992) {
+                if (sidebarCollapsed) {
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                } else {
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                }
+            }
+        }
+        
+        ajustarResponsive();
+        window.addEventListener('resize', ajustarResponsive);
+        
+        // Teclas de acceso rápido
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + Enter para finalizar venta
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                if (tipoVentaActual === 'normal') {
+                    document.getElementById('btnFinalizarNormal').click();
+                } else {
+                    document.getElementById('btnFinalizarMixta').click();
+                }
+            }
+            
+            // ESC para cancelar
+            if (e.key === 'Escape') {
+                if (tipoVentaActual === 'normal' && productosVentaNormal.length > 0) {
+                    document.getElementById('btnCancelarNormal').click();
+                } else if (tipoVentaActual === 'mixta' && productosVentaMixta.length > 0) {
+                    document.getElementById('btnCancelarMixta').click();
+                }
+            }
+            
+            // F2 para cambiar a cliente específico
+            if (e.key === 'F2') {
+                if (tipoVentaActual === 'normal') {
+                    document.getElementById('btnClienteEspecifico').click();
+                    document.getElementById('searchCliente').focus();
+                } else {
+                    document.getElementById('btnClienteEspecificoMixta').click();
+                    document.getElementById('searchClienteMixta').focus();
+                }
+            }
+            
+            // F5 para recargar productos
+            if (e.key === 'F5') {
+                e.preventDefault();
+                cargarProductosDisponibles();
+                showNotification('Productos recargados', 'info');
+            }
+            
+            // F8 para cambiar cajero
+            if (e.key === 'F8') {
+                e.preventDefault();
+                if (tipoVentaActual === 'normal') {
+                    document.getElementById('btnCambiarCajero').click();
+                } else {
+                    document.getElementById('btnCambiarCajeroMixta').click();
+                }
+            }
+            
+            // Alt+N para cambiar a venta normal
+            if (e.altKey && e.key === 'n') {
+                e.preventDefault();
+                cambiarTipoVenta('normal');
+            }
+            
+            // Alt+M para cambiar a venta mixta
+            if (e.altKey && e.key === 'm') {
+                e.preventDefault();
+                cambiarTipoVenta('mixta');
+            }
+        });
+        
+        // Activar método contado por defecto en venta normal
+        document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+        
+        // Activar venta normal por defecto
+        cambiarTipoVenta('normal');
+
+        // Ajustar enlace de "Inicio" según el rol
+        const rol = sessionStorage.getItem('rol');
+        const inicioLink = document.querySelector('.nav-item[href="/"]');
+        if (inicioLink && rol) {
+            inicioLink.setAttribute('href', rol === 'admin' ? '/inicio' : '/prueba');
+        }
+    });
+    </script>
+</body>
+</html>

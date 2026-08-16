@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: var(--teal);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            left: 0;
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .logo-agro {
+            color: white;
+        }
+
+        .logo-vet {
+            color: var(--mostaza);
+        }
+
+        .slogan {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed .logo,
+        .sidebar.collapsed .slogan {
+            opacity: 0;
+            width: 0;
+            overflow: auto;
+        }
+
+        .nav-menu {
+            padding: 0 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-menu {
+            padding: 0 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--mostaza);
+        }
+        
+        .sidebar.collapsed .nav-item {
+            padding: 14px;
+            justify-content: center;
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        /* ===== TOGGLE BUTTONS ===== */
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: var(--mostaza);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal);
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+            background: #e6b843;
+        }
+        
+        .sidebar-toggle-collapsed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--teal);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle-collapsed:hover {
+            background: #1a7572;
+            transform: scale(1.05);
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+            transition: all 0.3s ease;
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-badge {
+            background: var(--celeste-fondo);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== BOTÓN PERMITIR EDICIÓN ===== */
+        .admin-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--blanco-hueso);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+        }
+        
+        .admin-toggle {
+            background: linear-gradient(135deg, var(--exito) 0%, #219653 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .admin-status {
+            font-size: 12px;
+            color: var(--exito);
+            font-weight: 500;
+        }
+        
+        /* ===== CONTROLES SUPERIORES ===== */
+        .controls-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(31, 138, 134, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-medio);
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            background: white;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(31, 138, 134, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        
+        /* ===== TABLA DE PRODUCTOS ===== */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+        
+        .productos-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+        
+        .productos-table th {
+            background: var(--gris-claro);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            border-bottom: 2px solid var(--teal);
+        }
+        
+        .productos-table td {
+            padding: 20px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+        
+        .productos-table tr:hover {
+            background: var(--blanco-hueso);
+        }
+        
+        /* ===== ESTILOS DE CELDAS EDITABLES ===== */
+        .editable-cell {
+            position: relative;
+        }
+        
+        .cell-value {
+            padding: 8px 0;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cell-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--teal);
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(31, 138, 134, 0.1);
+        }
+        
+        .cell-input:focus {
+            outline: none;
+            border-color: var(--terracota);
+        }
+        
+        /* ===== ESTADO ACTIVO/INACTIVO (SOLO VISUAL) ===== */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            user-select: none;
+            pointer-events: none;
+        }
+        
+        .status-active {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+            border: 2px solid var(--exito);
+        }
+        
+        .status-inactive {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+            border: 2px solid var(--error);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-active .status-dot {
+            background: var(--exito);
+        }
+        
+        .status-inactive .status-dot {
+            background: var(--error);
+        }
+        
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-categoria {
+            background: rgba(63, 166, 160, 0.1);
+            color: var(--turquesa);
+        }
+        
+        .badge-presentacion {
+            background: rgba(201, 138, 103, 0.1);
+            color: var(--terracota);
+        }
+        
+        /* ===== CANTIDAD STOCK ===== */
+        .stock-cell {
+            font-weight: 600;
+        }
+        
+        .stock-bajo {
+            color: var(--error);
+            background: rgba(231, 76, 60, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        
+        .stock-medio {
+            color: var(--advertencia);
+            background: rgba(243, 156, 18, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        
+        .stock-alto {
+            color: var(--exito);
+            background: rgba(39, 174, 96, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        
+        /* ===== PRECIOS ===== */
+        .precio-venta {
+            font-weight: bold;
+            color: var(--teal);
+            font-size: 16px;
+        }
+        
+        .precio-costo {
+            color: var(--gris-medio);
+            font-size: 12px;
+            text-decoration: line-through;
+        }
+        
+        .margen {
+            font-size: 11px;
+            color: var(--exito);
+            font-weight: 600;
+        }
+        
+        /* ===== ACCIONES ===== */
+        .acciones-cell {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-edit {
+            background: rgba(63, 166, 160, 0.1);
+            color: var(--turquesa);
+        }
+        
+        .btn-edit:hover {
+            background: var(--turquesa);
+            color: white;
+        }
+        
+        .btn-save {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        .btn-save:hover {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .btn-cancel:hover {
+            background: var(--error);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .btn-delete:hover {
+            background: var(--error);
+            color: white;
+        }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .page-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            color: var(--gris-oscuro);
+            margin-bottom: 15px;
+        }
+        
+        .modal-body {
+            margin-bottom: 25px;
+            color: var(--gris-medio);
+            line-height: 1.6;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+        
+        .notification.info {
+            background: var(--turquesa);
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: 100%;
+            }
+            
+            .top-header {
+                flex-wrap: wrap;
+            }
+            
+            .admin-control {
+                order: 3;
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+            
+            .sidebar.collapsed {
+                width: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .nav-icon {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .filter-container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item active">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+        
+        <!-- Botón para toggle del sidebar (dentro del sidebar) -->
+        <div class="sidebar-toggle" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </div>
+    
+    <!-- Botón flotante cuando sidebar está colapsado -->
+    <div class="sidebar-toggle-collapsed" id="toggleSidebarCollapsed">
+        <i class="fas fa-bars"></i>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content" id="mainContent">
+        <!-- HEADER SUPERIOR CON CONTROL DE ADMINISTRADOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Gestión de Productos</h1>
+                <p>Administra el inventario de productos agropecuarios</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <div class="stat-value" id="totalProductos">0</div>
+                    <div class="stat-label">Total Productos</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value" id="productosActivos">0</div>
+                    <div class="stat-label">Activos</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value" id="stockBajo">0</div>
+                    <div class="stat-label">Stock Bajo</div>
+                </div>
+            </div>
+            <!-- INDICADOR DE EDICIÓN HABILITADA -->
+            <div class="admin-control">
+                <div class="admin-toggle">
+                    <i class="fas fa-unlock-alt"></i> Edición Activa
+                </div>
+                <span class="admin-status">
+                    <i class="fas fa-check-circle"></i> Acceso libre
+                </span>
+            </div>
+        </header>
+        
+        <!-- CONTROLES SUPERIORES -->
+        <div class="controls-container">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Buscar productos por nombre, categoría o proveedor..."
+                       id="searchInput">
+            </div>
+            
+            <div class="filter-container">
+                <select class="filter-select" id="filterCategoria">
+                    <option value="">Todas las categorías</option>
+                    <option value="ANTIBIOTICOS">Antibióticos</option>
+                    <option value="BIOESTIMULANTES">Bioestimulantes</option>
+                    <option value="BIOLOGICOS">Biológicos</option>
+                    <option value="COADYUVANTES">Coadyuvantes</option>
+                    <option value="CONCENTRADO AVES PRODUCCION">Concentrado Aves Producción</option>
+                    <option value="CONCENTRADOS">Concentrados</option>
+                    <option value="CONCENTRADOS GATOS">Concentrados Gatos</option>
+                    <option value="CONCENTRADOS PERROS">Concentrados Perros</option>
+                    <option value="ENMIENDA">Enmienda</option>
+                    <option value="FERTILIZANTES">Fertilizantes</option>
+                    <option value="FUNGICIDAS">Fungicidas</option>
+                    <option value="HERBICIDAS">Herbicidas</option>
+                    <option value="INSECTICIDAS">Insecticidas</option>
+                    <option value="MAIZ">Maíz</option>
+                    <option value="MASCOTAS">Mascotas</option>
+                    <option value="REGULADOR DE CRECIMIENTO">Regulador de Crecimiento</option>
+                    <option value="REPUESTOS BOMBAS Y ESTACIONARIAS">Repuestos Bombas y Estacionarias</option>
+                    <option value="SALES GANADERAS">Sales Ganaderas</option>
+                    <option value="SEMILLAS">Semillas</option>
+                    <option value="VETERINARIA">Veterinaria</option>
+                </select>
+                
+                <select class="filter-select" id="filterEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+                
+                <select class="filter-select" id="filterStock">
+                    <option value="">Todo el stock</option>
+                    <option value="bajo">Stock Bajo (&lt; 10)</option>
+                    <option value="medio">Stock Medio (10-50)</option>
+                    <option value="alto">Stock Alto (&gt; 50)</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" id="btnNuevoProducto">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
+        
+        <!-- TABLA DE PRODUCTOS -->
+        <div class="table-container">
+            <table class="productos-table" id="productosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Presentación</th>
+                        <th>Cantidad</th>
+                        <th>Precios</th>
+                        <th>Proveedor</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productosBody">
+                    <!-- Los productos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+            
+            <!-- PAGINACIÓN -->
+            <div class="pagination" id="pagination">
+                <!-- La paginación se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Confirmar acción</h3>
+            <div class="modal-body" id="modalBody">
+                ¿Estás seguro de realizar esta acción?
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modalCancel">
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" id="modalConfirm">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ===== VARIABLES GLOBALES =====
+        let productos = [];
+        let productosFiltrados = [];
+        let productoEditando = null;
+        let productoAEliminar = null;
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        // EDICIÓN SIEMPRE HABILITADA
+        const edicionHabilitada = true;
+        
+        // ===== TOGGLE SIDEBAR =====
+        let sidebarCollapsed = false;
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const toggleBtnCollapsed = document.getElementById('toggleSidebarCollapsed');
+            
+            sidebarCollapsed = !sidebarCollapsed;
+            
+            if (sidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                toggleBtnCollapsed.style.display = 'flex';
+                localStorage.setItem('sidebarCollapsed', 'true');
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('expanded');
+                toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                toggleBtnCollapsed.style.display = 'none';
+                localStorage.setItem('sidebarCollapsed', 'false');
+            }
+        }
+        
+        // Cargar estado al iniciar
+        function cargarEstadoSidebar() {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+                document.getElementById('toggleSidebar').innerHTML = '<i class="fas fa-chevron-right"></i>';
+                document.getElementById('toggleSidebarCollapsed').style.display = 'flex';
+                sidebarCollapsed = true;
+            }
+        }
+        
+        // ===== LISTA DE CATEGORÍAS FIJAS =====
+        const CATEGORIAS = [
+            'ANTIBIOTICOS',
+            'BIOESTIMULANTES',
+            'BIOLOGICOS',
+            'COADYUVANTES',
+            'CONCENTRADO AVES PRODUCCION',
+            'CONCENTRADOS',
+            'CONCENTRADOS GATOS',
+            'CONCENTRADOS PERROS',
+            'ENMIENDA',
+            'FERTILIZANTES',
+            'FUNGICIDAS',
+            'HERBICIDAS',
+            'INSECTICIDAS',
+            'MAIZ',
+            'MASCOTAS',
+            'REGULADOR DE CRECIMIENTO',
+            'REPUESTOS BOMBAS Y ESTACIONARIAS',
+            'SALES GANADERAS',
+            'SEMILLAS',
+            'VETERINARIA'
+        ];
+        
+        // ===== FUNCIONES DE FORMATO =====
+        function formatCurrency(valor) {
+            return `$ ${parseFloat(valor).toLocaleString('es-CO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+        
+        function getStockClass(cantidad) {
+            cantidad = parseInt(cantidad) || 0;
+            if (cantidad < 10) return 'stock-bajo';
+            if (cantidad < 20) return 'stock-medio';
+            return 'stock-alto';
+        }
+        
+        function calcularMargen(costo, venta) {
+            costo = parseFloat(costo) || 0;
+            venta = parseFloat(venta) || 0;
+            if (costo === 0) return '0%';
+            const margen = ((venta - costo) / costo) * 100;
+            return `${margen.toFixed(1)}%`;
+        }
+        
+        // ===== FUNCIONES PARA CONECTAR CON API =====
+        async function cargarProductosDesdeAPI() {
+            try {
+                // Obtener valores de filtros
+                const busqueda = document.getElementById('searchInput').value;
+                const categoria = document.getElementById('filterCategoria').value;
+                const estado = document.getElementById('filterEstado').value;
+                const stock = document.getElementById('filterStock').value;
+                
+                // Construir query string
+                const params = new URLSearchParams();
+                if (busqueda) params.append('busqueda', busqueda);
+                if (categoria) params.append('categoria', categoria);
+                if (estado) params.append('estado', estado);
+                if (stock) params.append('stock', stock);
+                
+                // Realizar petición
+                const response = await fetch(`/api/productos/?${params.toString()}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    productos = data.productos;
+                    productosFiltrados = [...data.productos];
+                    renderProductos();
+                    await cargarEstadisticas();
+                } else {
+                    showNotification('Error al cargar productos', 'error');
+                }
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+                showNotification('Error de conexión al cargar productos', 'error');
+            }
+        }
+        
+        async function cargarEstadisticas() {
+            try {
+                const response = await fetch('/api/productos/estadisticas');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.estadisticas;
+                    document.getElementById('totalProductos').textContent = stats.total_productos || 0;
+                    document.getElementById('productosActivos').textContent = stats.productos_activos || 0;
+                    document.getElementById('stockBajo').textContent = stats.stock_bajo || 0;
+                }
+            } catch (error) {
+                console.error('Error al cargar estadísticas:', error);
+            }
+        }
+        
+        async function guardarProductoAPI(producto) {
+            try {
+                const metodo = producto.id ? 'PUT' : 'POST';
+                const url = producto.id ? `/api/productos/${producto.id}` : '/api/productos/';
+                
+                const datosProducto = {
+                    nombre: producto.nombre || 'Nuevo Producto',
+                    descripcion: producto.descripcion || '',
+                    categoria: producto.categoria || 'ANTIBIOTICOS',
+                    cantidad: parseInt(producto.cantidad) || 0,
+                    presentacion: producto.presentacion || 'Unidad',
+                    proveedor: producto.proveedor || null,
+                    precio_costo: parseFloat(producto.precio_costo) || 0,
+                    precio_venta: parseFloat(producto.precio_venta) || 0
+                };
+                
+                const response = await fetch(url, {
+                    method: metodo,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosProducto)
+                });
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error al guardar producto:', error);
+                return { success: false, message: 'Error de conexión' };
+            }
+        }
+        
+        async function eliminarProductoAPI(productoId) {
+            try {
+                const response = await fetch(`/api/productos/${productoId}`, {
+                    method: 'DELETE'
+                });
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error al eliminar producto:', error);
+                return { success: false, message: 'Error de conexión' };
+            }
+        }
+        
+        // ===== RENDERIZAR TABLA =====
+        function renderProductos() {
+            const tbody = document.getElementById('productosBody');
+            tbody.innerHTML = '';
+            
+            // Calcular índices para paginación
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const productosPagina = productosFiltrados.slice(startIndex, endIndex);
+            
+            if (productosPagina.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-box-open" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                            <h3 style="color: var(--gris-medio); margin-bottom: 10px;">No se encontraron productos</h3>
+                            <p style="color: var(--gris-claro);">Intenta con otros términos de búsqueda o crea un nuevo producto.</p>
+                        </td>
+                    </tr>
+                `;
+                renderPagination();
+                return;
+            }
+            
+            productosPagina.forEach(producto => {
+                const isEditing = productoEditando === producto.id;
+                const margen = calcularMargen(producto.precio_costo, producto.precio_venta);
+                
+                const tr = document.createElement('tr');
+                tr.dataset.id = producto.id;
+                
+                if (isEditing) {
+                    tr.style.backgroundColor = 'var(--celeste-fondo)';
+                }
+                
+                // Generar opciones de categorías para el select
+                let opcionesCategorias = '';
+                CATEGORIAS.forEach(cat => {
+                    opcionesCategorias += `<option value="${cat}" ${producto.categoria === cat ? 'selected' : ''}>${cat}</option>`;
+                });
+                
+                tr.innerHTML = `
+                    <td>#${producto.id.toString().padStart(4, '0')}</td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${escapeHtml(producto.nombre)}</strong>
+                            ${producto.descripcion ? `<br><small style="color: var(--gris-medio);">${escapeHtml(producto.descripcion)}</small>` : ''}
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${escapeHtml(producto.nombre)}" data-field="nombre" placeholder="Nombre del producto">
+                            <textarea class="cell-input" data-field="descripcion" placeholder="Descripción" style="margin-top: 5px; min-height: 60px; resize: vertical;">${escapeHtml(producto.descripcion || '')}</textarea>
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <span class="badge badge-categoria">${producto.categoria}</span>
+                        </div>
+                        ${isEditing ? `
+                            <select class="cell-input" data-field="categoria">
+                                ${opcionesCategorias}
+                            </select>
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <span class="badge badge-presentacion">${escapeHtml(producto.presentacion || 'Sin especificar')}</span>
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${escapeHtml(producto.presentacion || '')}" data-field="presentacion" placeholder="Ej: Litro, Saco, Caja">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell stock-cell">
+                        <div class="cell-value ${getStockClass(producto.cantidad)}" ${isEditing ? 'style="display: none;"' : ''}>
+                            ${producto.cantidad} unidades
+                        </div>
+                        ${isEditing ? `
+                            <input type="number" class="cell-input" value="${producto.cantidad}" data-field="cantidad" min="0" step="1">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <div class="precio-venta">${formatCurrency(producto.precio_venta)}</div>
+                            <div class="precio-costo">Costo: ${formatCurrency(producto.precio_costo)}</div>
+                            <div class="margen">Margen: ${margen}</div>
+                        </div>
+                        ${isEditing ? `
+                            <div style="display: flex; gap: 10px; flex-direction: column;">
+                                <div>
+                                    <label style="font-size: 12px; color: var(--gris-medio);">Costo:</label>
+                                    <input type="number" class="cell-input" value="${producto.precio_costo}" data-field="precio_costo" min="0" step="0.01" placeholder="0.00">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; color: var(--gris-medio);">Venta:</label>
+                                    <input type="number" class="cell-input" value="${producto.precio_venta}" data-field="precio_venta" min="0" step="0.01" placeholder="0.00">
+                                </div>
+                            </div>
+                        ` : ''}
+                     </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            ${escapeHtml(producto.proveedor_nombre || producto.proveedor || 'Sin proveedor')}
+                            ${producto.proveedor ? `<br><small style="color: var(--gris-medio);">Tel: ${escapeHtml(producto.proveedor)}</small>` : ''}
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${escapeHtml(producto.proveedor || '')}" data-field="proveedor" placeholder="Teléfono proveedor">
+                        ` : ''}
+                     </td>
+                    <td>
+                        <div class="status-indicator ${producto.cantidad > 0 ? 'status-active' : 'status-inactive'}">
+                            <span class="status-dot"></span>
+                            ${producto.cantidad > 0 ? 'Activo' : 'Inactivo'}
+                        </div>
+                    </td>
+                    <td class="acciones-cell">
+                        ${isEditing ? `
+                            <button class="btn-icon btn-save" onclick="guardarProducto(${producto.id})" title="Guardar cambios">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="btn-icon btn-cancel" onclick="cancelarEdicion(${producto.id})" title="Cancelar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : `
+                            <button class="btn-icon btn-edit" onclick="editarProducto(${producto.id})" title="Editar producto">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="solicitarEliminar(${producto.id})" title="Eliminar producto">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `}
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            renderPagination();
+        }
+        
+        // Función para escapar HTML y prevenir XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // ===== PAGINACIÓN =====
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(productosFiltrados.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let html = '';
+            
+            // Botón anterior
+            html += `
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Páginas
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Botón siguiente
+            html += `
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePage(page) {
+            const totalPages = Math.ceil(productosFiltrados.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            renderProductos();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ===== FUNCIONALIDADES DE EDICIÓN =====
+        function editarProducto(id) {
+            if (productoEditando !== null) {
+                showNotification('Termina de editar el producto actual antes de editar otro.', 'error');
+                return;
+            }
+            
+            productoEditando = id;
+            renderProductos();
+        }
+        
+        async function guardarProducto(id) {
+            const producto = productos.find(p => p.id === id);
+            if (!producto) return;
+            
+            // Obtener valores de los inputs
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            const inputs = row.querySelectorAll('.cell-input, select[data-field]');
+            
+            inputs.forEach(input => {
+                const field = input.dataset.field;
+                let value = input.value;
+                
+                // Formatear valores según el campo
+                switch(field) {
+                    case 'nombre':
+                    case 'descripcion':
+                    case 'presentacion':
+                    case 'proveedor':
+                        producto[field] = value.trim();
+                        break;
+                        
+                    case 'categoria':
+                        producto[field] = value;
+                        break;
+                        
+                    case 'cantidad':
+                        producto[field] = parseInt(value) || 0;
+                        break;
+                        
+                    case 'precio_costo':
+                    case 'precio_venta':
+                        producto[field] = parseFloat(value) || 0;
+                        break;
+                }
+            });
+            
+            // Guardar en la API
+            const resultado = await guardarProductoAPI(producto);
+            
+            if (resultado.success) {
+                productoEditando = null;
+                await cargarProductosDesdeAPI();
+                showNotification('Producto actualizado correctamente', 'success');
+            } else {
+                showNotification(resultado.message || 'Error al guardar producto', 'error');
+            }
+        }
+        
+        function cancelarEdicion(id) {
+            productoEditando = null;
+            renderProductos();
+        }
+        
+        // ===== ELIMINAR PRODUCTO =====
+        function solicitarEliminar(id) {
+            if (productoEditando !== null) {
+                showNotification('No puedes eliminar mientras editas un producto.', 'error');
+                return;
+            }
+            
+            productoAEliminar = id;
+            const producto = productos.find(p => p.id === id);
+            
+            document.getElementById('modalTitle').textContent = 'Eliminar Producto';
+            document.getElementById('modalBody').innerHTML = `
+                <p>¿Estás seguro de eliminar el producto <strong>"${escapeHtml(producto.nombre)}"</strong>?</p>
+                <p style="color: var(--error); font-size: 12px;">
+                    <i class="fas fa-exclamation-triangle"></i> Esta acción no se puede deshacer.
+                </p>
+            `;
+            
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        async function eliminarProducto() {
+            if (!productoAEliminar) return;
+            
+            const resultado = await eliminarProductoAPI(productoAEliminar);
+            
+            if (resultado.success) {
+                document.getElementById('confirmModal').style.display = 'none';
+                productoAEliminar = null;
+                await cargarProductosDesdeAPI();
+                showNotification('Producto eliminado correctamente', 'success');
+            } else {
+                showNotification(resultado.message || 'Error al eliminar producto', 'error');
+            }
+        }
+        
+        // ===== NUEVO PRODUCTO =====
+        async function nuevoProducto() {
+            if (productoEditando !== null) {
+                showNotification('Termina de editar el producto actual antes de crear uno nuevo.', 'error');
+                return;
+            }
+            
+            // Crear producto directamente en la API
+            const nuevoProducto = {
+                nombre: "Nuevo Producto",
+                descripcion: "Descripción del nuevo producto",
+                categoria: "ANTIBIOTICOS",
+                cantidad: 0,
+                presentacion: "Unidad",
+                proveedor: "",
+                precio_costo: 0,
+                precio_venta: 0
+            };
+            
+            const resultado = await guardarProductoAPI(nuevoProducto);
+            
+            if (resultado.success) {
+                await cargarProductosDesdeAPI();
+                showNotification('Producto creado exitosamente', 'success');
+                
+                // Encontrar el producto recién creado y editarlo
+                const response = await fetch('/api/productos/');
+                const data = await response.json();
+                if (data.success && data.productos.length > 0) {
+                    const productoNuevo = data.productos[0];
+                    editarProducto(productoNuevo.id);
+                }
+            } else {
+                showNotification('Error al crear producto', 'error');
+            }
+        }
+        
+        // ===== FILTROS Y BÚSQUEDA =====
+        function aplicarFiltros() {
+            currentPage = 1;
+            cargarProductosDesdeAPI();
+        }
+        
+        // ===== NOTIFICACIONES =====
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar event listeners
+            document.getElementById('searchInput').addEventListener('input', aplicarFiltros);
+            document.getElementById('filterCategoria').addEventListener('change', aplicarFiltros);
+            document.getElementById('filterEstado').addEventListener('change', aplicarFiltros);
+            document.getElementById('filterStock').addEventListener('change', aplicarFiltros);
+            document.getElementById('btnNuevoProducto').addEventListener('click', nuevoProducto);
+            
+            // Modal de confirmación de eliminación
+            document.getElementById('modalCancel').addEventListener('click', function() {
+                document.getElementById('confirmModal').style.display = 'none';
+                productoAEliminar = null;
+            });
+            
+            document.getElementById('modalConfirm').addEventListener('click', eliminarProducto);
+            
+            // Cerrar modal de confirmación al hacer click fuera
+            document.getElementById('confirmModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    productoAEliminar = null;
+                }
+            });
+            
+            // Toggle del sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('toggleSidebarCollapsed').addEventListener('click', toggleSidebar);
+            
+            // Cargar estado inicial del sidebar
+            cargarEstadoSidebar();
+            
+            // Cargar productos inicialmente
+            cargarProductosDesdeAPI();
+
+            // Verificación de sesión - acceso libre
+            const rol = sessionStorage.getItem('rol');
+            const logged = sessionStorage.getItem('logged');
+            if (logged !== 'true' || (rol !== 'admin' && rol !== 'auxiliar')) {
+                alert('Acceso denegado. Solo para administradores o auxiliares.');
+                window.location.href = '/';
+            }
+
+            // Ajustar enlace de "Inicio" según el rol
+            const inicioLink = document.querySelector('.nav-item[href="/"]');
+            if (inicioLink) {
+                inicioLink.setAttribute('href', rol === 'admin' ? '/inicio' : '/prueba');
+            }
+        });
+    </script>
+    <script>
+        (function markActiveNav(){
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                const href = item.getAttribute('href') || '';
+                try {
+                    const linkPath = new URL(href, window.location.origin).pathname;
+                    if (linkPath === currentPath) item.classList.add('active');
+                    else item.classList.remove('active');
+                } catch(e){}
+            });
+        })();
+    </script>
+</body>
+</html> 

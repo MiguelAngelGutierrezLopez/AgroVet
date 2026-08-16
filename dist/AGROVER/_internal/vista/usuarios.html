@@ -1,0 +1,3173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes y Proveedores - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+            --info: #3498db;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-badge {
+            background: var(--celeste-fondo);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 140px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== TABS DE NAVEGACIÓN ===== */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--gris-claro);
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gris-medio);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn.active {
+            background: var(--teal);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        /* ===== CONTROLES SUPERIORES ===== */
+        .controls-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(31, 138, 134, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-medio);
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            background: white;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(31, 138, 134, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--advertencia);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        
+        /* ===== TABLAS ===== */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            display: none;
+        }
+        
+        .table-container.active {
+            display: block;
+        }
+        
+        .clientes-table, .proveedores-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+        
+        .clientes-table th, .proveedores-table th {
+            background: var(--gris-claro);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            border-bottom: 2px solid;
+        }
+        
+        .clientes-table th {
+            border-color: var(--teal);
+        }
+        
+        .proveedores-table th {
+            border-color: var(--terracota);
+        }
+        
+        .clientes-table td, .proveedores-table td {
+            padding: 20px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+        
+        .clientes-table tr:hover {
+            background: rgba(63, 166, 160, 0.05);
+        }
+        
+        .proveedores-table tr:hover {
+            background: rgba(192, 138, 103, 0.05);
+        }
+        
+        /* ===== ESTILOS DE CELDAS EDITABLES ===== */
+        .editable-cell {
+            position: relative;
+        }
+        
+        .cell-value {
+            padding: 8px 0;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cell-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--teal);
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(31, 138, 134, 0.1);
+        }
+        
+        .cell-input:focus {
+            outline: none;
+            border-color: var(--terracota);
+        }
+        
+        /* ===== ESTADO DEL CLIENTE ===== */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-activo {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        .status-inactivo {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .status-moroso {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--advertencia);
+        }
+        
+        /* ===== TIPO DE CLIENTE ===== */
+        .tipo-cliente {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .tipo-normal {
+            background: rgba(63, 166, 160, 0.1);
+            color: var(--turquesa);
+        }
+        
+        .tipo-frecuente {
+            background: rgba(217, 195, 87, 0.1);
+            color: var(--mostaza);
+        }
+        
+        .tipo-mayorista {
+            background: rgba(192, 138, 103, 0.1);
+            color: var(--terracota);
+        }
+        
+        /* ===== DEUDA ===== */
+        .deuda-cell {
+            font-weight: 600;
+        }
+        
+        .deuda-cero {
+            color: var(--exito);
+        }
+        
+        .deuda-pequena {
+            color: var(--mostaza);
+        }
+        
+        .deuda-grande {
+            color: var(--error);
+        }
+        
+        /* ===== HISTORIAL DE VENTAS/COMPRAS ===== */
+        .historial-btn {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+            border: 2px solid var(--info);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .historial-btn:hover {
+            background: var(--info);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* ===== MODALES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gris-claro);
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gris-medio);
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        /* HISTORIAL MODAL */
+        .resumen-historico {
+            background: var(--blanco-hueso);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .resumen-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .resumen-valor {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--teal);
+            margin: 10px 0;
+        }
+        
+        .resumen-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* VENTAS POR TIPO DE PAGO */
+        .ventas-tipo-container {
+            margin: 25px 0;
+        }
+        
+        .tipo-pago-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .tipo-pago-card {
+            background: white;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .tipo-pago-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tipo-pago-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .tipo-pago-nombre {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tipo-pago-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .icon-contado { background: var(--teal); }
+        .icon-credito { background: var(--terracota); }
+        .icon-nequi { background: var(--mostaza); }
+        .icon-transferencia { background: var(--turquesa); }
+        .icon-transaccion { background: var(--verde-oliva); }
+        .icon-tarjeta { background: var(--rojo-rosado); }
+        .icon-apartado { background: var(--info); }
+        
+        .tipo-pago-cantidad {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--gris-oscuro);
+        }
+        
+        .tipo-pago-detalle {
+            font-size: 14px;
+            color: var(--gris-medio);
+            line-height: 1.6;
+        }
+        
+        /* DETALLE DE DEUDA */
+        .deuda-detalle {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 5px solid var(--advertencia);
+        }
+        
+        .deuda-total {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--error);
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        /* COMPRAS DE PROVEEDORES */
+        .compras-container {
+            margin: 25px 0;
+        }
+        
+        .compra-item {
+            background: white;
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .compra-item:hover {
+            border-color: var(--terracota);
+            transform: translateY(-2px);
+        }
+        
+        .compra-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .compra-producto {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .compra-fecha {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        .compra-detalle {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* ===== MODAL DE CRÉDITOS ===== */
+        .creditos-container {
+            margin: 25px 0;
+        }
+        
+        .credito-item {
+            background: white;
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .credito-item:hover {
+            border-color: var(--terracota);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .credito-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .credito-numero {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 18px;
+        }
+        
+        .credito-estado {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .estado-pendiente {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--advertencia);
+        }
+        
+        .estado-pagado {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        .estado-vencido {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .credito-detalle {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detalle-item {
+            padding: 10px;
+            background: var(--blanco-hueso);
+            border-radius: 6px;
+        }
+        
+        .detalle-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-bottom: 5px;
+        }
+        
+        .detalle-valor {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        /* FORMULARIO DE CRÉDITO */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(31, 138, 134, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        /* ===== ACCIONES ===== */
+        .acciones-cell {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-edit {
+            background: rgba(63, 166, 160, 0.1);
+            color: var(--turquesa);
+        }
+        
+        .btn-edit:hover {
+            background: var(--turquesa);
+            color: white;
+        }
+        
+        .btn-save {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        .btn-save:hover {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .btn-cancel:hover {
+            background: var(--error);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .btn-delete:hover {
+            background: var(--error);
+            color: white;
+        }
+        
+        .btn-historial {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+        }
+        
+        .btn-historial:hover {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-creditos {
+            background: rgba(192, 138, 103, 0.1);
+            color: var(--terracota);
+        }
+        
+        .btn-creditos:hover {
+            background: var(--terracota);
+            color: white;
+        }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .page-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .confirm-modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .confirm-modal-title {
+            font-size: 20px;
+            color: var(--gris-oscuro);
+            margin-bottom: 15px;
+        }
+        
+        .confirm-modal-body {
+            margin-bottom: 25px;
+            color: var(--gris-medio);
+            line-height: 1.6;
+        }
+        
+        .confirm-modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .notification-success {
+            background: var(--exito);
+        }
+        
+        .notification-error {
+            background: var(--error);
+        }
+        
+        .notification-warning {
+            background: var(--advertencia);
+        }
+        
+        .notification-info {
+            background: var(--info);
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: 100%;
+            }
+            
+            .tipo-pago-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .nav-icon {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .filter-container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .tipo-pago-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resumen-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .credito-detalle {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-badge {
+                padding: 8px 12px;
+                min-width: 100px;
+            }
+            
+            .resumen-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .confirm-modal-actions {
+                flex-direction: column;
+            }
+            
+            .confirm-modal-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* ANIMACIONES */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* ===== ESTILOS PARA MODAL DE PROVEEDOR COMPLETO ===== */
+        .productos-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        .productos-textarea:focus {
+            outline: none;
+            border-color: var(--terracota);
+            box-shadow: 0 0 0 3px rgba(192, 138, 103, 0.1);
+        }
+        
+        .productos-info {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-top: 5px;
+        }
+        
+        .contador-caracteres {
+            text-align: right;
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-top: 5px;
+        }
+        
+        .contador-caracteres.alerta {
+            color: var(--advertencia);
+            font-weight: 600;
+        }
+        
+        .contador-caracteres.error {
+            color: var(--error);
+            font-weight: 600;
+        }
+    </style>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item active">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Gestión de Clientes y Proveedores</h1>
+                <p>Administra la información de tus clientes y proveedores</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <div class="stat-value" id="totalClientes">0</div>
+                    <div class="stat-label">Total Clientes</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value" id="totalProveedores">0</div>
+                    <div class="stat-label">Proveedores</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value" id="clientesDeuda">0</div>
+                    <div class="stat-label">Con Deuda</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- TABS DE NAVEGACIÓN -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="clientes">
+                    <i class="fas fa-user-friends"></i>
+                    Clientes
+                </button>
+                <button class="tab-btn" data-tab="proveedores">
+                    <i class="fas fa-truck"></i>
+                    Proveedores
+                </button>
+            </div>
+        </div>
+        
+        <!-- CONTROLES PARA CLIENTES -->
+        <div class="controls-container" id="clientesControls">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Buscar clientes por nombre, cédula o teléfono..."
+                       id="searchClientes">
+            </div>
+            
+            <div class="filter-container">
+                <select class="filter-select" id="filterEstadoCliente">
+                    <option value="">Todos los estados</option>
+                    <option value="activo">Activos</option>
+                    <option value="moroso">Morosos</option>
+                </select>
+                
+                <select class="filter-select" id="filterDeudaCliente">
+                    <option value="">Toda la deuda</option>
+                    <option value="sin">Sin deuda</option>
+                    <option value="pequena">Deuda pequeña</option>
+                    <option value="grande">Deuda grande</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" id="btnNuevoCliente">
+                <i class="fas fa-user-plus"></i> Nuevo Cliente
+            </button>
+        </div>
+        
+        <!-- CONTROLES PARA PROVEEDORES -->
+        <div class="controls-container" id="proveedoresControls" style="display: none;">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Buscar proveedores por nombre, empresa o teléfono..."
+                       id="searchProveedores">
+            </div>
+            
+            <div class="filter-container">
+                <select class="filter-select" id="filterTipoProveedor">
+                    <option value="">Todos los proveedores</option>
+                    <option value="activo">Activos</option>
+                    <option value="inactivo">Inactivos</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-warning" id="btnNuevoProveedor">
+                <i class="fas fa-truck-loading"></i> Nuevo Proveedor
+            </button>
+        </div>
+        
+        <!-- TABLA DE CLIENTES -->
+        <div class="table-container active" id="tablaClientes">
+            <table class="clientes-table" id="clientesTable">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th>Estado</th>
+                        <th>Deuda Total</th>
+                        <th>Historial</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="clientesBody">
+                    <!-- Los clientes se cargarán dinámicamente -->
+                </tbody>
+            </table>
+            
+            <!-- PAGINACIÓN -->
+            <div class="pagination" id="paginationClientes">
+                <!-- La paginación se generará dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- TABLA DE PROVEEDORES -->
+        <div class="table-container" id="tablaProveedores">
+            <table class="proveedores-table" id="proveedoresTable">
+                <thead>
+                    <tr>
+                        <th>Teléfono</th>
+                        <th>Empresa</th>
+                        <th>Nombre Proveedor</th>
+                        <th>Contacto</th>
+                        <th>Estado</th>
+                        <th>Productos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="proveedoresBody">
+                    <!-- Los proveedores se cargarán dinámicamente -->
+                </tbody>
+            </table>
+            
+            <!-- PAGINACIÓN -->
+            <div class="pagination" id="paginationProveedores">
+                <!-- La paginación se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE HISTORIAL CLIENTE -->
+    <div class="modal" id="historialClienteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-history"></i>
+                    <span id="historialClienteNombre">Historial de Ventas</span>
+                </h2>
+                <button class="close-modal" id="closeHistorialCliente">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- RESUMEN DEL HISTORIAL -->
+            <div class="resumen-historico">
+                <h3 style="color: var(--teal); margin-bottom: 15px;">
+                    <i class="fas fa-chart-line"></i> Resumen General
+                </h3>
+                <div class="resumen-grid" id="resumenClienteGrid">
+                    <!-- Resumen se llenará dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- VENTAS POR TIPO DE PAGO -->
+            <div class="ventas-tipo-container">
+                <h3 style="color: var(--teal); margin-bottom: 15px;">
+                    <i class="fas fa-credit-card"></i> Ventas por Tipo de Pago
+                </h3>
+                <div class="tipo-pago-grid" id="tipoPagoClienteGrid">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- CRÉDITOS DEL CLIENTE -->
+            <div class="creditos-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: var(--teal);">
+                        <i class="fas fa-file-invoice-dollar"></i> Créditos del Cliente
+                    </h3>
+                    <button class="btn btn-info btn-sm" id="btnVerTodosCreditos" style="padding: 8px 16px; font-size: 12px;">
+                        <i class="fas fa-list"></i> Ver Todos los Créditos
+                    </button>
+                </div>
+                <div id="creditosClienteList">
+                    <!-- Lista de créditos se llenará dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- DETALLE DE DEUDA -->
+            <div class="deuda-detalle" id="deudaClienteDetalle">
+                <h3 style="color: var(--advertencia); margin-bottom: 10px;">
+                    <i class="fas fa-exclamation-triangle"></i> Estado de Deuda
+                </h3>
+                <div id="deudaClienteDetalleContent">
+                    <!-- Detalle de deuda se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE HISTORIAL PROVEEDOR -->
+    <div class="modal" id="historialProveedorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-history"></i>
+                    <span id="historialProveedorNombre">Historial de Compras</span>
+                </h2>
+                <button class="close-modal" id="closeHistorialProveedor">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- RESUMEN DEL HISTORIAL -->
+            <div class="resumen-historico">
+                <h3 style="color: var(--terracota); margin-bottom: 15px;">
+                    <i class="fas fa-chart-line"></i> Resumen General
+                </h3>
+                <div class="resumen-grid" id="resumenProveedorGrid">
+                    <!-- Resumen se llenará dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- PRODUCTOS SUMINISTRADOS -->
+            <div class="compras-container">
+                <h3 style="color: var(--terracota); margin-bottom: 15px;">
+                    <i class="fas fa-boxes"></i> Productos Suministrados
+                </h3>
+                <div id="productosProveedorList">
+                    <!-- Lista de productos se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE CRÉDITOS COMPLETOS -->
+    <div class="modal" id="creditosModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span id="creditosClienteNombre">Gestión de Créditos</span>
+                </h2>
+                <button class="close-modal" id="closeCreditosModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="creditosContent">
+                <!-- Contenido de créditos se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE EDICIÓN DE CRÉDITO -->
+    <div class="modal" id="editarCreditoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    <span>Editar Crédito</span>
+                </h2>
+                <button class="close-modal" id="closeEditarCreditoModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="formEditarCredito">
+                <input type="hidden" id="creditoId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="creditoAnticipo">Anticipo ($)</label>
+                        <input type="number" class="form-control" id="creditoAnticipo" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="creditoSaldo">Saldo Pendiente ($)</label>
+                        <input type="number" class="form-control" id="creditoSaldo" step="0.01" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="creditoDias">Días de Crédito</label>
+                        <input type="number" class="form-control" id="creditoDias" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="creditoVencimiento">Fecha de Vencimiento</label>
+                        <input type="date" class="form-control" id="creditoVencimiento" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="creditoEstado">Estado</label>
+                        <select class="form-control" id="creditoEstado" required>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="pagado">Pagado</option>
+                            <option value="vencido">Vencido</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="creditoAbonos">Abonos Realizados ($)</label>
+                        <input type="number" class="form-control" id="creditoAbonos" step="0.01" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="creditoUltimoPago">Último Pago</label>
+                    <input type="date" class="form-control" id="creditoUltimoPago">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="creditoObservaciones">Observaciones</label>
+                    <textarea class="form-control" id="creditoObservaciones" rows="3"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px;">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarCredito">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL DE ABONO -->
+    <div class="modal" id="abonoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Registrar Abono</span>
+                </h2>
+                <button class="close-modal" id="closeAbonoModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="formAbono">
+                <input type="hidden" id="abonoCreditoId">
+                
+                <div class="form-group">
+                    <label class="form-label" for="abonoMonto">Monto del Abono ($)</label>
+                    <input type="number" class="form-control" id="abonoMonto" step="0.01" min="0.01" required>
+                    <small style="color: var(--gris-medio); font-size: 12px;">
+                        Saldo actual: <span id="saldoActual">$0.00</span>
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="abonoFecha">Fecha del Abono</label>
+                    <input type="date" class="form-control" id="abonoFecha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="abonoObservaciones">Observaciones</label>
+                    <textarea class="form-control" id="abonoObservaciones" rows="3" 
+                              placeholder="Ej: Pago en efectivo, transferencia, etc."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px;">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarAbono">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Registrar Abono
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL DE CONFIRMACIÓN -->
+    <div class="modal" id="confirmModal">
+        <div class="confirm-modal-content">
+            <h3 class="confirm-modal-title" id="modalTitle">Confirmar acción</h3>
+            <div class="confirm-modal-body" id="modalBody">
+                ¿Estás seguro de realizar esta acción?
+            </div>
+            <div class="confirm-modal-actions">
+                <button class="btn btn-secondary" id="modalCancel">
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" id="modalConfirm">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE PROVEEDOR COMPLETO -->
+    <div class="modal" id="modalProveedorCompleto">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-truck-loading"></i>
+                    <span id="modalProveedorTitulo">Nuevo Proveedor</span>
+                </h2>
+                <button class="close-modal" onclick="cerrarModalProveedorCompleto()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="formProveedorCompleto">
+                <input type="hidden" id="proveedorTelefonoOriginal">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorTelefono">Teléfono *</label>
+                        <input type="text" class="form-control" id="proveedorTelefono" required 
+                               placeholder="Ej: 3001234567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorEmpresa">Nombre Empresa *</label>
+                        <input type="text" class="form-control" id="proveedorEmpresa" required 
+                               placeholder="Ej: Agroinsumos S.A.">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorNombre">Nombre Proveedor *</label>
+                        <input type="text" class="form-control" id="proveedorNombre" required 
+                               placeholder="Ej: Juan Pérez">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorCorreo">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="proveedorCorreo" 
+                               placeholder="proveedor@empresa.com">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorEstado">Estado</label>
+                        <select class="form-control" id="proveedorEstado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0; padding: 15px; background: var(--blanco-hueso); border-radius: 8px;">
+                    <h3 style="color: var(--terracota); margin-bottom: 15px;">
+                        <i class="fas fa-boxes"></i> Productos que Suministra (Opcional)
+                    </h3>
+                    <div class="form-group">
+                        <label class="form-label" for="proveedorProductos">
+                            Productos (separados por comas)
+                            <small style="color: var(--gris-medio); font-weight: normal;">
+                                Ej: Fertilizante Urea, Semillas de Maíz, Insecticida
+                            </small>
+                        </label>
+                        <textarea class="productos-textarea" id="proveedorProductos" 
+                                  rows="4" 
+                                  placeholder="Ingrese los productos que suministra este proveedor, separados por comas..."
+                                  maxlength="500"
+                                  oninput="actualizarContadorProductos()"></textarea>
+                        <div class="contador-caracteres" id="contadorProductos">
+                            <span id="contadorNumero">0</span>/500 caracteres
+                        </div>
+                        <div class="productos-info">
+                            Puedes ingresar varios productos separados por comas. Máximo 500 caracteres.
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalProveedorCompleto()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning" id="btnGuardarProveedor">
+                        <i class="fas fa-save"></i> Crear Proveedor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // ===== VARIABLES GLOBALES =====
+        const API_BASE = '/clientes-proveedores';
+        const ITEMS_PER_PAGE = 10;
+        
+        let clienteEditando = null;
+        let proveedorEditando = null;
+        let elementoAEliminar = null;
+        let tipoElementoAEliminar = null;
+        let elementoHistorial = null;
+        let tipoElementoHistorial = null;
+        let creditoEditando = null;
+        let currentPageClientes = 1;
+        let currentPageProveedores = 1;
+        let totalPagesClientes = 1;
+        let totalPagesProveedores = 1;
+        let tabActual = 'clientes';
+        let esEdicionProveedor = false;
+        let proveedorEditandoTelefono = null;
+        
+        // ===== FUNCIONES DE FORMATO =====
+        function formatCurrency(valor) {
+            if (!valor && valor !== 0) return '$ 0';
+            const num = parseFloat(valor);
+            if (isNaN(num)) return '$ 0';
+            return `$ ${num.toLocaleString('es-CO', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        }
+        
+        function formatDate(fechaStr) {
+            if (!fechaStr) return 'Nunca';
+            try {
+                const fecha = new Date(fechaStr);
+                return fecha.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return fechaStr;
+            }
+        }
+        
+        function getDeudaClass(deuda) {
+            deuda = parseFloat(deuda) || 0;
+            if (deuda === 0) return 'deuda-cero';
+            if (deuda < 50000) return 'deuda-pequena';
+            return 'deuda-grande';
+        }
+        
+        function getEstadoClass(estado) {
+            switch(estado) {
+                case 'activo': return 'status-activo';
+                case 'inactivo': return 'status-inactivo';
+                case 'moroso': return 'status-moroso';
+                default: return 'status-inactivo';
+            }
+        }
+        
+        function getEstadoProveedorClass(estado) {
+            return estado === 'activo' ? 'status-activo' : 'status-inactivo';
+        }
+        
+        function getEstadoCreditoClass(estado) {
+            switch(estado) {
+                case 'pendiente': return 'estado-pendiente';
+                case 'pagado': return 'estado-pagado';
+                case 'vencido': return 'estado-vencido';
+                default: return 'estado-pendiente';
+            }
+        }
+        
+        // ===== FUNCIONES DE NOTIFICACIÓN =====
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 3000;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+            `;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ===== FUNCIONES DE API =====
+        async function apiRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.message || 'Error en la solicitud');
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Error en API request:', error);
+                showNotification(error.message, 'error');
+                throw error;
+            }
+        }
+        
+        // ===== GESTIÓN DE TABS =====
+        function cambiarTab(tab) {
+            tabActual = tab;
+            
+            // Actualizar botones de tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Mostrar/ocultar controles
+            document.getElementById('clientesControls').style.display = tab === 'clientes' ? 'flex' : 'none';
+            document.getElementById('proveedoresControls').style.display = tab === 'proveedores' ? 'flex' : 'none';
+            
+            // Mostrar/ocultar tablas
+            document.getElementById('tablaClientes').classList.toggle('active', tab === 'clientes');
+            document.getElementById('tablaProveedores').classList.toggle('active', tab === 'proveedores');
+            
+            // Cargar datos según la pestaña
+            if (tab === 'clientes') {
+                cargarClientes();
+            } else {
+                cargarProveedores();
+            }
+        }
+        
+        // ===== CLIENTES =====
+        async function cargarClientes() {
+            try {
+                const busqueda = document.getElementById('searchClientes').value;
+                const estado = document.getElementById('filterEstadoCliente').value;
+                const deuda = document.getElementById('filterDeudaCliente').value;
+                
+                const result = await apiRequest(`/clientes?page=${currentPageClientes}&per_page=${ITEMS_PER_PAGE}&busqueda=${encodeURIComponent(busqueda)}&estado=${estado}&deuda=${deuda}`);
+                
+                if (result.success) {
+                    renderClientes(result.clientes);
+                    renderPaginationClientes(result.total, result.total_pages);
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error al cargar clientes:', error);
+            }
+        }
+        
+        function renderClientes(clientes) {
+            const tbody = document.getElementById('clientesBody');
+            tbody.innerHTML = '';
+            
+            if (!clientes || clientes.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-users" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                            <h3 style="color: var(--gris-medio); margin-bottom: 10px;">No se encontraron clientes</h3>
+                            <p style="color: var(--gris-claro);">Intenta con otros términos de búsqueda o crea un nuevo cliente.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            clientes.forEach(cliente => {
+                const isEditing = clienteEditando === cliente.cedula;
+                const deudaClass = getDeudaClass(cliente.deuda_total);
+                const estadoClass = getEstadoClass(cliente.estado_actual || 'activo');
+                const estadoText = cliente.deuda_total > 0 ? 'Moroso' : 'Activo';
+                
+                const tr = document.createElement('tr');
+                tr.dataset.cedula = cliente.cedula;
+                
+                if (isEditing) {
+                    tr.style.backgroundColor = 'var(--celeste-fondo)';
+                }
+                
+                tr.innerHTML = `
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${cliente.cedula}</strong>
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${cliente.cedula}" data-field="cedula" placeholder="Cédula/RUC">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${cliente.nombre}</strong>
+                            ${cliente.direccion ? `<br><small style="color: var(--gris-medio);">${cliente.direccion}</small>` : ''}
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${cliente.nombre}" data-field="nombre" placeholder="Nombre del cliente">
+                            <textarea class="cell-input" data-field="direccion" placeholder="Dirección" style="margin-top: 5px; min-height: 60px; resize: vertical;">${cliente.direccion || ''}</textarea>
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            ${cliente.telefono ? `<div><i class="fas fa-phone" style="color: var(--gris-medio); margin-right: 8px;"></i>${cliente.telefono}</div>` : ''}
+                            ${cliente.correo ? `<div><i class="fas fa-envelope" style="color: var(--gris-medio); margin-right: 8px;"></i>${cliente.correo}</div>` : ''}
+                        </div>
+                        ${isEditing ? `
+                            <div style="display: flex; gap: 10px; flex-direction: column;">
+                                <input type="text" class="cell-input" value="${cliente.telefono || ''}" data-field="telefono" placeholder="Teléfono">
+                                <input type="email" class="cell-input" value="${cliente.correo || ''}" data-field="correo" placeholder="Correo electrónico">
+                            </div>
+                        ` : ''}
+                    </td>
+                    <td>
+                        <span class="status-badge ${estadoClass}">
+                            ${estadoText}
+                        </span>
+                    </td>
+                    <td class="deuda-cell ${deudaClass}">
+                        ${formatCurrency(cliente.deuda_total || 0)}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="historial-btn" onclick="verHistorialCliente('${cliente.cedula}')" title="Ver historial de ventas">
+                                <i class="fas fa-chart-bar"></i>
+                                Ventas (${cliente.total_ventas || 0})
+                            </button>
+                            <button class="btn-icon btn-creditos" onclick="verCreditosCliente('${cliente.cedula}')" title="Ver créditos">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="acciones-cell">
+                        ${isEditing ? `
+                            <button class="btn-icon btn-save" onclick="guardarCliente('${cliente.cedula}')" title="Guardar cambios">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="btn-icon btn-cancel" onclick="cancelarEdicionCliente('${cliente.cedula}')" title="Cancelar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : `
+                            <button class="btn-icon btn-edit" onclick="editarCliente('${cliente.cedula}')" title="Editar cliente">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="solicitarEliminar('cliente', '${cliente.cedula}', '${cliente.nombre}')" title="Eliminar cliente">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `}
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function renderPaginationClientes(total, totalPages) {
+            const pagination = document.getElementById('paginationClientes');
+            totalPagesClientes = totalPages;
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let html = '';
+            
+            // Botón anterior
+            html += `
+                <button class="page-btn ${currentPageClientes === 1 ? 'disabled' : ''}" 
+                        onclick="changePageClientes(${currentPageClientes - 1})" 
+                        ${currentPageClientes === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Páginas
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPageClientes - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPageClientes ? 'active' : ''}" 
+                            onclick="changePageClientes(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Botón siguiente
+            html += `
+                <button class="page-btn ${currentPageClientes === totalPages ? 'disabled' : ''}" 
+                        onclick="changePageClientes(${currentPageClientes + 1})" 
+                        ${currentPageClientes === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePageClientes(page) {
+            if (page < 1 || page > totalPagesClientes) return;
+            
+            currentPageClientes = page;
+            cargarClientes();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        async function editarCliente(cedula) {
+            if (clienteEditando !== null || proveedorEditando !== null) {
+                showNotification('Termina de editar el elemento actual antes de editar otro.', 'warning');
+                return;
+            }
+            
+            clienteEditando = cedula;
+            await cargarClientes();
+        }
+        
+        async function guardarCliente(cedula) {
+            try {
+                const row = document.querySelector(`tr[data-cedula="${cedula}"]`);
+                const inputs = row.querySelectorAll('.cell-input');
+                
+                const data = {
+                    cedula: cedula,
+                    nombre: '',
+                    telefono: '',
+                    correo: '',
+                    direccion: ''
+                };
+                
+                inputs.forEach(input => {
+                    const field = input.dataset.field;
+                    data[field] = input.value.trim();
+                });
+                
+                const result = await apiRequest(`/cliente/${cedula}`, 'PUT', data);
+                
+                if (result.success) {
+                    showNotification('Cliente actualizado correctamente', 'success');
+                    clienteEditando = null;
+                    await cargarClientes();
+                }
+            } catch (error) {
+                console.error('Error al guardar cliente:', error);
+            }
+        }
+        
+        function cancelarEdicionCliente(cedula) {
+            clienteEditando = null;
+            cargarClientes();
+        }
+        
+        async function nuevoCliente() {
+            if (clienteEditando !== null || proveedorEditando !== null) {
+                showNotification('Termina de editar el elemento actual antes de crear uno nuevo.', 'warning');
+                return;
+            }
+            
+            // Generar cédula temporal
+            const nuevaCedula = 'TEMP' + Date.now().toString().slice(-8);
+            
+            try {
+                const data = {
+                    cedula: nuevaCedula,
+                    nombre: "Nuevo Cliente",
+                    telefono: "",
+                    correo: "",
+                    direccion: ""
+                };
+                
+                const result = await apiRequest('/cliente', 'POST', data);
+                
+                if (result.success) {
+                    showNotification('Nuevo cliente creado. Edita los detalles.', 'success');
+                    clienteEditando = nuevaCedula;
+                    currentPageClientes = 1;
+                    await cargarClientes();
+                    
+                    // Hacer scroll al inicio
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (error) {
+                console.error('Error al crear cliente:', error);
+            }
+        }
+        
+        async function verHistorialCliente(cedula) {
+            try {
+                const result = await apiRequest(`/cliente/${cedula}/historial`);
+                
+                if (result.success) {
+                    const historial = result.historial;
+                    elementoHistorial = historial;
+                    tipoElementoHistorial = 'cliente';
+                    
+                    // Actualizar título
+                    document.getElementById('historialClienteNombre').textContent = 
+                        `Historial de Ventas - ${historial.cliente.nombre}`;
+                    
+                    // Actualizar resumen general
+                    const resumenGrid = document.getElementById('resumenClienteGrid');
+                    resumenGrid.innerHTML = `
+                        <div class="resumen-item">
+                            <div class="resumen-valor">${historial.resumen.total_ventas}</div>
+                            <div class="resumen-label">Ventas Totales</div>
+                        </div>
+                        <div class="resumen-item">
+                            <div class="resumen-valor">${formatCurrency(historial.resumen.monto_total)}</div>
+                            <div class="resumen-label">Monto Total</div>
+                        </div>
+                        <div class="resumen-item">
+                            <div class="resumen-valor">${formatCurrency(historial.resumen.deuda_total)}</div>
+                            <div class="resumen-label">Deuda Actual</div>
+                        </div>
+                        <div class="resumen-item">
+                            <div class="resumen-valor">${historial.resumen.total_creditos}</div>
+                            <div class="resumen-label">Créditos</div>
+                        </div>
+                    `;
+                    
+                    // Actualizar ventas por tipo de pago
+                    const tipoPagoGrid = document.getElementById('tipoPagoClienteGrid');
+                    tipoPagoGrid.innerHTML = '';
+                    
+                    const tiposPago = historial.tipos_pago || [];
+                    tiposPago.forEach(tipo => {
+                        const card = document.createElement('div');
+                        card.className = 'tipo-pago-card';
+                        
+                        card.innerHTML = `
+                            <div class="tipo-pago-header">
+                                <div class="tipo-pago-nombre">
+                                    <div class="tipo-pago-icon ${tipo.tipo_pago === 'contado' ? 'icon-contado' : 
+                                                               tipo.tipo_pago === 'credito' ? 'icon-credito' : 
+                                                               tipo.tipo_pago === 'nequi' ? 'icon-nequi' : 
+                                                               tipo.tipo_pago === 'transferencia' ? 'icon-transferencia' : 
+                                                               tipo.tipo_pago === 'tarjeta' ? 'icon-tarjeta' : 'icon-apartado'}">
+                                        <i class="fas ${tipo.tipo_pago === 'contado' ? 'fa-money-bill-wave' : 
+                                                       tipo.tipo_pago === 'credito' ? 'fa-hand-holding-usd' : 
+                                                       tipo.tipo_pago === 'nequi' ? 'fa-mobile-alt' : 
+                                                       tipo.tipo_pago === 'transferencia' ? 'fa-exchange-alt' : 
+                                                       tipo.tipo_pago === 'tarjeta' ? 'fa-credit-card' : 'fa-calendar-check'}"></i>
+                                    </div>
+                                    ${tipo.tipo_pago.charAt(0).toUpperCase() + tipo.tipo_pago.slice(1)}
+                                </div>
+                                <div class="tipo-pago-cantidad">
+                                    ${tipo.cantidad_ventas}
+                                </div>
+                            </div>
+                            <div class="tipo-pago-detalle">
+                                <p><strong>Monto Total:</strong> ${formatCurrency(tipo.monto_total)}</p>
+                                <p><strong>Deuda:</strong> ${formatCurrency(tipo.deuda_actual)}</p>
+                                <p><strong>Pagado:</strong> ${formatCurrency(tipo.monto_pagado)}</p>
+                            </div>
+                        `;
+                        
+                        tipoPagoGrid.appendChild(card);
+                    });
+                    
+                    // Actualizar créditos recientes
+                    const creditosList = document.getElementById('creditosClienteList');
+                    creditosList.innerHTML = '';
+                    
+                    const creditosRecientes = historial.creditos ? historial.creditos.slice(0, 3) : [];
+                    
+                    if (creditosRecientes.length > 0) {
+                        creditosRecientes.forEach(credito => {
+                            const creditoItem = document.createElement('div');
+                            creditoItem.className = 'credito-item';
+                            
+                            creditoItem.innerHTML = `
+                                <div class="credito-header">
+                                    <div class="credito-numero">Crédito #${credito.id}</div>
+                                    <span class="credito-estado ${getEstadoCreditoClass(credito.estado)}">
+                                        ${credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1)}
+                                    </span>
+                                </div>
+                                <div class="credito-detalle">
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Venta</div>
+                                        <div class="detalle-valor">#${credito.numero_venta || 'N/A'}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Saldo Pendiente</div>
+                                        <div class="detalle-valor">${formatCurrency(credito.saldo_pendiente)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Vencimiento</div>
+                                        <div class="detalle-valor">${formatDate(credito.fecha_vencimiento)}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button class="btn-icon btn-edit" onclick="editarCredito(${credito.id})" title="Editar crédito">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-success" onclick="registrarAbono(${credito.id}, ${credito.saldo_pendiente})" title="Registrar abono">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </button>
+                                </div>
+                            `;
+                            
+                            creditosList.appendChild(creditoItem);
+                        });
+                    } else {
+                        creditosList.innerHTML = `
+                            <div style="text-align: center; padding: 20px; color: var(--gris-medio);">
+                                <i class="fas fa-file-invoice-dollar" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <p>No hay créditos registrados</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Configurar botón de ver todos los créditos
+                    document.getElementById('btnVerTodosCreditos').onclick = () => {
+                        document.getElementById('historialClienteModal').style.display = 'none';
+                        setTimeout(() => verCreditosCliente(cedula), 300);
+                    };
+                    
+                    // Actualizar detalle de deuda
+                    const deudaDetalle = document.getElementById('deudaClienteDetalleContent');
+                    const deudaTotal = historial.resumen.deuda_total || 0;
+                    
+                    if (deudaTotal > 0) {
+                        deudaDetalle.innerHTML = `
+                            <p style="margin-bottom: 10px;">
+                                El cliente tiene una deuda pendiente de:
+                            </p>
+                            <div class="deuda-total">${formatCurrency(deudaTotal)}</div>
+                            <p style="color: var(--gris-medio); font-size: 14px;">
+                                <i class="fas fa-info-circle"></i>
+                                Esta deuda corresponde a ventas realizadas a crédito o apartados pendientes de pago.
+                            </p>
+                        `;
+                        document.getElementById('deudaClienteDetalle').style.display = 'block';
+                    } else {
+                        document.getElementById('deudaClienteDetalle').style.display = 'none';
+                    }
+                    
+                    // Mostrar modal
+                    document.getElementById('historialClienteModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error al cargar historial:', error);
+                showNotification('Error al cargar historial del cliente', 'error');
+            }
+        }
+        
+        async function verCreditosCliente(cedula) {
+            try {
+                const result = await apiRequest(`/cliente/${cedula}/creditos`);
+                
+                if (result.success) {
+                    const creditos = result.creditos;
+                    
+                    // Actualizar título
+                    document.getElementById('creditosClienteNombre').textContent = 
+                        `Créditos del Cliente - ${elementoHistorial?.cliente?.nombre || cedula}`;
+                    
+                    // Actualizar contenido
+                    const creditosContent = document.getElementById('creditosContent');
+                    creditosContent.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--teal); margin-bottom: 15px;">
+                                <i class="fas fa-file-invoice-dollar"></i> Lista de Créditos
+                            </h3>
+                            <p style="color: var(--gris-medio);">
+                                Total de créditos: <strong>${creditos.length}</strong>
+                            </p>
+                        </div>
+                    `;
+                    
+                    if (creditos.length > 0) {
+                        creditos.forEach(credito => {
+                            const creditoItem = document.createElement('div');
+                            creditoItem.className = 'credito-item fade-in';
+                            
+                            creditoItem.innerHTML = `
+                                <div class="credito-header">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="credito-numero">Crédito #${credito.id}</div>
+                                        <span style="font-size: 12px; color: var(--gris-medio);">
+                                            Venta #${credito.numero_venta || 'N/A'}
+                                        </span>
+                                    </div>
+                                    <span class="credito-estado ${getEstadoCreditoClass(credito.estado)}">
+                                        ${credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1)}
+                                    </span>
+                                </div>
+                                <div class="credito-detalle">
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Monto de Venta</div>
+                                        <div class="detalle-valor">${formatCurrency(credito.monto_venta)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Anticipo</div>
+                                        <div class="detalle-valor">${formatCurrency(credito.anticipo)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Deuda Inicial</div>
+                                        <div class="detalle-valor">${formatCurrency(credito.deuda_inicial)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Saldo Pendiente</div>
+                                        <div class="detalle-valor" style="color: ${credito.saldo_pendiente > 0 ? 'var(--error)' : 'var(--exito)'}; font-weight: bold;">
+                                            ${formatCurrency(credito.saldo_pendiente)}
+                                        </div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Abonos Realizados</div>
+                                        <div class="detalle-valor">${formatCurrency(credito.abonos_realizados)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Días de Crédito</div>
+                                        <div class="detalle-valor">${credito.dias_credito} días</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Fecha Inicio</div>
+                                        <div class="detalle-valor">${formatDate(credito.fecha_inicio)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Fecha Vencimiento</div>
+                                        <div class="detalle-valor">${formatDate(credito.fecha_vencimiento)}</div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Último Pago</div>
+                                        <div class="detalle-valor">${formatDate(credito.ultimo_pago)}</div>
+                                    </div>
+                                </div>
+                                ${credito.observaciones ? `
+                                    <div style="margin-top: 15px; padding: 10px; background: var(--blanco-hueso); border-radius: 6px;">
+                                        <div class="detalle-label">Observaciones</div>
+                                        <div style="color: var(--gris-oscuro); font-size: 14px;">${credito.observaciones}</div>
+                                    </div>
+                                ` : ''}
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button class="btn btn-primary btn-sm" onclick="editarCredito(${credito.id})">
+                                        <i class="fas fa-edit"></i> Editar Crédito
+                                    </button>
+                                    <button class="btn btn-success btn-sm" onclick="registrarAbono(${credito.id}, ${credito.saldo_pendiente})">
+                                        <i class="fas fa-money-bill-wave"></i> Registrar Abono
+                                    </button>
+                                </div>
+                            `;
+                            
+                            creditosContent.appendChild(creditoItem);
+                        });
+                    } else {
+                        creditosContent.innerHTML += `
+                            <div style="text-align: center; padding: 40px; color: var(--gris-medio);">
+                                <i class="fas fa-file-invoice-dollar" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <h4>No hay créditos registrados</h4>
+                                <p>Este cliente no tiene créditos pendientes o pagados.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Mostrar modal
+                    document.getElementById('creditosModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error al cargar créditos:', error);
+                showNotification('Error al cargar créditos del cliente', 'error');
+            }
+        }
+        
+        async function editarCredito(creditoId) {
+            try {
+                const result = await apiRequest(`/credito/${creditoId}`, 'GET');
+                
+                if (result.success) {
+                    const credito = result.credito;
+                    creditoEditando = creditoId;
+                    
+                    // Llenar formulario
+                    document.getElementById('creditoId').value = creditoId;
+                    document.getElementById('creditoAnticipo').value = credito.anticipo;
+                    document.getElementById('creditoSaldo').value = credito.saldo_pendiente;
+                    document.getElementById('creditoDias').value = credito.dias_credito;
+                    document.getElementById('creditoVencimiento').value = credito.fecha_vencimiento;
+                    document.getElementById('creditoEstado').value = credito.estado;
+                    document.getElementById('creditoAbonos').value = credito.abonos_realizados;
+                    document.getElementById('creditoUltimoPago').value = credito.ultimo_pago || '';
+                    document.getElementById('creditoObservaciones').value = credito.observaciones || '';
+                    
+                    // Mostrar modal
+                    document.getElementById('editarCreditoModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error al cargar crédito:', error);
+                showNotification('Error al cargar información del crédito', 'error');
+            }
+        }
+        
+        async function guardarCredito() {
+            try {
+                const creditoId = document.getElementById('creditoId').value;
+                const data = {
+                    anticipo: parseFloat(document.getElementById('creditoAnticipo').value),
+                    saldo_pendiente: parseFloat(document.getElementById('creditoSaldo').value),
+                    dias_credito: parseInt(document.getElementById('creditoDias').value),
+                    fecha_vencimiento: document.getElementById('creditoVencimiento').value,
+                    estado: document.getElementById('creditoEstado').value,
+                    abonos_realizados: parseFloat(document.getElementById('creditoAbonos').value),
+                    ultimo_pago: document.getElementById('creditoUltimoPago').value || null,
+                    observaciones: document.getElementById('creditoObservaciones').value
+                };
+                
+                const result = await apiRequest(`/credito/${creditoId}`, 'PUT', data);
+                
+                if (result.success) {
+                    showNotification('Crédito actualizado correctamente', 'success');
+                    document.getElementById('editarCreditoModal').style.display = 'none';
+                    
+                    // Actualizar vista si estamos en el modal de créditos
+                    if (elementoHistorial && elementoHistorial.cliente) {
+                        await verCreditosCliente(elementoHistorial.cliente.cedula);
+                    }
+                }
+            } catch (error) {
+                console.error('Error al guardar crédito:', error);
+                showNotification('Error al guardar crédito', 'error');
+            }
+        }
+        
+        function registrarAbono(creditoId, saldoActual) {
+            creditoEditando = creditoId;
+            
+            document.getElementById('abonoCreditoId').value = creditoId;
+            document.getElementById('abonoMonto').value = '';
+            document.getElementById('abonoFecha').value = new Date().toISOString().split('T')[0];
+            document.getElementById('abonoObservaciones').value = '';
+            document.getElementById('saldoActual').textContent = formatCurrency(saldoActual);
+            
+            document.getElementById('abonoModal').style.display = 'flex';
+        }
+        
+        async function guardarAbono() {
+            try {
+                const creditoId = document.getElementById('abonoCreditoId').value;
+                const data = {
+                    monto_abono: parseFloat(document.getElementById('abonoMonto').value),
+                    fecha_abono: document.getElementById('abonoFecha').value,
+                    observaciones: document.getElementById('abonoObservaciones').value
+                };
+                
+                const result = await apiRequest(`/credito/${creditoId}/abono`, 'POST', data);
+                
+                if (result.success) {
+                    showNotification('Abono registrado correctamente', 'success');
+                    document.getElementById('abonoModal').style.display = 'none';
+                    
+                    // Actualizar vista si estamos en el modal de créditos
+                    if (elementoHistorial && elementoHistorial.cliente) {
+                        await verCreditosCliente(elementoHistorial.cliente.cedula);
+                    }
+                }
+            } catch (error) {
+                console.error('Error al guardar abono:', error);
+                showNotification('Error al guardar abono', 'error');
+            }
+        }
+        
+        // ===== PROVEEDORES =====
+        async function cargarProveedores() {
+            try {
+                const busqueda = document.getElementById('searchProveedores').value;
+                const estado = document.getElementById('filterTipoProveedor').value;
+                
+                const result = await apiRequest(`/proveedores?page=${currentPageProveedores}&per_page=${ITEMS_PER_PAGE}&busqueda=${encodeURIComponent(busqueda)}&estado=${estado}`);
+                
+                if (result.success) {
+                    renderProveedores(result.proveedores);
+                    renderPaginationProveedores(result.total, result.total_pages);
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error al cargar proveedores:', error);
+            }
+        }
+        
+        function renderProveedores(proveedores) {
+            const tbody = document.getElementById('proveedoresBody');
+            tbody.innerHTML = '';
+            
+            if (!proveedores || proveedores.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-truck" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                            <h3 style="color: var(--gris-medio); margin-bottom: 10px;">No se encontraron proveedores</h3>
+                            <p style="color: var(--gris-claro);">Intenta con otros términos de búsqueda o crea un nuevo proveedor.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            proveedores.forEach(proveedor => {
+                const isEditing = proveedorEditando === proveedor.telefono;
+                const estadoClass = getEstadoProveedorClass(proveedor.estado);
+                
+                const tr = document.createElement('tr');
+                tr.dataset.telefono = proveedor.telefono;
+                
+                if (isEditing) {
+                    tr.style.backgroundColor = 'rgba(192, 138, 103, 0.1)';
+                }
+                
+                tr.innerHTML = `
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${proveedor.telefono}</strong>
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${proveedor.telefono}" data-field="telefono" placeholder="Teléfono">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${proveedor.nombre_empresa}</strong>
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${proveedor.nombre_empresa}" data-field="nombre_empresa" placeholder="Nombre de la empresa">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            <strong>${proveedor.nombre_proveedor}</strong>
+                        </div>
+                        ${isEditing ? `
+                            <input type="text" class="cell-input" value="${proveedor.nombre_proveedor}" data-field="nombre_proveedor" placeholder="Nombre del proveedor">
+                        ` : ''}
+                    </td>
+                    <td class="editable-cell">
+                        <div class="cell-value" ${isEditing ? 'style="display: none;"' : ''}>
+                            ${proveedor.correo ? `<div><i class="fas fa-envelope" style="color: var(--gris-medio); margin-right: 8px;"></i>${proveedor.correo}</div>` : 'Sin correo'}
+                        </div>
+                        ${isEditing ? `
+                            <input type="email" class="cell-input" value="${proveedor.correo || ''}" data-field="correo" placeholder="Correo electrónico">
+                        ` : ''}
+                    </td>
+                    <td>
+                        <span class="status-badge ${estadoClass}">
+                            ${proveedor.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                        </span>
+                    </td>
+                    <td>
+                        ${proveedor.producto ? 
+                            `<span style="color: var(--terracota); font-weight: 600;">
+                                ${proveedor.producto}
+                            </span>` : 
+                            `<span style="color: var(--gris-medio); font-style: italic;">
+                                Sin productos asignados
+                            </span>`
+                        }
+                    </td>
+                    <td class="acciones-cell">
+                        ${isEditing ? `
+                            <button class="btn-icon btn-save" onclick="guardarProveedor('${proveedor.telefono}')" title="Guardar cambios">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="btn-icon btn-cancel" onclick="cancelarEdicionProveedor('${proveedor.telefono}')" title="Cancelar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : `
+                            <button class="btn-icon btn-edit" onclick="editarProveedorCompleto('${proveedor.telefono}')" title="Editar proveedor">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-historial" onclick="verHistorialProveedor('${proveedor.telefono}')" title="Ver historial">
+                                <i class="fas fa-history"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="solicitarEliminar('proveedor', '${proveedor.telefono}', '${proveedor.nombre_empresa}')" title="Eliminar proveedor">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `}
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function renderPaginationProveedores(total, totalPages) {
+            const pagination = document.getElementById('paginationProveedores');
+            totalPagesProveedores = totalPages;
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let html = '';
+            
+            // Botón anterior
+            html += `
+                <button class="page-btn ${currentPageProveedores === 1 ? 'disabled' : ''}" 
+                        onclick="changePageProveedores(${currentPageProveedores - 1})" 
+                        ${currentPageProveedores === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Páginas
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPageProveedores - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPageProveedores ? 'active' : ''}" 
+                            onclick="changePageProveedores(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Botón siguiente
+            html += `
+                <button class="page-btn ${currentPageProveedores === totalPages ? 'disabled' : ''}" 
+                        onclick="changePageProveedores(${currentPageProveedores + 1})" 
+                        ${currentPageProveedores === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePageProveedores(page) {
+            if (page < 1 || page > totalPagesProveedores) return;
+            
+            currentPageProveedores = page;
+            cargarProveedores();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        async function editarProveedor(telefono) {
+            if (clienteEditando !== null || proveedorEditando !== null) {
+                showNotification('Termina de editar el elemento actual antes de editar otro.', 'warning');
+                return;
+            }
+            
+            proveedorEditando = telefono;
+            await cargarProveedores();
+        }
+        
+        async function guardarProveedor(telefono) {
+            try {
+                const row = document.querySelector(`tr[data-telefono="${telefono}"]`);
+                const inputs = row.querySelectorAll('.cell-input');
+                
+                const data = {
+                    telefono: telefono,
+                    nombre_empresa: '',
+                    nombre_proveedor: '',
+                    correo: '',
+                    estado: 'activo'
+                };
+                
+                inputs.forEach(input => {
+                    const field = input.dataset.field;
+                    data[field] = input.value.trim();
+                });
+                
+                const result = await apiRequest(`/proveedor/${telefono}`, 'PUT', data);
+                
+                if (result.success) {
+                    showNotification('Proveedor actualizado correctamente', 'success');
+                    proveedorEditando = null;
+                    await cargarProveedores();
+                }
+            } catch (error) {
+                console.error('Error al guardar proveedor:', error);
+            }
+        }
+        
+        function cancelarEdicionProveedor(telefono) {
+            proveedorEditando = null;
+            cargarProveedores();
+        }
+        
+        async function editarProveedorCompleto(telefono) {
+            try {
+                const result = await apiRequest(`/proveedor/${telefono}`);
+                
+                if (result.success) {
+                    const proveedor = result.proveedor;
+                    
+                    // Mostrar modal en modo edición
+                    mostrarModalProveedorCompleto(true, proveedor);
+                }
+            } catch (error) {
+                console.error('Error al obtener proveedor:', error);
+                showNotification('Error al cargar información del proveedor', 'error');
+            }
+        }
+        
+        function nuevoProveedor() {
+            mostrarModalProveedorCompleto(false);
+        }
+        
+        async function verHistorialProveedor(telefono) {
+            try {
+                const result = await apiRequest(`/proveedor/${telefono}/historial`);
+                
+                if (result.success) {
+                    const historial = result.historial;
+                    
+                    // Actualizar título
+                    document.getElementById('historialProveedorNombre').textContent = 
+                        `Historial - ${historial.proveedor.nombre_empresa}`;
+                    
+                    // Actualizar resumen general
+                    const resumenGrid = document.getElementById('resumenProveedorGrid');
+                    resumenGrid.innerHTML = `
+                        <div class="resumen-item">
+                            <div class="resumen-valor">${historial.resumen.total_productos || 0}</div>
+                            <div class="resumen-label">Productos Suministrados</div>
+                        </div>
+                        <div class="resumen-item">
+                            <div class="resumen-valor" style="color: ${historial.resumen.estado === 'activo' ? 'var(--exito)' : 'var(--error)'};">
+                                ${historial.resumen.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                            </div>
+                            <div class="resumen-label">Estado</div>
+                        </div>
+                    `;
+                    
+                    // Actualizar productos suministrados
+                    const productosList = document.getElementById('productosProveedorList');
+                    productosList.innerHTML = '';
+                    
+                    const productosNombres = historial.productos_nombres || [];
+                    
+                    if (productosNombres.length > 0) {
+                        productosNombres.forEach(nombre => {
+                            const productoItem = document.createElement('div');
+                            productoItem.className = 'compra-item';
+                            
+                            productoItem.innerHTML = `
+                                <div class="compra-header">
+                                    <div class="compra-producto">${nombre}</div>
+                                </div>
+                            `;
+                            
+                            productosList.appendChild(productoItem);
+                        });
+                    } else {
+                        productosList.innerHTML = `
+                            <div style="text-align: center; padding: 20px; color: var(--gris-medio);">
+                                <i class="fas fa-boxes" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <p>No hay productos suministrados registrados</p>
+                                <p style="font-size: 12px;">Asigna productos a este proveedor para verlos aquí</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Mostrar modal
+                    document.getElementById('historialProveedorModal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error al cargar historial proveedor:', error);
+                showNotification('Error al cargar historial del proveedor', 'error');
+            }
+        }
+        
+        // ===== FUNCIONES PARA MODAL DE PROVEEDOR COMPLETO =====
+        
+        function mostrarModalProveedorCompleto(esEdicion = false, proveedorData = null) {
+            esEdicionProveedor = esEdicion;
+            
+            // Actualizar título
+            document.getElementById('modalProveedorTitulo').textContent = 
+                esEdicion ? 'Editar Proveedor' : 'Nuevo Proveedor';
+            
+            // Actualizar texto del botón
+            document.getElementById('btnGuardarProveedor').innerHTML = 
+                esEdicion ? '<i class="fas fa-save"></i> Guardar Cambios' : '<i class="fas fa-save"></i> Crear Proveedor';
+            
+            // Limpiar formulario
+            document.getElementById('proveedorTelefonoOriginal').value = '';
+            document.getElementById('proveedorTelefono').value = '';
+            document.getElementById('proveedorEmpresa').value = '';
+            document.getElementById('proveedorNombre').value = '';
+            document.getElementById('proveedorCorreo').value = '';
+            document.getElementById('proveedorEstado').value = 'activo';
+            document.getElementById('proveedorProductos').value = '';
+            
+            // Si es edición, llenar con datos existentes
+            if (esEdicion && proveedorData) {
+                proveedorEditandoTelefono = proveedorData.telefono;
+                document.getElementById('proveedorTelefonoOriginal').value = proveedorData.telefono;
+                document.getElementById('proveedorTelefono').value = proveedorData.telefono;
+                document.getElementById('proveedorEmpresa').value = proveedorData.nombre_empresa || '';
+                document.getElementById('proveedorNombre').value = proveedorData.nombre_proveedor || '';
+                document.getElementById('proveedorCorreo').value = proveedorData.correo || '';
+                document.getElementById('proveedorEstado').value = proveedorData.estado || 'activo';
+                document.getElementById('proveedorProductos').value = proveedorData.producto || '';
+                
+                // Actualizar contador
+                actualizarContadorProductos();
+            }
+            
+            // Mostrar modal
+            document.getElementById('modalProveedorCompleto').style.display = 'flex';
+        }
+        
+        function cerrarModalProveedorCompleto() {
+            document.getElementById('modalProveedorCompleto').style.display = 'none';
+            esEdicionProveedor = false;
+            proveedorEditandoTelefono = null;
+        }
+        
+        function actualizarContadorProductos() {
+            const textarea = document.getElementById('proveedorProductos');
+            const contador = document.getElementById('contadorNumero');
+            const contadorDiv = document.getElementById('contadorProductos');
+            
+            if (textarea && contador && contadorDiv) {
+                const longitud = textarea.value.length;
+                contador.textContent = longitud;
+                
+                // Cambiar color según la longitud
+                contadorDiv.className = 'contador-caracteres';
+                if (longitud > 450) {
+                    contadorDiv.classList.add('alerta');
+                }
+                if (longitud > 490) {
+                    contadorDiv.classList.add('error');
+                }
+            }
+        }
+        
+        async function guardarProveedorCompleto() {
+        try {
+            // Obtener datos del formulario
+            const telefonoOriginal = document.getElementById('proveedorTelefonoOriginal').value;
+            const telefono = document.getElementById('proveedorTelefono').value;
+            const nombreEmpresa = document.getElementById('proveedorEmpresa').value;
+            const nombreProveedor = document.getElementById('proveedorNombre').value;
+            const correo = document.getElementById('proveedorCorreo').value;
+            const estado = document.getElementById('proveedorEstado').value;
+            const productos = document.getElementById('proveedorProductos').value;
+            
+            // Validar datos requeridos
+            if (!telefono || !nombreEmpresa || !nombreProveedor) {
+                showNotification('Teléfono, nombre de empresa y nombre del proveedor son requeridos', 'error');
+                return;
+            }
+            
+            const data = {
+                telefono: telefono,
+                nombre_empresa: nombreEmpresa,
+                nombre_proveedor: nombreProveedor,
+                correo: correo || null,
+                estado: estado,
+                productos: productos || ''  // Enviar como string vacío si no hay productos
+            };
+            
+            let result;
+            
+            if (esEdicionProveedor && telefonoOriginal) {
+                // Actualizar proveedor existente
+                result = await apiRequest(`/proveedor/${telefonoOriginal}`, 'PUT', data);
+            } else {
+                // Crear nuevo proveedor
+                result = await apiRequest('/proveedor/completo', 'POST', data);
+            }
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                cerrarModalProveedorCompleto();
+                
+                // Recargar proveedores
+                currentPageProveedores = 1;
+                await cargarProveedores();
+                
+                // Cambiar a pestaña de proveedores si estamos en clientes
+                if (tabActual !== 'proveedores') {
+                    cambiarTab('proveedores');
+                }
+            }
+        } catch (error) {
+            console.error('Error al guardar proveedor:', error);
+            showNotification('Error al guardar proveedor', 'error');
+        }
+    }
+        
+        // ===== FUNCIONES DE ELIMINACIÓN =====
+        function solicitarEliminar(tipo, identificador, nombre) {
+            if (clienteEditando !== null || proveedorEditando !== null) {
+                showNotification('No puedes eliminar mientras editas un elemento.', 'warning');
+                return;
+            }
+            
+            elementoAEliminar = identificador;
+            tipoElementoAEliminar = tipo;
+            
+            let titulo, mensaje;
+            
+            if (tipo === 'cliente') {
+                titulo = 'Eliminar Cliente';
+                mensaje = `
+                    <p>¿Estás seguro de eliminar al cliente <strong>"${nombre}"</strong>?</p>
+                    <p style="color: var(--error); font-size: 12px;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Esta acción no se puede deshacer.
+                    </p>
+                `;
+            } else {
+                titulo = 'Eliminar Proveedor';
+                mensaje = `
+                    <p>¿Estás seguro de eliminar al proveedor <strong>"${nombre}"</strong>?</p>
+                    <p style="color: var(--error); font-size: 12px;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Esta acción no se puede deshacer.
+                    </p>
+                `;
+            }
+            
+            document.getElementById('modalTitle').textContent = titulo;
+            document.getElementById('modalBody').innerHTML = mensaje;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        async function eliminarElemento() {
+            if (!elementoAEliminar || !tipoElementoAEliminar) return;
+            
+            try {
+                let result;
+                
+                if (tipoElementoAEliminar === 'cliente') {
+                    result = await apiRequest(`/cliente/${elementoAEliminar}`, 'DELETE');
+                } else {
+                    result = await apiRequest(`/proveedor/${elementoAEliminar}`, 'DELETE');
+                }
+                
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    
+                    // Recargar datos según la pestaña actual
+                    if (tabActual === 'clientes') {
+                        await cargarClientes();
+                    } else {
+                        await cargarProveedores();
+                    }
+                }
+            } catch (error) {
+                console.error('Error al eliminar elemento:', error);
+            } finally {
+                document.getElementById('confirmModal').style.display = 'none';
+                elementoAEliminar = null;
+                tipoElementoAEliminar = null;
+            }
+        }
+        
+        // ===== ESTADÍSTICAS =====
+        async function updateStats() {
+            try {
+                if (tabActual === 'clientes') {
+                    const result = await apiRequest(`/clientes?per_page=1`);
+                    if (result.success) {
+                        document.getElementById('totalClientes').textContent = result.total || 0;
+                        
+                        // Contar clientes con deuda
+                        const resultDeuda = await apiRequest(`/clientes?deuda=pequena&per_page=1`);
+                        const resultDeudaGrande = await apiRequest(`/clientes?deuda=grande&per_page=1`);
+                        const totalDeuda = (resultDeuda.success ? resultDeuda.total : 0) + 
+                                          (resultDeudaGrande.success ? resultDeudaGrande.total : 0);
+                        document.getElementById('clientesDeuda').textContent = totalDeuda;
+                    }
+                } else {
+                    const result = await apiRequest(`/proveedores?per_page=1`);
+                    if (result.success) {
+                        document.getElementById('totalProveedores').textContent = result.total || 0;
+                    }
+                }
+            } catch (error) {
+                console.error('Error al actualizar estadísticas:', error);
+            }
+        }
+        
+        // ===== FILTROS Y BÚSQUEDA =====
+        function setupFiltros() {
+            // Filtros de clientes
+            document.getElementById('searchClientes').addEventListener('input', debounce(cargarClientes, 300));
+            document.getElementById('filterEstadoCliente').addEventListener('change', cargarClientes);
+            document.getElementById('filterDeudaCliente').addEventListener('change', cargarClientes);
+            
+            // Filtros de proveedores
+            document.getElementById('searchProveedores').addEventListener('input', debounce(cargarProveedores, 300));
+            document.getElementById('filterTipoProveedor').addEventListener('change', cargarProveedores);
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar event listeners para tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    cambiarTab(this.dataset.tab);
+                });
+            });
+            
+            // Configurar botones
+            document.getElementById('btnNuevoCliente').addEventListener('click', nuevoCliente);
+            document.getElementById('btnNuevoProveedor').addEventListener('click', nuevoProveedor);
+            
+            // Configurar formulario de proveedor completo
+            document.getElementById('formProveedorCompleto').addEventListener('submit', function(e) {
+                e.preventDefault();
+                guardarProveedorCompleto();
+            });
+            
+            // Configurar modales
+            document.getElementById('closeHistorialCliente').addEventListener('click', function() {
+                document.getElementById('historialClienteModal').style.display = 'none';
+            });
+            
+            document.getElementById('historialClienteModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('closeHistorialProveedor').addEventListener('click', function() {
+                document.getElementById('historialProveedorModal').style.display = 'none';
+            });
+            
+            document.getElementById('historialProveedorModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('closeCreditosModal').addEventListener('click', function() {
+                document.getElementById('creditosModal').style.display = 'none';
+            });
+            
+            document.getElementById('creditosModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('closeEditarCreditoModal').addEventListener('click', function() {
+                document.getElementById('editarCreditoModal').style.display = 'none';
+            });
+            
+            document.getElementById('editarCreditoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('btnCancelarCredito').addEventListener('click', function() {
+                document.getElementById('editarCreditoModal').style.display = 'none';
+            });
+            
+            document.getElementById('formEditarCredito').addEventListener('submit', function(e) {
+                e.preventDefault();
+                guardarCredito();
+            });
+            
+            document.getElementById('closeAbonoModal').addEventListener('click', function() {
+                document.getElementById('abonoModal').style.display = 'none';
+            });
+            
+            document.getElementById('abonoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('btnCancelarAbono').addEventListener('click', function() {
+                document.getElementById('abonoModal').style.display = 'none';
+            });
+            
+            document.getElementById('formAbono').addEventListener('submit', function(e) {
+                e.preventDefault();
+                guardarAbono();
+            });
+            
+            // Modal de confirmación
+            document.getElementById('modalCancel').addEventListener('click', function() {
+                document.getElementById('confirmModal').style.display = 'none';
+                elementoAEliminar = null;
+                tipoElementoAEliminar = null;
+            });
+            
+            document.getElementById('modalConfirm').addEventListener('click', eliminarElemento);
+            
+            document.getElementById('confirmModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    elementoAEliminar = null;
+                    tipoElementoAEliminar = null;
+                }
+            });
+            
+            // Configurar filtros
+            setupFiltros();
+            
+            // Cargar datos iniciales
+            cargarClientes();
+        });
+    </script>
+</body>
+</html>

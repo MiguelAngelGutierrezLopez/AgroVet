@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Venta - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: var(--teal);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: background 0.2s;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 3px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--terracota);
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 13px;
+        }
+        
+        .ticket-info {
+            background: var(--celeste-fondo);
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .ticket-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .ticket-label {
+            font-size: 11px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== LAYOUT DE DOS COLUMNAS ===== */
+        .venta-container {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 25px;
+        }
+        
+        /* ===== COLUMNA IZQUIERDA: PRODUCTOS ===== */
+        .productos-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--terracota);
+        }
+        
+        /* BUSCADOR DE PRODUCTOS */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-medio);
+            font-size: 16px;
+        }
+        
+        /* LISTA DE PRODUCTOS */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        
+        .producto-card {
+            background: var(--blanco-hueso);
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .producto-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .producto-nombre {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+        }
+        
+        .producto-precio {
+            color: var(--teal);
+            font-weight: bold;
+            font-size: 16px;
+            margin: 8px 0;
+        }
+        
+        .producto-stock {
+            font-size: 11px;
+            color: var(--gris-medio);
+            background: var(--gris-claro);
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+        
+        .stock-bajo {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+        }
+        
+        .stock-medio {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--advertencia);
+        }
+        
+        .stock-alto {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--exito);
+        }
+        
+        /* LOADER PARA PRODUCTOS */
+        .loader {
+            text-align: center;
+            padding: 30px;
+            color: var(--gris-medio);
+        }
+        
+        .loader i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--teal);
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--error);
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        /* ===== COLUMNA DERECHA: RESUMEN ===== */
+        .resumen-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            width: 450px;
+            margin-left: -50px;
+        }
+        
+        /* INFORMACIÓN CLIENTE */
+        .cliente-section {
+            margin-bottom: 20px;
+        }
+        
+        .cliente-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn:hover {
+            border-color: var(--teal);
+        }
+        
+        .toggle-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .cliente-busqueda {
+            margin-top: 12px;
+        }
+        
+        .cliente-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .resultados-clientes {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .cliente-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--gris-claro);
+            font-size: 13px;
+        }
+        
+        .cliente-item:hover {
+            background: var(--celeste-fondo);
+        }
+        
+        .cliente-nombre {
+            font-weight: 600;
+        }
+        
+        .cliente-cedula {
+            font-size: 11px;
+            color: var(--gris-medio);
+        }
+        
+        .cliente-info {
+            background: var(--celeste-fondo);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        /* LISTA DE PRODUCTOS AGREGADOS */
+        .productos-agregados {
+            margin: 20px 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .productos-agregados table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .productos-agregados th {
+            background: var(--gris-claro);
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .productos-agregados td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+        
+        .cantidad-input {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .precio-input {
+            width: 90px;
+            padding: 5px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 4px;
+            text-align: right;
+            font-size: 13px;
+        }
+        
+        .eliminar-producto {
+            color: var(--rojo-rosado);
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            transition: color 0.2s ease;
+        }
+        
+        .eliminar-producto:hover {
+            color: #c0392b;
+        }
+        
+        /* RESUMEN DE PAGO */
+        .resumen-pago {
+            background: var(--blanco-hueso);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .resumen-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--gris-claro);
+            font-size: 14px;
+        }
+        
+        .resumen-label {
+            color: var(--gris-medio);
+        }
+        
+        .resumen-valor {
+            font-weight: 600;
+        }
+        
+        .resumen-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--teal);
+        }
+        
+        .descuento-input, .anticipo-input, .dinero-entregado-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 5px;
+            text-align: right;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        
+        /* MÉTODOS DE PAGO */
+        .metodos-pago {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .metodos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .metodo-btn {
+            padding: 9px 4px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .metodo-btn:hover {
+            border-color: var(--teal);
+        }
+        
+        .metodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .submetodo-banco {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        
+        .submetodo-btn {
+            padding: 7px 2px;
+            font-size: 11px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .submetodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .credito-dias {
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .dias-input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        
+        /* BOTONES DE ACCIÓN */
+        .acciones-venta {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1a7572;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(31, 138, 134, 0.2);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+        
+        .notification.info {
+            background: var(--turquesa);
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .venta-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .resumen-section {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 60px;
+                padding: 15px 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+            
+            .nav-icon {
+                font-size: 18px;
+            }
+            
+            .main-content {
+                margin-left: 60px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .productos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .metodos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .acciones-venta {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .productos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item active">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Nueva Venta</h1>
+                <p>Registra una nueva venta en el sistema</p>
+            </div>
+            <div class="ticket-info">
+                <div class="ticket-number">Ticket #<span id="ticketNumero">0015</span></div>
+                <div class="ticket-label">Número de venta</div>
+            </div>
+        </header>
+        
+        <!-- CONTENIDO DE VENTA -->
+        <div class="venta-container">
+            <!-- COLUMNA IZQUIERDA: PRODUCTOS -->
+            <div class="productos-section">
+                <h2 class="section-title">
+                    <i class="fas fa-search"></i>
+                    Buscar Productos
+                </h2>
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" 
+                           class="search-input" 
+                           placeholder="Buscar producto por nombre..."
+                           id="searchProducto">
+                </div>
+                
+                <h3 class="section-title" style="font-size: 16px;">
+                    <i class="fas fa-box"></i>
+                    Productos Disponibles
+                </h3>
+                
+                <div class="productos-grid" id="productosGrid">
+                    <div class="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando productos...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUMNA DERECHA: RESUMEN -->
+            <div class="resumen-section">
+                <!-- SECCIÓN CLIENTE -->
+                <div class="cliente-section">
+                    <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                        <i class="fas fa-user"></i>
+                        Cliente
+                    </h3>
+                    
+                    <div class="cliente-toggle">
+                        <button class="toggle-btn active" id="btnClienteFinal" data-tipo="final">
+                            Cliente Final
+                        </button>
+                        <button class="toggle-btn" id="btnClienteEspecifico" data-tipo="especifico">
+                            Cliente Específico
+                        </button>
+                    </div>
+                    
+                    <div class="cliente-busqueda" id="clienteBusqueda" style="display: none;">
+                        <div class="search-container" style="position: relative;">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" 
+                                   class="cliente-input" 
+                                   placeholder="Buscar cliente por nombre o cédula..."
+                                   id="searchCliente"
+                                   autocomplete="off">
+                            <div class="resultados-clientes" id="resultadosClientes"></div>
+                        </div>
+                        
+                        <div class="cliente-info" id="clienteInfo" style="display: none;">
+                            <strong>Cliente seleccionado:</strong><br>
+                            <span id="clienteNombre"></span><br>
+                            <span id="clienteCedula"></span><br>
+                            <span id="clienteTelefono"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PRODUCTOS AGREGADOS -->
+                <div class="productos-agregados">
+                    <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                        <i class="fas fa-shopping-cart"></i>
+                        Productos en la Venta
+                    </h3>
+                    
+                    <table id="tablaProductos">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cant.</th>
+                                <th>Precio</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="productosAgregados">
+                            <!-- Productos agregados aparecerán aquí -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="sinProductos" style="text-align: center; padding: 20px; color: var(--gris-medio);">
+                        <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p>No hay productos agregados</p>
+                    </div>
+                </div>
+                
+                <!-- RESUMEN DE PAGO -->
+                <div class="resumen-pago">
+                    <h3 class="section-title" style="font-size: 16px; margin-bottom: 15px;">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        Resumen de Pago
+                    </h3>
+                    
+                    <div class="resumen-item">
+                        <span class="resumen-label">Sub Total</span>
+                        <span class="resumen-valor" id="subtotal">$ 0.00</span>
+                    </div>
+                    
+                    <div class="resumen-item">
+                        <div>
+                            <span class="resumen-label">Descuento</span>
+                            <input type="text" 
+                                   class="descuento-input" 
+                                   id="descuentoInput" 
+                                   value="$ 0.00"
+                                   placeholder="$ 0.00">
+                        </div>
+                        <span class="resumen-valor" id="descuentoValor">$ 0.00</span>
+                    </div>
+                    
+                    <!-- CAMPO PARA ANTICIPO (SOLO CRÉDITO) -->
+                    <div class="resumen-item" id="anticipoContainer" style="display: none;">
+                        <div>
+                            <span class="resumen-label">Anticipo</span>
+                            <input type="text" 
+                                   class="anticipo-input" 
+                                   id="anticipoInput" 
+                                   value="$ 0.00"
+                                   placeholder="$ 0.00">
+                        </div>
+                        <span class="resumen-valor" id="anticipoValor">$ 0.00</span>
+                    </div>
+                    
+                    <!-- CAMPO PARA DINERO ENTREGADO (SOLO CONTADO) -->
+                    <div class="resumen-item" id="dineroEntregadoContainer" style="display: none;">
+                        <div>
+                            <span class="resumen-label">Dinero Entregado</span>
+                            <input type="text" 
+                                   class="dinero-entregado-input" 
+                                   id="dineroEntregadoInput" 
+                                   value="$ 0.00"
+                                   placeholder="$ 0.00">
+                        </div>
+                        <span class="resumen-valor" id="dineroEntregadoValor">$ 0.00</span>
+                    </div>
+                    
+                    <!-- CAMPO PARA CAMBIO (SOLO CONTADO) -->
+                    <div class="resumen-item" id="cambioContainer" style="display: none;">
+                        <span class="resumen-label">Cambio</span>
+                        <span class="resumen-valor" id="cambioValor">$ 0.00</span>
+                    </div>
+                    
+                    <div class="resumen-item">
+                        <span class="resumen-label">IVA (0%)</span>
+                        <span class="resumen-valor">$ 0.00</span>
+                    </div>
+                    
+                    <div class="resumen-item resumen-total">
+                        <span>TOTAL</span>
+                        <span id="totalVenta">$ 0.00</span>
+                    </div>
+                </div>
+                
+                <!-- MÉTODOS DE PAGO -->
+                <div class="metodos-pago">
+                    <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+                        <i class="fas fa-credit-card"></i>
+                        Método de Pago
+                    </h3>
+                    
+                    <div class="metodos-grid">
+                        <button class="metodo-btn" data-metodo="contado">
+                            Contado
+                        </button>
+                        <button class="metodo-btn" data-metodo="credito">
+                            Crédito
+                        </button>
+                        <button class="metodo-btn" data-metodo="banco">
+                            Banco
+                        </button>
+                    </div>
+                    
+                    <!-- Sub-métodos para Banco -->
+                    <div class="submetodo-banco" id="submetodoBanco">
+                        <button class="submetodo-btn" data-submetodo="nequi">
+                            Nequi
+                        </button>
+                        <button class="submetodo-btn" data-submetodo="transaccion">
+                            Transacción
+                        </button>
+                        <button class="submetodo-btn" data-submetodo="tarjeta">
+                            Tarjeta
+                        </button>
+                    </div>
+                    
+                    <!-- Días de crédito -->
+                    <div class="credito-dias" id="creditoDias">
+                        <input type="number" 
+                               class="dias-input" 
+                               id="diasCreditoInput"
+                               placeholder="Número de días de crédito"
+                               min="1"
+                               value="30">
+                    </div>
+                </div>
+                
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="acciones-venta">
+                    <button class="btn btn-secondary" id="btnCancelar">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn btn-primary" id="btnFinalizar">
+                        <i class="fas fa-check"></i> Finalizar Venta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // ===== VARIABLES GLOBALES =====
+    let productosVenta = [];
+    let productosDisponibles = [];
+    let clienteEspecifico = false;
+    let clienteSeleccionado = null;
+    let metodoPago = "contado";
+    let submetodoBanco = null;
+    let diasCredito = 30;
+    let descuento = 0;
+    let anticipo = 0;
+    let dineroEntregado = 0;
+    let cambio = 0;
+    
+    // ===== FUNCIONES DE CÁLCULO =====
+    function calcularTotales() {
+        let subtotal = 0;
+        
+        productosVenta.forEach(producto => {
+            subtotal += producto.total;
+        });
+        
+        const total = subtotal - descuento;
+        
+        document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+        document.getElementById('descuentoValor').textContent = formatCurrency(descuento);
+        document.getElementById('totalVenta').textContent = formatCurrency(total);
+        
+        // Calcular cambio si es pago contado
+        if (metodoPago === 'contado') {
+            cambio = dineroEntregado - total;
+            if (cambio < 0) cambio = 0;
+            document.getElementById('cambioValor').textContent = formatCurrency(cambio);
+        }
+        
+        // Mostrar/ocultar mensaje de sin productos
+        const sinProductos = document.getElementById('sinProductos');
+        if (productosVenta.length === 0) {
+            sinProductos.style.display = 'block';
+        } else {
+            sinProductos.style.display = 'none';
+        }
+    }
+    
+    function formatCurrency(valor) {
+        return `$ ${parseFloat(valor).toLocaleString('es-CO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+    
+    function parseCurrency(str) {
+        return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+    
+    function getStockClass(cantidad) {
+        cantidad = parseInt(cantidad) || 0;
+        if (cantidad < 10) return 'stock-bajo';
+        if (cantidad < 20) return 'stock-medio';
+        return 'stock-alto';
+    }
+    
+    // ===== CARGAR PRODUCTOS DE LA API =====
+    async function cargarProductosDisponibles() {
+        try {
+            const response = await fetch('/api/ventas/productos/buscar?q=');
+            const data = await response.json();
+            
+            if (data.success) {
+                productosDisponibles = data.productos;
+                renderProductosDisponibles(productosDisponibles);
+            } else {
+                mostrarErrorProductos('Error al cargar productos');
+            }
+        } catch (error) {
+            console.error('Error cargando productos:', error);
+            mostrarErrorProductos('Error de conexión al cargar productos');
+        }
+    }
+    
+    function renderProductosDisponibles(productos) {
+        const grid = document.getElementById('productosGrid');
+        
+        if (productos.length === 0) {
+            grid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-box-open"></i>
+                    <p>No hay productos disponibles</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        productos.forEach(producto => {
+            const stockClass = getStockClass(producto.cantidad);
+            const stockText = producto.cantidad > 0 ? `${producto.cantidad} unidades` : 'Sin stock';
+            
+            html += `
+                <div class="producto-card" 
+                     data-id="${producto.id}" 
+                     data-precio="${producto.precio_venta}"
+                     ${producto.cantidad <= 0 ? 'style="opacity: 0.6;"' : ''}>
+                    <div class="producto-nombre" title="${producto.nombre}">
+                        ${producto.nombre.length > 20 ? producto.nombre.substring(0, 20) + '...' : producto.nombre}
+                    </div>
+                    ${producto.descripcion ? `<div style="font-size: 11px; color: var(--gris-medio); margin-bottom: 5px;">${producto.descripcion.substring(0, 40)}${producto.descripcion.length > 40 ? '...' : ''}</div>` : ''}
+                    <div class="producto-precio">${formatCurrency(producto.precio_venta)}</div>
+                    <div class="producto-stock ${stockClass}">${stockText}</div>
+                    <div style="font-size: 11px; color: var(--gris-medio); margin-top: 3px;">
+                        ${producto.presentacion || 'Sin especificar'}
+                    </div>
+                </div>
+            `;
+        });
+        
+        grid.innerHTML = html;
+        
+        // Agregar event listeners a los nuevos productos
+        agregarEventListenersProductosDisponibles();
+    }
+    
+    function agregarEventListenersProductosDisponibles() {
+        const productos = document.querySelectorAll('.producto-card');
+        
+        productos.forEach(producto => {
+            producto.addEventListener('click', function() {
+                if (parseInt(this.dataset.precio) <= 0) {
+                    showNotification('Este producto no tiene precio definido', 'error');
+                    return;
+                }
+                
+                const id = parseInt(this.dataset.id);
+                const precio = parseFloat(this.dataset.precio);
+                const nombre = this.querySelector('.producto-nombre').textContent;
+                const presentacion = this.querySelector('div:nth-child(4)').textContent.trim();
+                
+                // Buscar el producto completo en los disponibles
+                const productoCompleto = productosDisponibles.find(p => p.id === id);
+                
+                if (!productoCompleto) {
+                    showNotification('Producto no encontrado', 'error');
+                    return;
+                }
+                
+                if (productoCompleto.cantidad <= 0) {
+                    showNotification('Producto sin stock disponible', 'error');
+                    return;
+                }
+                
+                agregarProductoVenta(id, nombre, precio, presentacion);
+                showNotification('Producto agregado a la venta', 'success');
+            });
+        });
+    }
+    
+    function mostrarErrorProductos(mensaje) {
+        const grid = document.getElementById('productosGrid');
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${mensaje}</p>
+                <button onclick="cargarProductosDisponibles()" style="margin-top: 10px; padding: 5px 10px; background: var(--teal); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-redo"></i> Reintentar
+                </button>
+            </div>
+        `;
+    }
+    
+    // ===== MANEJO DE PRODUCTOS EN VENTA =====
+    function agregarProductoVenta(id, nombre, precio, presentacion) {
+        const existe = productosVenta.find(p => p.id === id);
+        
+        if (existe) {
+            existe.cantidad += 1;
+            existe.total = existe.cantidad * existe.precio;
+        } else {
+            const nuevoProducto = {
+                id,
+                nombre,
+                cantidad: 1,
+                precio,
+                total: precio,
+                presentacion
+            };
+            productosVenta.push(nuevoProducto);
+        }
+        
+        actualizarTablaProductosVenta();
+        calcularTotales();
+    }
+    
+    function actualizarTablaProductosVenta() {
+        const tbody = document.getElementById('productosAgregados');
+        tbody.innerHTML = '';
+        
+        productosVenta.forEach(producto => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="font-weight: 500;">${producto.nombre}</div>
+                    <small style="color: var(--gris-medio);">${producto.presentacion}</small>
+                </td>
+                <td>
+                    <input type="number" 
+                           class="cantidad-input" 
+                           value="${producto.cantidad}" 
+                           min="1"
+                           data-id="${producto.id}">
+                </td>
+                <td>
+                    <input type="text" 
+                           class="precio-input" 
+                           value="${formatCurrency(producto.precio)}"
+                           data-id="${producto.id}">
+                </td>
+                <td>${formatCurrency(producto.total)}</td>
+                <td class="eliminar-producto" data-id="${producto.id}" title="Eliminar producto">
+                    <i class="fas fa-trash"></i>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        agregarEventListenersProductosVenta();
+    }
+    
+    function agregarEventListenersProductosVenta() {
+        document.querySelectorAll('.cantidad-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const id = parseInt(this.dataset.id);
+                const cantidad = parseInt(this.value);
+                
+                const producto = productosVenta.find(p => p.id === id);
+                if (producto && cantidad > 0) {
+                    producto.cantidad = cantidad;
+                    producto.total = cantidad * producto.precio;
+                    actualizarTablaProductosVenta();
+                    calcularTotales();
+                } else if (producto) {
+                    this.value = producto.cantidad;
+                    showNotification('La cantidad debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.precio-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const id = parseInt(this.dataset.id);
+                const nuevoPrecio = parseCurrency(this.value);
+                
+                const producto = productosVenta.find(p => p.id === id);
+                if (producto && !isNaN(nuevoPrecio) && nuevoPrecio > 0) {
+                    producto.precio = nuevoPrecio;
+                    producto.total = producto.cantidad * nuevoPrecio;
+                    actualizarTablaProductosVenta();
+                    calcularTotales();
+                } else if (producto) {
+                    this.value = formatCurrency(producto.precio);
+                    showNotification('El precio debe ser mayor a 0', 'error');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.eliminar-producto').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                productosVenta = productosVenta.filter(p => p.id !== id);
+                actualizarTablaProductosVenta();
+                calcularTotales();
+                showNotification('Producto eliminado de la venta', 'info');
+            });
+        });
+    }
+    
+    // ===== MANEJO DE CLIENTES =====
+    async function buscarClientesAPI(query) {
+        try {
+            const response = await fetch(`/api/ventas/clientes/buscar?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            return data.success ? data.clientes : [];
+        } catch (error) {
+            console.error('Error buscando clientes:', error);
+            return [];
+        }
+    }
+    
+    function mostrarResultadosClientes(clientes) {
+        const contenedor = document.getElementById('resultadosClientes');
+        contenedor.innerHTML = '';
+        
+        if (clientes.length === 0) {
+            contenedor.innerHTML = '<div class="cliente-item">No se encontraron clientes</div>';
+        } else {
+            clientes.forEach(cliente => {
+                const div = document.createElement('div');
+                div.className = 'cliente-item';
+                div.dataset.cedula = cliente.cedula;
+                div.dataset.nombre = cliente.nombre;
+                div.dataset.telefono = cliente.telefono || '';
+                
+                div.innerHTML = `
+                    <div class="cliente-nombre">${cliente.nombre}</div>
+                    <div class="cliente-cedula">Cédula: ${cliente.cedula}</div>
+                    ${cliente.telefono ? `<div>Tel: ${cliente.telefono}</div>` : ''}
+                `;
+                
+                div.addEventListener('click', function() {
+                    seleccionarCliente(cliente);
+                    contenedor.style.display = 'none';
+                });
+                
+                contenedor.appendChild(div);
+            });
+        }
+        
+        contenedor.style.display = 'block';
+    }
+    
+    function seleccionarCliente(cliente) {
+        clienteSeleccionado = cliente;
+        
+        document.getElementById('clienteNombre').textContent = cliente.nombre;
+        document.getElementById('clienteCedula').textContent = `Cédula: ${cliente.cedula}`;
+        document.getElementById('clienteTelefono').textContent = cliente.telefono ? `Tel: ${cliente.telefono}` : '';
+        
+        document.getElementById('clienteInfo').style.display = 'block';
+        document.getElementById('searchCliente').value = cliente.nombre;
+        
+        showNotification('Cliente seleccionado', 'success');
+    }
+    
+    function toggleCliente(tipo) {
+        const btnFinal = document.getElementById('btnClienteFinal');
+        const btnEspecifico = document.getElementById('btnClienteEspecifico');
+        const busqueda = document.getElementById('clienteBusqueda');
+        const info = document.getElementById('clienteInfo');
+        
+        if (tipo === 'especifico') {
+            clienteEspecifico = true;
+            btnFinal.classList.remove('active');
+            btnEspecifico.classList.add('active');
+            busqueda.style.display = 'block';
+        } else {
+            clienteEspecifico = false;
+            btnFinal.classList.add('active');
+            btnEspecifico.classList.remove('active');
+            busqueda.style.display = 'none';
+            info.style.display = 'none';
+            clienteSeleccionado = null;
+            document.getElementById('searchCliente').value = '';
+            document.getElementById('resultadosClientes').style.display = 'none';
+            
+            // Si estaba seleccionado crédito, cambiar a contado
+            if (metodoPago === 'credito') {
+                document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+            }
+        }
+    }
+    
+    // ===== BÚSQUEDA DE PRODUCTOS EN TIEMPO REAL =====
+    async function buscarProductosAPI(query) {
+        try {
+            const response = await fetch(`/api/ventas/productos/buscar?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            return data.success ? data.productos : [];
+        } catch (error) {
+            console.error('Error buscando productos:', error);
+            return [];
+        }
+    }
+    
+    // ===== MANEJO DE DESCUENTOS =====
+    function setupDescuento() {
+        const input = document.getElementById('descuentoInput');
+        
+        input.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                descuento = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    const total = productosVenta.reduce((sum, p) => sum + p.total, 0);
+                    if (valor > total) {
+                        showNotification('El descuento no puede ser mayor al subtotal', 'error');
+                        this.value = formatCurrency(descuento);
+                    } else {
+                        descuento = valor;
+                        this.value = formatCurrency(valor);
+                    }
+                } else {
+                    this.value = formatCurrency(descuento);
+                    showNotification('El descuento debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotales();
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+    }
+    
+    // ===== MANEJO DE ANTICIPO =====
+    function setupAnticipo() {
+        const input = document.getElementById('anticipoInput');
+        
+        input.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                anticipo = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    const total = productosVenta.reduce((sum, p) => sum + p.total, 0) - descuento;
+                    
+                    if (valor > total) {
+                        showNotification('El anticipo no puede ser mayor al total', 'error');
+                        this.value = formatCurrency(anticipo);
+                    } else {
+                        anticipo = valor;
+                        this.value = formatCurrency(valor);
+                        document.getElementById('anticipoValor').textContent = formatCurrency(valor);
+                        
+                        // Mostrar advertencia si anticipo es 0 y método es crédito
+                        if (metodoPago === 'credito' && anticipo === 0) {
+                            showNotification('Para venta a crédito debe especificar un anticipo mayor a 0', 'warning');
+                        }
+                    }
+                } else {
+                    this.value = formatCurrency(anticipo);
+                    showNotification('El anticipo debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotales();
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+        
+        // Auto-sugerir anticipo del 30% si es crédito
+        document.querySelector('.metodo-btn[data-metodo="credito"]').addEventListener('click', function() {
+            const total = productosVenta.reduce((sum, p) => sum + p.total, 0) - descuento;
+            if (anticipo === 0 && total > 0) {
+                const sugerencia = Math.round(total * 0.3 * 100) / 100; // 30% del total
+                anticipo = sugerencia;
+                input.value = formatCurrency(sugerencia);
+                document.getElementById('anticipoValor').textContent = formatCurrency(sugerencia);
+                calcularTotales();
+            }
+        });
+    }
+    
+    // ===== MANEJO DE DINERO ENTREGADO Y CAMBIO =====
+    function setupDineroEntregado() {
+        const input = document.getElementById('dineroEntregadoInput');
+        
+        input.addEventListener('focus', function() {
+            if (this.value === '$ 0.00') {
+                this.value = '';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.value = '$ 0.00';
+                dineroEntregado = 0;
+            } else {
+                const valor = parseCurrency(this.value);
+                if (!isNaN(valor) && valor >= 0) {
+                    dineroEntregado = valor;
+                    this.value = formatCurrency(valor);
+                    document.getElementById('dineroEntregadoValor').textContent = formatCurrency(valor);
+                } else {
+                    this.value = formatCurrency(dineroEntregado);
+                    showNotification('El monto debe ser un número positivo', 'error');
+                }
+            }
+            calcularTotales();
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+        
+        // Auto-completar con el total cuando se cambia a contado
+        document.querySelector('.metodo-btn[data-metodo="contado"]').addEventListener('click', function() {
+            const total = productosVenta.reduce((sum, p) => sum + p.total, 0) - descuento;
+            if (dineroEntregado === 0 && total > 0) {
+                dineroEntregado = total;
+                input.value = formatCurrency(total);
+                document.getElementById('dineroEntregadoValor').textContent = formatCurrency(total);
+                calcularTotales();
+            }
+        });
+    }
+    
+    // ===== MANEJO DE MÉTODOS DE PAGO =====
+    function setupMetodosPago() {
+        const metodoBtns = document.querySelectorAll('.metodo-btn');
+        const submetodoBtns = document.querySelectorAll('.submetodo-btn');
+        
+        metodoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                metodoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const metodo = this.dataset.metodo;
+                metodoPago = metodo;
+                
+                const submetodoDiv = document.getElementById('submetodoBanco');
+                const creditoDiv = document.getElementById('creditoDias');
+                const anticipoDiv = document.getElementById('anticipoContainer');
+                const dineroEntregadoDiv = document.getElementById('dineroEntregadoContainer');
+                const cambioDiv = document.getElementById('cambioContainer');
+                
+                if (metodo === 'banco') {
+                    submetodoDiv.style.display = 'grid';
+                    creditoDiv.style.display = 'none';
+                    anticipoDiv.style.display = 'none';
+                    dineroEntregadoDiv.style.display = 'none';
+                    cambioDiv.style.display = 'none';
+                    submetodoBtns[0].classList.add('active');
+                    submetodoBanco = submetodoBtns[0].dataset.submetodo;
+                } else if (metodo === 'credito') {
+                    submetodoDiv.style.display = 'none';
+                    creditoDiv.style.display = 'block';
+                    anticipoDiv.style.display = 'flex';
+                    dineroEntregadoDiv.style.display = 'none';
+                    cambioDiv.style.display = 'none';
+                    submetodoBanco = null;
+                    
+                    // Validar que hay cliente seleccionado para crédito
+                    if (!clienteEspecifico || !clienteSeleccionado) {
+                        showNotification('Para venta a crédito debe seleccionar un cliente específico', 'error');
+                        // Volver a contado
+                        document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+                        return;
+                    }
+                    
+                    // Mostrar advertencia si anticipo es 0
+                    if (anticipo === 0) {
+                        showNotification('Para venta a crédito debe especificar un anticipo mayor a 0', 'warning');
+                    }
+                } else if (metodo === 'contado') {
+                    submetodoDiv.style.display = 'none';
+                    creditoDiv.style.display = 'none';
+                    anticipoDiv.style.display = 'none';
+                    dineroEntregadoDiv.style.display = 'flex';
+                    cambioDiv.style.display = 'flex';
+                    submetodoBanco = null;
+                    
+                    // Auto-completar dinero entregado con el total
+                    const total = productosVenta.reduce((sum, p) => sum + p.total, 0) - descuento;
+                    if (dineroEntregado === 0 && total > 0) {
+                        dineroEntregado = total;
+                        document.getElementById('dineroEntregadoInput').value = formatCurrency(total);
+                        document.getElementById('dineroEntregadoValor').textContent = formatCurrency(total);
+                        calcularTotales();
+                    }
+                }
+            });
+        });
+        
+        submetodoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                submetodoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                submetodoBanco = this.dataset.submetodo;
+            });
+        });
+        
+        document.getElementById('diasCreditoInput').addEventListener('change', function() {
+            diasCredito = parseInt(this.value) || 30;
+            if (diasCredito < 1) {
+                this.value = 30;
+                diasCredito = 30;
+                showNotification('Los días de crédito deben ser mayor a 0', 'error');
+            }
+        });
+    }
+    
+    // ===== BÚSQUEDA EN TIEMPO REAL =====
+    function setupBusquedaProductos() {
+        const searchInput = document.getElementById('searchProducto');
+        let timeoutId;
+        
+        searchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase().trim();
+            
+            clearTimeout(timeoutId);
+            
+            timeoutId = setTimeout(async () => {
+                if (term.length >= 2) {
+                    const productosFiltrados = await buscarProductosAPI(term);
+                    renderProductosDisponibles(productosFiltrados);
+                } else if (term === '') {
+                    renderProductosDisponibles(productosDisponibles);
+                }
+            }, 300);
+        });
+        
+        // Permitir Enter para buscar
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const term = this.value.toLowerCase().trim();
+                buscarProductosAPI(term).then(renderProductosDisponibles);
+            }
+        });
+    }
+    
+    // ===== OBTENER ÚLTIMO TICKET =====
+    async function actualizarNumeroTicket() {
+        try {
+            const response = await fetch('/api/ventas/ultimo-ticket');
+            const data = await response.json();
+            
+            if (data.success) {
+                const numero = String(data.ticket_numero + 1).padStart(4, '0');
+                document.getElementById('ticketNumero').textContent = numero;
+            }
+        } catch (error) {
+            console.error('Error actualizando ticket:', error);
+        }
+    }
+    
+    // ===== NOTIFICACIONES =====
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // ===== FINALIZAR VENTA =====
+    async function finalizarVenta() {
+        if (productosVenta.length === 0) {
+            showNotification('Agrega al menos un producto para finalizar la venta.', 'error');
+            return;
+        }
+        
+        // Validar stock antes de finalizar
+        for (const producto of productosVenta) {
+            const productoOriginal = productosDisponibles.find(p => p.id === producto.id);
+            if (productoOriginal && producto.cantidad > productoOriginal.cantidad) {
+                showNotification(`Stock insuficiente para ${producto.nombre}. Disponible: ${productoOriginal.cantidad}`, 'error');
+                return;
+            }
+        }
+        
+        const subtotal = productosVenta.reduce((sum, p) => sum + p.total, 0);
+        const total = subtotal - descuento;
+        
+        if (total <= 0) {
+            showNotification('El total de la venta debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        // VALIDACIÓN 1: Si es crédito, debe tener cliente seleccionado
+        if (metodoPago === 'credito') {
+            if (!clienteEspecifico || !clienteSeleccionado) {
+                showNotification('Para venta a crédito debe seleccionar un cliente específico', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 2: Validar días de crédito
+            if (diasCredito < 1) {
+                showNotification('Debe especificar los días de crédito válidos', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 3: Anticipo debe ser mayor a 0 para crédito
+            if (anticipo <= 0) {
+                showNotification('Para venta a crédito debe especificar un anticipo mayor a 0', 'error');
+                return;
+            }
+            
+            // VALIDACIÓN 4: Validar anticipo no mayor al total
+            if (anticipo > total) {
+                showNotification('El anticipo no puede ser mayor al total de la venta', 'error');
+                return;
+            }
+        }
+        
+        // VALIDACIÓN para contado: dinero entregado suficiente
+        if (metodoPago === 'contado') {
+            if (dineroEntregado < total) {
+                showNotification('El dinero entregado es insuficiente para cubrir el total', 'error');
+                return;
+            }
+        }
+        
+        // Preparar datos para enviar al backend
+        const datosVenta = {
+            productos: productosVenta.map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                cantidad: p.cantidad,
+                precio: p.precio
+            })),
+            subtotal: subtotal,
+            descuento: descuento,
+            total: total,
+            metodo_pago: metodoPago,
+            cliente_cedula: clienteEspecifico && clienteSeleccionado ? clienteSeleccionado.cedula : 'final',
+            dias_credito: metodoPago === 'credito' ? diasCredito : null,
+            submetodo_banco: metodoPago === 'banco' ? submetodoBanco : null,
+            anticipo: metodoPago === 'credito' ? anticipo : 0,
+            dinero_entregado: metodoPago === 'contado' ? dineroEntregado : total,
+            cambio: metodoPago === 'contado' ? cambio : 0
+        };
+        
+        // Agregar datos del cliente si está seleccionado
+        if (clienteSeleccionado) {
+            datosVenta.cliente_nombre = clienteSeleccionado.nombre;
+            datosVenta.cliente_telefono = clienteSeleccionado.telefono || '';
+        }
+        
+        if (confirm('¿Estás seguro de finalizar esta venta?')) {
+            try {
+                const response = await fetch('/api/ventas/nueva', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosVenta)
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    const ventaId = resultado.venta_id;
+                    
+                    showNotification('Venta registrada exitosamente! Se creó registro en la tabla créditos', 'success');
+                    
+                    // Preparar parámetros para el PDF según tipo de pago
+                    let pdfParams = `cajero=SISTEMA`;
+                    
+                    if (metodoPago === 'credito') {
+                        pdfParams += `&dias_credito=${diasCredito}&anticipo=${anticipo}`;
+                    } else if (metodoPago === 'contado') {
+                        pdfParams += `&pago_recibido=${dineroEntregado}`;
+                    }
+                    
+                    // Abrir PDF en nueva pestaña
+                    const pdfUrl = `/api/ventas/${ventaId}/factura-pdf?${pdfParams}`;
+                    window.open(pdfUrl, '_blank');
+                    
+                    resetearFormularioVenta();
+                    await actualizarNumeroTicket();
+                    await cargarProductosDisponibles();
+                } else {
+                    showNotification('Error: ' + resultado.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error al procesar la venta. Verifique la conexión.', 'error');
+                console.error('Error:', error);
+            }
+        }
+    }
+    
+    function resetearFormularioVenta() {
+        productosVenta = [];
+        clienteSeleccionado = null;
+        clienteEspecifico = false;
+        descuento = 0;
+        anticipo = 0;
+        dineroEntregado = 0;
+        cambio = 0;
+        diasCredito = 30;
+        submetodoBanco = null;
+        
+        actualizarTablaProductosVenta();
+        calcularTotales();
+        
+        document.getElementById('descuentoInput').value = '$ 0.00';
+        document.getElementById('anticipoInput').value = '$ 0.00';
+        document.getElementById('dineroEntregadoInput').value = '$ 0.00';
+        document.getElementById('diasCreditoInput').value = '30';
+        document.getElementById('clienteInfo').style.display = 'none';
+        document.getElementById('searchCliente').value = '';
+        document.getElementById('resultadosClientes').style.display = 'none';
+        
+        // Ocultar campos
+        document.getElementById('anticipoContainer').style.display = 'none';
+        document.getElementById('dineroEntregadoContainer').style.display = 'none';
+        document.getElementById('cambioContainer').style.display = 'none';
+        document.getElementById('submetodoBanco').style.display = 'none';
+        document.getElementById('creditoDias').style.display = 'none';
+        
+        // Resetear todos los botones de método de pago
+        document.querySelectorAll('.metodo-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.submetodo-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Resetear cliente a "Final"
+        document.getElementById('btnClienteFinal').classList.add('active');
+        document.getElementById('btnClienteEspecifico').classList.remove('active');
+        clienteEspecifico = false;
+        
+        // Resetear método de pago a "Contado"
+        document.querySelector('.metodo-btn[data-metodo="contado"]').classList.add('active');
+        metodoPago = 'contado';
+        
+        // Limpiar búsqueda de productos
+        document.getElementById('searchProducto').value = '';
+        if (productosDisponibles.length > 0) {
+            renderProductosDisponibles(productosDisponibles);
+        }
+    }
+    
+    // ===== INICIALIZACIÓN =====
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('btnClienteFinal').addEventListener('click', () => toggleCliente('final'));
+        document.getElementById('btnClienteEspecifico').addEventListener('click', () => toggleCliente('especifico'));
+        
+        // Búsqueda de clientes en tiempo real
+        document.getElementById('searchCliente').addEventListener('input', async function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                const clientes = await buscarClientesAPI(query);
+                mostrarResultadosClientes(clientes);
+            } else {
+                document.getElementById('resultadosClientes').style.display = 'none';
+            }
+        });
+        
+        setupDescuento();
+        setupAnticipo();
+        setupDineroEntregado();
+        setupMetodosPago();
+        setupBusquedaProductos();
+        agregarEventListenersProductosVenta();
+        calcularTotales();
+        actualizarNumeroTicket();
+        
+        // Cargar productos disponibles
+        cargarProductosDisponibles();
+        
+        // Botón Cancelar
+        document.getElementById('btnCancelar').addEventListener('click', function() {
+            if (productosVenta.length > 0 && confirm('¿Estás seguro de cancelar esta venta?')) {
+                resetearFormularioVenta();
+                showNotification('Venta cancelada', 'info');
+            }
+        });
+        
+        // Botón Finalizar
+        document.getElementById('btnFinalizar').addEventListener('click', finalizarVenta);
+        
+        // Ocultar resultados de búsqueda al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.cliente-busqueda')) {
+                document.getElementById('resultadosClientes').style.display = 'none';
+            }
+        });
+        
+        // Teclas de acceso rápido
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + Enter para finalizar venta
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btnFinalizar').click();
+            }
+            
+            // ESC para cancelar
+            if (e.key === 'Escape' && productosVenta.length > 0) {
+                document.getElementById('btnCancelar').click();
+            }
+        });
+        
+        // Activar método contado por defecto
+        document.querySelector('.metodo-btn[data-metodo="contado"]').click();
+    });
+</script>
+</body>
+</html>

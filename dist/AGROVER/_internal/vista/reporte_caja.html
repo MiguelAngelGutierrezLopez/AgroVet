@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Caja - Agrovet Yacuanquer</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --terracota: #C08A67;
+            --mostaza: #D9C357;
+            --turquesa: #3FA6A0;
+            --celeste-fondo: #E3F0F3;
+            --blanco-hueso: #F7F7F4;
+            --verde-oliva: #B7C3A1;
+            --rojo-rosado: #D44A5E;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #7f8c8d;
+            --gris-claro: #ecf0f1;
+            --exito: #27ae60;
+            --error: #e74c3c;
+            --advertencia: #f39c12;
+            --info: #3498db;
+        }
+        
+        /* ===== RESET Y ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco-hueso);
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== SIDEBAR IZQUIERDO ===== */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo-agro {
+            color: white;
+        }
+        
+        .logo-vet {
+            color: var(--mostaza);
+        }
+        
+        .slogan {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-menu {
+            padding: 0 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--mostaza);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER SUPERIOR ===== */
+        .top-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--terracota);
+        }
+        
+        .header-left h1 {
+            color: var(--teal);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-badge {
+            background: var(--celeste-fondo);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 140px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .stat-value.ingresos { color: var(--exito); }
+        .stat-value.egresos { color: var(--error); }
+        .stat-value.saldo { color: var(--teal); }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== CONTROLES DE PERÍODO ===== */
+        .periodo-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .periodo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .periodo-title {
+            font-size: 20px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .periodo-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .periodo-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .periodo-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gris-oscuro);
+        }
+        
+        .periodo-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .periodo-btn:hover:not(.active) {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--blanco-hueso);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+        }
+        
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal) 0%, #1a7572 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(31, 138, 134, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--gris-claro);
+            color: var(--gris-oscuro);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gris-medio);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--exito) 0%, #219653 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error) 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        /* ===== RESUMEN FINANCIERO ===== */
+        .resumen-financiero {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .balance-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .balance-card {
+            background: var(--blanco-hueso);
+            border-radius: 10px;
+            padding: 25px;
+            border-top: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .balance-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .balance-positivo { border-color: var(--exito); }
+        .balance-negativo { border-color: var(--error); }
+        .balance-neutral { border-color: var(--teal); }
+        
+        .balance-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .balance-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .icon-ingresos { background: var(--exito); }
+        .icon-egresos { background: var(--error); }
+        .icon-saldo { background: var(--teal); }
+        
+        .balance-title {
+            font-size: 16px;
+            color: var(--gris-medio);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .balance-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .balance-value.positivo { color: var(--exito); }
+        .balance-value.negativo { color: var(--error); }
+        .balance-value.neutral { color: var(--teal); }
+        
+        .balance-subtitle {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* ===== TABLAS DE INGRESOS Y EGRESOS ===== */
+        .tablas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .tabla-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .tabla-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .tabla-title {
+            font-size: 18px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reporte-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .reporte-table th {
+            background: var(--gris-claro);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            border-bottom: 2px solid;
+        }
+        
+        .ingresos-table th { border-color: var(--exito); }
+        .egresos-table th { border-color: var(--error); }
+        
+        .reporte-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+        
+        .reporte-table tr:hover {
+            background: var(--blanco-hueso);
+        }
+        
+        /* ===== ESTILOS DE CELDAS ESPECIALES ===== */
+        .monto-cell {
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .monto-ingreso { color: var(--exito); }
+        .monto-egreso { color: var(--error); }
+        
+        .razon-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .fecha-cell {
+            font-size: 13px;
+            color: var(--gris-medio);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .badge-venta { background: rgba(39, 174, 96, 0.1); color: var(--exito); }
+        .badge-servicio { background: rgba(52, 152, 219, 0.1); color: var(--info); }
+        .badge-insumo { background: rgba(192, 138, 103, 0.1); color: var(--terracota); }
+        .badge-salario { background: rgba(231, 76, 60, 0.1); color: var(--error); }
+        .badge-alquiler { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
+        .badge-otros { background: rgba(149, 165, 166, 0.1); color: var(--gris-medio); }
+        
+        /* ===== FORMULARIOS ===== */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            color: var(--gris-oscuro);
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 15px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(31, 138, 134, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        /* ===== GRÁFICOS ===== */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            color: var(--teal);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: var(--blanco-hueso);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris-medio);
+            font-style: italic;
+        }
+        
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+        }
+        
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid var(--gris-claro);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+        
+        .page-btn.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 9999;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification-error {
+            background: var(--error);
+            color: white;
+        }
+        
+        .notification-success {
+            background: var(--exito);
+            color: white;
+        }
+        
+        .notification-warning {
+            background: var(--advertencia);
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .charts-container, .tablas-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .periodo-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .periodo-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .periodo-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+            
+            .logo span, .slogan, .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .nav-icon {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+            
+            .balance-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .balance-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .periodo-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .date-range {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .tabla-card {
+                padding: 15px;
+            }
+            
+            .reporte-table th, 
+            .reporte-table td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-badge {
+                padding: 8px 12px;
+                min-width: 120px;
+            }
+            
+            .periodo-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+        }
+    </style>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-agro">AGRO</span>
+                <span class="logo-vet">VET</span>
+            </div>
+            <div class="slogan">Yacuanquer - Sistema POS</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="nav-icon fas fa-home"></i>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="/venta" class="nav-item">
+                <i class="nav-icon fas fa-cash-register"></i>
+                <span class="nav-text">Nueva Venta</span>
+            </a>
+            <a href="/productos" class="nav-item">
+                <i class="nav-icon fas fa-boxes"></i>
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="/usuarios" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                <span class="nav-text">Clientes</span>
+            </a>
+            <a href="/historial_venta" class="nav-item">
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Historial</span>
+            </a>
+            <a href="/inventario" class="nav-item active">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <span class="nav-text">Inventario</span>
+            </a>
+            <a href="/reporte_caja" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                <span class="nav-text">Reportes</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Reporte de Caja</h1>
+                <p>Control de ingresos, egresos y balance financiero</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <div class="stat-value ingresos" id="totalIngresos">$0</div>
+                    <div class="stat-label">Total Ingresos</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value egresos" id="totalEgresos">$0</div>
+                    <div class="stat-label">Total Egresos</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value saldo" id="saldoFinal">$0</div>
+                    <div class="stat-label">Saldo Neto</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- CONTROLES DE PERÍODO -->
+        <div class="periodo-container">
+            <div class="periodo-header">
+                <h2 class="periodo-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Seleccionar Período de Reporte
+                </h2>
+                <div class="periodo-actions">
+                    <div class="periodo-buttons">
+                        <button class="periodo-btn active" data-periodo="hoy">Hoy</button>
+                        <button class="periodo-btn" data-periodo="semana">Esta Semana</button>
+                        <button class="periodo-btn" data-periodo="mes">Este Mes</button>
+                        <button class="periodo-btn" data-periodo="anio">Este Año</button>
+                        <button class="periodo-btn" data-periodo="personalizado">Personalizado</button>
+                    </div>
+                    <div class="date-range" id="dateRange" style="display: none;">
+                        <input type="date" class="date-input" id="fechaInicio" value="">
+                        <span>hasta</span>
+                        <input type="date" class="date-input" id="fechaFin" value="">
+                        <button class="btn btn-primary" id="aplicarFechas">
+                            <i class="fas fa-check"></i> Aplicar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RESUMEN FINANCIERO -->
+        <div class="resumen-financiero">
+            <h2 class="periodo-title" style="margin-bottom: 25px;">
+                <i class="fas fa-chart-pie"></i>
+                Resumen Financiero
+                <span id="periodoActual" style="font-size: 16px; color: var(--gris-medio); margin-left: 10px;">(Hoy)</span>
+            </h2>
+            
+            <div class="balance-container">
+                <div class="balance-card balance-positivo">
+                    <div class="balance-header">
+                        <div>
+                            <div class="balance-title">Total Ingresos</div>
+                            <div class="balance-value positivo" id="resumenIngresos">$0</div>
+                            <div class="balance-subtitle" id="resumenIngresosSub">Entradas de dinero en el período</div>
+                        </div>
+                        <div class="balance-icon icon-ingresos">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="balance-card balance-negativo">
+                    <div class="balance-header">
+                        <div>
+                            <div class="balance-title">Total Egresos</div>
+                            <div class="balance-value negativo" id="resumenEgresos">$0</div>
+                            <div class="balance-subtitle" id="resumenEgresosSub">Salidas de dinero en el período</div>
+                        </div>
+                        <div class="balance-icon icon-egresos">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="balance-card balance-neutral">
+                    <div class="balance-header">
+                        <div>
+                            <div class="balance-title">Saldo Neto</div>
+                            <div class="balance-value neutral" id="resumenSaldo">$0</div>
+                            <div class="balance-subtitle" id="resumenSaldoSub">Diferencia entre ingresos y egresos</div>
+                        </div>
+                        <div class="balance-icon icon-saldo">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GRÁFICOS -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3 class="chart-title">
+                        <i class="fas fa-chart-line"></i>
+                        Flujo de Caja Diario
+                    </h3>
+                    <canvas id="chartFlujoCaja" height="300"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Distribución de Egresos
+                    </h3>
+                    <canvas id="chartDistribucionEgresos" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FORMULARIO PARA REGISTRAR MOVIMIENTOS -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Registrar Movimiento de Caja
+                </h2>
+                <div class="btn-group">
+                    <button class="btn btn-success" id="btnNuevoIngreso">
+                        <i class="fas fa-plus"></i> Nuevo Ingreso
+                    </button>
+                    <button class="btn btn-danger" id="btnNuevoEgreso">
+                        <i class="fas fa-minus"></i> Nuevo Egreso
+                    </button>
+                </div>
+            </div>
+            
+            <div id="formMovimiento" style="display: none;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="tipoMovimiento">Tipo de Movimiento</label>
+                        <select class="form-select" id="tipoMovimiento">
+                            <option value="ingreso">Ingreso</option>
+                            <option value="egreso">Egreso</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="montoMovimiento">Monto *</label>
+                        <input type="number" class="form-input" id="montoMovimiento" placeholder="0.00" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="categoriaMovimiento">Categoría</label>
+                        <select class="form-select" id="categoriaMovimiento">
+                            <option value="venta">Venta de Productos</option>
+                            <option value="servicio">Servicio Veterinario</option>
+                            <option value="insumo">Compra de Insumos</option>
+                            <option value="salario">Pago de Salarios</option>
+                            <option value="alquiler">Pago de Alquiler</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="fechaMovimiento">Fecha *</label>
+                        <input type="datetime-local" class="form-input" id="fechaMovimiento" required>
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label class="form-label" for="razonMovimiento">Descripción / Razón *</label>
+                        <textarea class="form-textarea" id="razonMovimiento" placeholder="Describa el motivo del movimiento..." required></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="btnCancelarMovimiento">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn btn-primary" id="btnGuardarMovimiento">
+                        <i class="fas fa-save"></i> Guardar Movimiento
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TABLAS DE INGRESOS Y EGRESOS -->
+        <div class="tablas-container">
+            <!-- TABLA DE INGRESOS -->
+            <div class="tabla-card">
+                <div class="tabla-header">
+                    <h3 class="tabla-title">
+                        <i class="fas fa-arrow-down" style="color: var(--exito);"></i>
+                        Ingresos Registrados
+                    </h3>
+                    <button class="btn btn-success" id="btnExportarIngresos">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+                
+                <table class="reporte-table ingresos-table" id="tablaIngresos">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Categoría</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyIngresos">
+                        <!-- Los ingresos se cargarán desde la base de datos -->
+                    </tbody>
+                </table>
+                
+                <div class="pagination" id="paginationIngresos">
+                    <!-- La paginación se generará dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- TABLA DE EGRESOS -->
+            <div class="tabla-card">
+                <div class="tabla-header">
+                    <h3 class="tabla-title">
+                        <i class="fas fa-arrow-up" style="color: var(--error);"></i>
+                        Egresos Registrados
+                    </h3>
+                    <button class="btn btn-danger" id="btnExportarEgresos">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+                
+                <table class="reporte-table egresos-table" id="tablaEgresos">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Categoría</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEgresos">
+                        <!-- Los egresos se cargarán desde la base de datos -->
+                    </tbody>
+                </table>
+                
+                <div class="pagination" id="paginationEgresos">
+                    <!-- La paginación se generará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ===== VARIABLES GLOBALES =====
+        let currentPageIngresos = 1;
+        let currentPageEgresos = 1;
+        const itemsPerPage = 10;
+        let periodoActual = "hoy";
+        let chartFlujoCaja, chartDistribucionEgresos;
+        let movimientoEditandoId = null;
+        
+        // ===== FUNCIONES DE FORMATO =====
+        function formatCurrency(valor) {
+            if (typeof valor !== 'number') {
+                valor = parseFloat(valor) || 0;
+            }
+            return `$${valor.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        
+        function formatDateTime(fechaStr) {
+            if (!fechaStr) return '';
+            try {
+                const fecha = new Date(fechaStr);
+                if (isNaN(fecha.getTime())) return fechaStr;
+                
+                return fecha.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return fechaStr;
+            }
+        }
+        
+        function getPeriodoNombre(periodo) {
+            switch(periodo) {
+                case 'hoy': return 'Hoy';
+                case 'semana': return 'Esta Semana';
+                case 'mes': return 'Este Mes';
+                case 'anio': return 'Este Año';
+                default: return 'Período Personalizado';
+            }
+        }
+        
+        function getBadgeClass(categoria) {
+            if (!categoria) return 'badge-otros';
+            switch(categoria) {
+                case 'venta': return 'badge-venta';
+                case 'servicio': return 'badge-servicio';
+                case 'insumo': return 'badge-insumo';
+                case 'salario': return 'badge-salario';
+                case 'alquiler': return 'badge-alquiler';
+                default: return 'badge-otros';
+            }
+        }
+        
+        function getCategoriaNombre(categoria) {
+            if (!categoria) return 'Otros';
+            switch(categoria) {
+                case 'venta': return 'Venta';
+                case 'servicio': return 'Servicio';
+                case 'insumo': return 'Insumo';
+                case 'salario': return 'Salario';
+                case 'alquiler': return 'Alquiler';
+                default: return 'Otros';
+            }
+        }
+        
+        // ===== FUNCIONES DE NOTIFICACIÓN =====
+        function showNotification(mensaje, tipo = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${tipo}`;
+            
+            let icon = 'fa-check-circle';
+            if (tipo === 'error') icon = 'fa-exclamation-circle';
+            if (tipo === 'warning') icon = 'fa-exclamation-triangle';
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${mensaje}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, tipo === 'error' ? 5000 : 3000);
+        }
+        
+        function showError(mensaje) {
+            console.error('Error:', mensaje);
+            showNotification(mensaje, 'error');
+        }
+        
+        function showSuccess(mensaje) {
+            console.log('Éxito:', mensaje);
+            showNotification(mensaje, 'success');
+        }
+        
+        function showLoading(mostrar) {
+            if (mostrar) {
+                document.body.style.cursor = 'wait';
+                // Podrías agregar un spinner aquí
+            } else {
+                document.body.style.cursor = 'default';
+            }
+        }
+        
+        // ===== FUNCIONES DE API =====
+        async function fetchMovimientos(fechaInicio = null, fechaFin = null, tipo = null, page = 1) {
+            try {
+                showLoading(true);
+                
+                let url = `/api/reporte-caja/movimientos?page=${page}&per_page=${itemsPerPage}`;
+                
+                if (fechaInicio && fechaFin) {
+                    url += `&fecha_inicio=${encodeURIComponent(fechaInicio)}&fecha_fin=${encodeURIComponent(fechaFin)}`;
+                }
+                
+                if (tipo) {
+                    url += `&tipo=${tipo}`;
+                }
+                
+                console.log('Fetching movimientos:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data;
+                } else {
+                    console.error('Error en fetchMovimientos:', data.error);
+                    showError('Error al cargar movimientos: ' + (data.error || 'Error desconocido'));
+                    return { success: false, data: [], total: 0 };
+                }
+            } catch (error) {
+                console.error('Error en fetchMovimientos:', error);
+                showError('Error de conexión al servidor');
+                return { success: false, data: [], total: 0 };
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function fetchResumen(fechaInicio = null, fechaFin = null, periodo = null) {
+            try {
+                let url = `/api/reporte-caja/resumen`;
+                
+                if (periodo) {
+                    url += `?periodo=${periodo}`;
+                } else if (fechaInicio && fechaFin) {
+                    url += `?fecha_inicio=${encodeURIComponent(fechaInicio)}&fecha_fin=${encodeURIComponent(fechaFin)}`;
+                } else {
+                    url += '?periodo=hoy';
+                }
+                
+                console.log('Fetching resumen:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data;
+                } else {
+                    console.error('Error en fetchResumen:', data.error);
+                    showError('Error al cargar resumen: ' + (data.error || 'Error desconocido'));
+                    return { success: false };
+                }
+            } catch (error) {
+                console.error('Error en fetchResumen:', error);
+                showError('Error de conexión al servidor');
+                return { success: false };
+            }
+        }
+        
+        async function fetchEstadisticas(fechaInicio = null, fechaFin = null, periodo = null) {
+            try {
+                let url = `/api/reporte-caja/estadisticas`;
+                
+                if (periodo) {
+                    url += `?periodo=${periodo}`;
+                } else if (fechaInicio && fechaFin) {
+                    url += `?fecha_inicio=${encodeURIComponent(fechaInicio)}&fecha_fin=${encodeURIComponent(fechaFin)}`;
+                } else {
+                    url += '?periodo=hoy';
+                }
+                
+                console.log('Fetching estadísticas:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data;
+                } else {
+                    console.error('Error en fetchEstadisticas:', data.error);
+                    showError('Error al cargar estadísticas: ' + (data.error || 'Error desconocido'));
+                    return { success: false };
+                }
+            } catch (error) {
+                console.error('Error en fetchEstadisticas:', error);
+                showError('Error de conexión al servidor');
+                return { success: false };
+            }
+        }
+        
+        async function crearMovimientoAPI(datos) {
+            try {
+                console.log('Creando movimiento:', datos);
+                
+                const response = await fetch('/api/reporte-caja/movimiento', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datos)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Respuesta crear movimiento:', data);
+                return data;
+                
+            } catch (error) {
+                console.error('Error en crearMovimientoAPI:', error);
+                return { success: false, error: 'Error de conexión: ' + error.message };
+            }
+        }
+        
+        async function actualizarMovimientoAPI(id, datos) {
+            try {
+                console.log('Actualizando movimiento:', id, datos);
+                
+                const response = await fetch(`/api/reporte-caja/movimiento/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datos)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Respuesta actualizar movimiento:', data);
+                return data;
+                
+            } catch (error) {
+                console.error('Error en actualizarMovimientoAPI:', error);
+                return { success: false, error: 'Error de conexión: ' + error.message };
+            }
+        }
+        
+        async function eliminarMovimientoAPI(id) {
+            try {
+                if (!confirm('¿Está seguro de eliminar este movimiento? Esta acción no se puede deshacer.')) {
+                    return { success: false, error: 'Cancelado por el usuario' };
+                }
+                
+                console.log('Eliminando movimiento:', id);
+                
+                const response = await fetch(`/api/reporte-caja/movimiento/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Respuesta eliminar movimiento:', data);
+                return data;
+                
+            } catch (error) {
+                console.error('Error en eliminarMovimientoAPI:', error);
+                return { success: false, error: 'Error de conexión: ' + error.message };
+            }
+        }
+        
+        async function fetchMovimientoPorId(id) {
+            try {
+                console.log('Obteniendo movimiento:', id);
+                
+                const response = await fetch(`/api/reporte-caja/movimiento/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Respuesta obtener movimiento:', data);
+                return data;
+                
+            } catch (error) {
+                console.error('Error en fetchMovimientoPorId:', error);
+                return { success: false, error: 'Error de conexión: ' + error.message };
+            }
+        }
+        
+        // ===== FILTRAR POR PERÍODO =====
+        function obtenerFechasPeriodo(periodo) {
+            const hoy = new Date();
+            let fechaInicio, fechaFin;
+            
+            switch(periodo) {
+                case 'hoy':
+                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 0, 0, 0);
+                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 59, 59);
+                    break;
+                    
+                case 'semana':
+                    // Primer día de la semana (lunes)
+                    const primerDiaSemana = hoy.getDate() - hoy.getDay() + (hoy.getDay() === 0 ? -6 : 1);
+                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), primerDiaSemana, 0, 0, 0);
+                    fechaFin = new Date(fechaInicio);
+                    fechaFin.setDate(fechaInicio.getDate() + 6);
+                    fechaFin.setHours(23, 59, 59);
+                    break;
+                    
+                case 'mes':
+                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1, 0, 0, 0);
+                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
+                    break;
+                    
+                case 'anio':
+                    fechaInicio = new Date(hoy.getFullYear(), 0, 1, 0, 0, 0);
+                    fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
+                    break;
+                    
+                default:
+                    // Personalizado - usar fechas del formulario
+                    const fechaInicioInput = document.getElementById('fechaInicio').value;
+                    const fechaFinInput = document.getElementById('fechaFin').value;
+                    
+                    if (fechaInicioInput && fechaFinInput) {
+                        fechaInicio = new Date(fechaInicioInput + 'T00:00:00');
+                        fechaFin = new Date(fechaFinInput + 'T23:59:59');
+                    } else {
+                        // Por defecto hoy
+                        fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 0, 0, 0);
+                        fechaFin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 59, 59);
+                    }
+                    break;
+            }
+            
+            // Formatear para MySQL
+            const formatForMySQL = (date) => {
+                return date.toISOString().slice(0, 19).replace('T', ' ');
+            };
+            
+            return {
+                fechaInicio: formatForMySQL(fechaInicio),
+                fechaFin: formatForMySQL(fechaFin)
+            };
+        }
+        
+        async function filtrarPorPeriodo(periodo) {
+            try {
+                periodoActual = periodo;
+                
+                // Actualizar título del período
+                document.getElementById('periodoActual').textContent = `(${getPeriodoNombre(periodo)})`;
+                
+                // Mostrar/ocultar selector de fechas personalizadas
+                const dateRange = document.getElementById('dateRange');
+                if (periodo === 'personalizado') {
+                    dateRange.style.display = 'flex';
+                    
+                    // Si no hay fechas seleccionadas, usar este mes como predeterminado
+                    const hoy = new Date();
+                    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+                    const finMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+                    
+                    if (!document.getElementById('fechaInicio').value) {
+                        document.getElementById('fechaInicio').value = inicioMes.toISOString().split('T')[0];
+                        document.getElementById('fechaFin').value = finMes.toISOString().split('T')[0];
+                    }
+                    
+                    return;
+                } else {
+                    dateRange.style.display = 'none';
+                }
+                
+                // Obtener fechas del período
+                const fechas = obtenerFechasPeriodo(periodo);
+                await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+                
+            } catch (error) {
+                console.error('Error en filtrarPorPeriodo:', error);
+                showError('Error al filtrar por período');
+            }
+        }
+        
+        // ===== ACTUALIZAR DATOS =====
+        async function actualizarDatos(fechaInicio, fechaFin) {
+            try {
+                showLoading(true);
+                
+                console.log('Actualizando datos:', { fechaInicio, fechaFin });
+                
+                // Obtener resumen financiero
+                const resumen = await fetchResumen(fechaInicio, fechaFin);
+                
+                if (resumen.success) {
+                    actualizarResumenUI(resumen);
+                } else {
+                    showError('Error al cargar el resumen: ' + (resumen.error || 'Error desconocido'));
+                }
+                
+                // Obtener estadísticas para gráficos
+                const estadisticas = await fetchEstadisticas(fechaInicio, fechaFin);
+                
+                if (estadisticas.success) {
+                    actualizarGraficos(estadisticas);
+                } else {
+                    console.error('Error al cargar estadísticas:', estadisticas.error);
+                }
+                
+                // Obtener movimientos para tablas
+                const movimientosIngresos = await fetchMovimientos(fechaInicio, fechaFin, 'ingreso', currentPageIngresos);
+                const movimientosEgresos = await fetchMovimientos(fechaInicio, fechaFin, 'egreso', currentPageEgresos);
+                
+                if (movimientosIngresos.success) {
+                    renderTablaIngresos(movimientosIngresos.data);
+                    renderPaginationIngresos(movimientosIngresos.total);
+                }
+                
+                if (movimientosEgresos.success) {
+                    renderTablaEgresos(movimientosEgresos.data);
+                    renderPaginationEgresos(movimientosEgresos.total);
+                }
+                
+            } catch (error) {
+                console.error('Error en actualizarDatos:', error);
+                showError('Error al cargar datos: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ===== ACTUALIZAR UI =====
+        function actualizarResumenUI(resumen) {
+            try {
+                const datos = resumen.resumen || {};
+                
+                const totalIngresos = parseFloat(datos.total_ingresos) || 0;
+                const totalEgresos = parseFloat(datos.total_egresos) || 0;
+                const saldoNeto = parseFloat(datos.saldo_neto) || 0;
+                const cantidadIngresos = parseInt(datos.cantidad_ingresos) || 0;
+                const cantidadEgresos = parseInt(datos.cantidad_egresos) || 0;
+                
+                // Actualizar header
+                document.getElementById('totalIngresos').textContent = formatCurrency(totalIngresos);
+                document.getElementById('totalEgresos').textContent = formatCurrency(totalEgresos);
+                document.getElementById('saldoFinal').textContent = formatCurrency(saldoNeto);
+                
+                // Actualizar resumen cards
+                document.getElementById('resumenIngresos').textContent = formatCurrency(totalIngresos);
+                document.getElementById('resumenEgresos').textContent = formatCurrency(totalEgresos);
+                document.getElementById('resumenSaldo').textContent = formatCurrency(saldoNeto);
+                
+                // Actualizar subtítulos
+                const periodoNombre = getPeriodoNombre(periodoActual);
+                document.getElementById('resumenIngresosSub').textContent = `${cantidadIngresos} transacción${cantidadIngresos !== 1 ? 'es' : ''} en ${periodoNombre.toLowerCase()}`;
+                document.getElementById('resumenEgresosSub').textContent = `${cantidadEgresos} transacción${cantidadEgresos !== 1 ? 'es' : ''} en ${periodoNombre.toLowerCase()}`;
+                
+                if (saldoNeto >= 0) {
+                    document.getElementById('resumenSaldoSub').textContent = `Balance positivo en ${periodoNombre.toLowerCase()}`;
+                } else {
+                    document.getElementById('resumenSaldoSub').textContent = `Balance negativo en ${periodoNombre.toLowerCase()}`;
+                }
+                
+            } catch (error) {
+                console.error('Error en actualizarResumenUI:', error);
+                showError('Error al actualizar la interfaz');
+            }
+        }
+        
+        // En el archivo HTML (dentro del script), modificar las funciones renderTablaIngresos y renderTablaEgresos:
+
+        function renderTablaIngresos(ingresos) {
+            try {
+                const tbody = document.getElementById('tbodyIngresos');
+                tbody.innerHTML = '';
+                
+                if (!ingresos || ingresos.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--gris-medio);">
+                                <i class="fas fa-coins" style="font-size: 48px; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                                <h3 style="margin-bottom: 10px;">No hay ingresos en este período</h3>
+                                <p>Registra un nuevo ingreso usando el botón "Nuevo Ingreso".</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                ingresos.forEach(item => {
+                    const tr = document.createElement('tr');
+                    
+                    // Obtener el ID - IMPORTANTE: verificar diferentes nombres de campo
+                    const movimientoId = item.id || item.ID || item.id_movimiento || 0;
+                    
+                    // Determinar campos según estructura de datos
+                    const fecha = item.fecha || item.fecha_ingreso || item.fecha_egreso;
+                    const razon = item.descripcion || item.razon_ingreso || item.razon_egreso || '';
+                    const monto = item.ingresos || 0;
+                    const categoria = item.categoria || 'otros';
+                    
+                    tr.innerHTML = `
+                        <td class="fecha-cell">${formatDateTime(fecha)}</td>
+                        <td class="razon-cell" title="${razon}">${razon}</td>
+                        <td><span class="badge ${getBadgeClass(categoria)}">${getCategoriaNombre(categoria)}</span></td>
+                        <td class="monto-cell monto-ingreso">${formatCurrency(monto)}</td>
+                        <td style="white-space: nowrap;">
+                            ${movimientoId > 0 ? `
+                            <button class="btn btn-secondary btn-sm" onclick="editarMovimiento(${movimientoId})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="eliminarMovimiento(${movimientoId})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            ` : `
+                            <button class="btn btn-secondary btn-sm" disabled title="ID no disponible">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" disabled title="ID no disponible">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            `}
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+            } catch (error) {
+                console.error('Error en renderTablaIngresos:', error);
+                showError('Error al renderizar tabla de ingresos');
+            }
+        }
+
+        function renderTablaEgresos(egresos) {
+            try {
+                const tbody = document.getElementById('tbodyEgresos');
+                tbody.innerHTML = '';
+                
+                if (!egresos || egresos.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--gris-medio);">
+                                <i class="fas fa-receipt" style="font-size: 48px; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                                <h3 style="margin-bottom: 10px;">No hay egresos en este período</h3>
+                                <p>Registra un nuevo egreso usando el botón "Nuevo Egreso".</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                egresos.forEach(item => {
+                    const tr = document.createElement('tr');
+                    
+                    // Obtener el ID - IMPORTANTE: verificar diferentes nombres de campo
+                    const movimientoId = item.id || item.ID || item.id_movimiento || 0;
+                    
+                    // Determinar campos según estructura de datos
+                    const fecha = item.fecha || item.fecha_egreso || item.fecha_ingreso;
+                    const razon = item.descripcion || item.razon_egreso || item.razon_ingreso || '';
+                    const monto = item.egresos || 0;
+                    const categoria = item.categoria || 'otros';
+                    
+                    tr.innerHTML = `
+                        <td class="fecha-cell">${formatDateTime(fecha)}</td>
+                        <td class="razon-cell" title="${razon}">${razon}</td>
+                        <td><span class="badge ${getBadgeClass(categoria)}">${getCategoriaNombre(categoria)}</span></td>
+                        <td class="monto-cell monto-egreso">${formatCurrency(monto)}</td>
+                        <td style="white-space: nowrap;">
+                            ${movimientoId > 0 ? `
+                            <button class="btn btn-secondary btn-sm" onclick="editarMovimiento(${movimientoId})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="eliminarMovimiento(${movimientoId})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            ` : `
+                            <button class="btn btn-secondary btn-sm" disabled title="ID no disponible">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" disabled title="ID no disponible">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            `}
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+            } catch (error) {
+                console.error('Error en renderTablaEgresos:', error);
+                showError('Error al renderizar tabla de egresos');
+            }
+        }
+        
+        // ===== PAGINACIÓN =====
+        function renderPaginationIngresos(totalItems) {
+            try {
+                const pagination = document.getElementById('paginationIngresos');
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                
+                if (totalPages <= 1) {
+                    pagination.style.display = 'none';
+                    return;
+                }
+                
+                pagination.style.display = 'flex';
+                pagination.innerHTML = '';
+                
+                // Botón anterior
+                const prevBtn = document.createElement('button');
+                prevBtn.className = `page-btn ${currentPageIngresos === 1 ? 'disabled' : ''}`;
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.disabled = currentPageIngresos === 1;
+                prevBtn.onclick = () => currentPageIngresos > 1 && changePageIngresos(currentPageIngresos - 1);
+                pagination.appendChild(prevBtn);
+                
+                // Páginas
+                const maxPagesToShow = 5;
+                let startPage = Math.max(1, currentPageIngresos - Math.floor(maxPagesToShow / 2));
+                let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+                
+                if (endPage - startPage + 1 < maxPagesToShow) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `page-btn ${i === currentPageIngresos ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => changePageIngresos(i);
+                    pagination.appendChild(pageBtn);
+                }
+                
+                // Botón siguiente
+                const nextBtn = document.createElement('button');
+                nextBtn.className = `page-btn ${currentPageIngresos === totalPages ? 'disabled' : ''}`;
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.disabled = currentPageIngresos === totalPages;
+                nextBtn.onclick = () => currentPageIngresos < totalPages && changePageIngresos(currentPageIngresos + 1);
+                pagination.appendChild(nextBtn);
+                
+            } catch (error) {
+                console.error('Error en renderPaginationIngresos:', error);
+                showError('Error al renderizar paginación');
+            }
+        }
+        
+        function renderPaginationEgresos(totalItems) {
+            try {
+                const pagination = document.getElementById('paginationEgresos');
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                
+                if (totalPages <= 1) {
+                    pagination.style.display = 'none';
+                    return;
+                }
+                
+                pagination.style.display = 'flex';
+                pagination.innerHTML = '';
+                
+                // Botón anterior
+                const prevBtn = document.createElement('button');
+                prevBtn.className = `page-btn ${currentPageEgresos === 1 ? 'disabled' : ''}`;
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.disabled = currentPageEgresos === 1;
+                prevBtn.onclick = () => currentPageEgresos > 1 && changePageEgresos(currentPageEgresos - 1);
+                pagination.appendChild(prevBtn);
+                
+                // Páginas
+                const maxPagesToShow = 5;
+                let startPage = Math.max(1, currentPageEgresos - Math.floor(maxPagesToShow / 2));
+                let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+                
+                if (endPage - startPage + 1 < maxPagesToShow) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `page-btn ${i === currentPageEgresos ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => changePageEgresos(i);
+                    pagination.appendChild(pageBtn);
+                }
+                
+                // Botón siguiente
+                const nextBtn = document.createElement('button');
+                nextBtn.className = `page-btn ${currentPageEgresos === totalPages ? 'disabled' : ''}`;
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.disabled = currentPageEgresos === totalPages;
+                nextBtn.onclick = () => currentPageEgresos < totalPages && changePageEgresos(currentPageEgresos + 1);
+                pagination.appendChild(nextBtn);
+                
+            } catch (error) {
+                console.error('Error en renderPaginationEgresos:', error);
+                showError('Error al renderizar paginación');
+            }
+        }
+        
+        async function changePageIngresos(page) {
+            currentPageIngresos = page;
+            const fechas = obtenerFechasPeriodo(periodoActual);
+            await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+        }
+        
+        async function changePageEgresos(page) {
+            currentPageEgresos = page;
+            const fechas = obtenerFechasPeriodo(periodoActual);
+            await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+        }
+        
+        // ===== GRÁFICOS =====
+        function actualizarGraficos(estadisticas) {
+            try {
+                // Gráfico de flujo de caja diario
+                const flujoCaja = estadisticas.flujo_caja || [];
+                const ctx1 = document.getElementById('chartFlujoCaja');
+                
+                if (chartFlujoCaja) {
+                    chartFlujoCaja.destroy();
+                }
+                
+                if (flujoCaja.length > 0) {
+                    const fechas = flujoCaja.map(item => {
+                        const fecha = item.fecha || '';
+                        if (fecha.includes('-')) {
+                            return fecha.split('T')[0];
+                        }
+                        return fecha;
+                    });
+                    
+                    const ingresos = flujoCaja.map(item => parseFloat(item.ingresos || 0));
+                    const egresos = flujoCaja.map(item => parseFloat(item.egresos || 0));
+                    
+                    chartFlujoCaja = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: fechas,
+                            datasets: [
+                                {
+                                    label: 'Ingresos',
+                                    data: ingresos,
+                                    backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                                    borderColor: 'rgba(39, 174, 96, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Egresos',
+                                    data: egresos,
+                                    backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                                    borderColor: 'rgba(231, 76, 60, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return formatCurrency(value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    ctx1.parentElement.innerHTML = `
+                        <div class="chart-placeholder">
+                            <div>
+                                <i class="fas fa-chart-line" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                                <p>No hay datos de flujo de caja para mostrar</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Gráfico de distribución de egresos
+                const distribucionEgresos = estadisticas.distribucion_egresos || [];
+                const ctx2 = document.getElementById('chartDistribucionEgresos');
+                
+                if (chartDistribucionEgresos) {
+                    chartDistribucionEgresos.destroy();
+                }
+                
+                if (distribucionEgresos.length > 0) {
+                    const categorias = distribucionEgresos.map(item => getCategoriaNombre(item.categoria));
+                    const montos = distribucionEgresos.map(item => parseFloat(item.total || 0));
+                    
+                    const colores = [
+                        'rgba(231, 76, 60, 0.8)',    // Rojo
+                        'rgba(52, 152, 219, 0.8)',   // Azul
+                        'rgba(192, 138, 103, 0.8)',  // Terracota
+                        'rgba(155, 89, 182, 0.8)',   // Púrpura
+                        'rgba(241, 196, 15, 0.8)',   // Amarillo
+                        'rgba(149, 165, 166, 0.8)'   // Gris
+                    ];
+                    
+                    chartDistribucionEgresos = new Chart(ctx2, {
+                        type: 'pie',
+                        data: {
+                            labels: categorias,
+                            datasets: [{
+                                data: montos,
+                                backgroundColor: colores.slice(0, montos.length),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.raw || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                            return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    ctx2.parentElement.innerHTML = `
+                        <div class="chart-placeholder">
+                            <div>
+                                <i class="fas fa-chart-pie" style="font-size: 48px; color: var(--gris-medio); margin-bottom: 15px; display: block;"></i>
+                                <p>No hay datos de distribución para mostrar</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error en actualizarGraficos:', error);
+                showError('Error al actualizar gráficos');
+            }
+        }
+        
+        // ===== GESTIÓN DE MOVIMIENTOS =====
+        function mostrarFormularioMovimiento(tipo) {
+            try {
+                const form = document.getElementById('formMovimiento');
+                const tipoSelect = document.getElementById('tipoMovimiento');
+                const fechaInput = document.getElementById('fechaMovimiento');
+                
+                // Establecer valores por defecto
+                tipoSelect.value = tipo;
+                
+                // Establecer fecha y hora actual
+                const ahora = new Date();
+                const offset = ahora.getTimezoneOffset() * 60000;
+                const localISOTime = new Date(ahora - offset).toISOString().slice(0, 16);
+                fechaInput.value = localISOTime;
+                
+                // Restablecer otros campos
+                document.getElementById('montoMovimiento').value = '';
+                document.getElementById('razonMovimiento').value = '';
+                document.getElementById('categoriaMovimiento').value = tipo === 'ingreso' ? 'venta' : 'insumo';
+                
+                // Mostrar formulario
+                form.style.display = 'block';
+                
+                // Scroll al formulario
+                form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Restaurar botón guardar
+                const btnGuardar = document.getElementById('btnGuardarMovimiento');
+                btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Movimiento';
+                btnGuardar.onclick = guardarMovimiento;
+                
+                movimientoEditandoId = null;
+                
+            } catch (error) {
+                console.error('Error en mostrarFormularioMovimiento:', error);
+                showError('Error al mostrar formulario');
+            }
+        }
+        
+        async function editarMovimiento(id) {
+            try {
+                const result = await fetchMovimientoPorId(id);
+                
+                if (result.success && result.data) {
+                    const movimiento = result.data;
+                    
+                    // Determinar tipo basado en los datos
+                    let tipo = 'ingreso';
+                    let monto = movimiento.ingresos || 0;
+                    let razon = movimiento.razon_ingreso || '';
+                    let fecha = movimiento.fecha_ingreso || '';
+                    
+                    if (movimiento.egresos > 0) {
+                        tipo = 'egreso';
+                        monto = movimiento.egresos || 0;
+                        razon = movimiento.razon_egreso || '';
+                        fecha = movimiento.fecha_egreso || '';
+                    }
+                    
+                    // Llenar formulario
+                    document.getElementById('tipoMovimiento').value = tipo;
+                    document.getElementById('montoMovimiento').value = monto;
+                    document.getElementById('categoriaMovimiento').value = movimiento.categoria || 'otros';
+                    
+                    // Formatear fecha para input datetime-local
+                    if (fecha) {
+                        const fechaObj = new Date(fecha);
+                        if (!isNaN(fechaObj.getTime())) {
+                            const offset = fechaObj.getTimezoneOffset() * 60000;
+                            const localISOTime = new Date(fechaObj - offset).toISOString().slice(0, 16);
+                            document.getElementById('fechaMovimiento').value = localISOTime;
+                        }
+                    }
+                    
+                    document.getElementById('razonMovimiento').value = razon;
+                    
+                    // Mostrar formulario
+                    document.getElementById('formMovimiento').style.display = 'block';
+                    
+                    // Cambiar texto del botón guardar
+                    const btnGuardar = document.getElementById('btnGuardarMovimiento');
+                    btnGuardar.innerHTML = '<i class="fas fa-save"></i> Actualizar Movimiento';
+                    btnGuardar.onclick = function() { actualizarMovimiento(id); };
+                    
+                    movimientoEditandoId = id;
+                    
+                    // Scroll al formulario
+                    document.getElementById('formMovimiento').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                } else {
+                    showError('No se pudo cargar el movimiento para editar: ' + (result.error || 'Movimiento no encontrado'));
+                }
+            } catch (error) {
+                console.error('Error al editar movimiento:', error);
+                showError('Error al cargar el movimiento para editar: ' + error.message);
+            }
+        }
+        
+        async function guardarMovimiento() {
+            try {
+                const tipo = document.getElementById('tipoMovimiento').value;
+                const monto = parseFloat(document.getElementById('montoMovimiento').value);
+                const categoria = document.getElementById('categoriaMovimiento').value;
+                const fechaInput = document.getElementById('fechaMovimiento').value;
+                const razon = document.getElementById('razonMovimiento').value.trim();
+                
+                // Validaciones
+                if (!monto || monto <= 0 || isNaN(monto)) {
+                    showError('Por favor ingrese un monto válido (mayor a 0)');
+                    return;
+                }
+                
+                if (!razon) {
+                    showError('Por favor ingrese una descripción');
+                    return;
+                }
+                
+                if (!fechaInput) {
+                    showError('Por favor seleccione una fecha');
+                    return;
+                }
+                
+                // Convertir fecha a formato MySQL
+                let fechaMySQL;
+                try {
+                    const fechaObj = new Date(fechaInput);
+                    if (isNaN(fechaObj.getTime())) {
+                        throw new Error('Fecha inválida');
+                    }
+                    fechaMySQL = fechaObj.toISOString().slice(0, 19).replace('T', ' ');
+                } catch (error) {
+                    showError('Fecha inválida. Por favor seleccione una fecha correcta.');
+                    return;
+                }
+                
+                const datos = {
+                    monto: monto,
+                    razon: razon,
+                    tipo: tipo,
+                    categoria: categoria,
+                    fecha: fechaMySQL
+                };
+                
+                console.log('Enviando datos para guardar:', datos);
+                
+                const result = await crearMovimientoAPI(datos);
+                
+                if (result.success) {
+                    showSuccess(`Movimiento de ${tipo} registrado exitosamente${result.id ? ' (ID: ' + result.id + ')' : ''}`);
+                    
+                    // Limpiar formulario y ocultar
+                    document.getElementById('formMovimiento').style.display = 'none';
+                    document.getElementById('montoMovimiento').value = '';
+                    document.getElementById('razonMovimiento').value = '';
+                    
+                    // Actualizar vista con el período actual
+                    const fechas = obtenerFechasPeriodo(periodoActual);
+                    await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+                    
+                } else {
+                    showError('Error al guardar: ' + (result.error || 'Error desconocido'));
+                }
+                
+            } catch (error) {
+                console.error('Error al guardar movimiento:', error);
+                showError('Error al guardar movimiento: ' + error.message);
+            }
+        }
+        
+        async function actualizarMovimiento(id) {
+            try {
+                const tipo = document.getElementById('tipoMovimiento').value;
+                const monto = parseFloat(document.getElementById('montoMovimiento').value);
+                const categoria = document.getElementById('categoriaMovimiento').value;
+                const fechaInput = document.getElementById('fechaMovimiento').value;
+                const razon = document.getElementById('razonMovimiento').value.trim();
+                
+                // Validaciones
+                if (!monto || monto <= 0 || isNaN(monto)) {
+                    showError('Por favor ingrese un monto válido (mayor a 0)');
+                    return;
+                }
+                
+                if (!razon) {
+                    showError('Por favor ingrese una descripción');
+                    return;
+                }
+                
+                if (!fechaInput) {
+                    showError('Por favor seleccione una fecha');
+                    return;
+                }
+                
+                // Convertir fecha a formato MySQL
+                let fechaMySQL;
+                try {
+                    const fechaObj = new Date(fechaInput);
+                    if (isNaN(fechaObj.getTime())) {
+                        throw new Error('Fecha inválida');
+                    }
+                    fechaMySQL = fechaObj.toISOString().slice(0, 19).replace('T', ' ');
+                } catch (error) {
+                    showError('Fecha inválida. Por favor seleccione una fecha correcta.');
+                    return;
+                }
+                
+                const datos = {
+                    monto: monto,
+                    razon: razon,
+                    tipo: tipo,
+                    categoria: categoria,
+                    fecha: fechaMySQL
+                };
+                
+                console.log('Enviando datos para actualizar:', { id, datos });
+                
+                const result = await actualizarMovimientoAPI(id, datos);
+                
+                if (result.success) {
+                    showSuccess('Movimiento actualizado exitosamente');
+                    
+                    // Limpiar formulario y ocultar
+                    document.getElementById('formMovimiento').style.display = 'none';
+                    document.getElementById('montoMovimiento').value = '';
+                    document.getElementById('razonMovimiento').value = '';
+                    
+                    // Restaurar botón guardar
+                    const btnGuardar = document.getElementById('btnGuardarMovimiento');
+                    btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Movimiento';
+                    btnGuardar.onclick = guardarMovimiento;
+                    
+                    movimientoEditandoId = null;
+                    
+                    // Actualizar vista con el período actual
+                    const fechas = obtenerFechasPeriodo(periodoActual);
+                    await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+                    
+                } else {
+                    showError('Error al actualizar: ' + (result.error || 'Error desconocido'));
+                }
+                
+            } catch (error) {
+                console.error('Error al actualizar movimiento:', error);
+                showError('Error al actualizar movimiento: ' + error.message);
+            }
+        }
+        
+        async function eliminarMovimiento(id) {
+            try {
+                const result = await eliminarMovimientoAPI(id);
+                
+                if (result.success) {
+                    showSuccess('Movimiento eliminado exitosamente');
+                    
+                    // Actualizar vista con el período actual
+                    const fechas = obtenerFechasPeriodo(periodoActual);
+                    await actualizarDatos(fechas.fechaInicio, fechas.fechaFin);
+                    
+                } else {
+                    showError('Error al eliminar: ' + (result.error || 'Movimiento no encontrado'));
+                }
+            } catch (error) {
+                console.error('Error al eliminar movimiento:', error);
+                showError('Error al eliminar movimiento: ' + error.message);
+            }
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar fecha actual en inputs de fecha
+            const hoy = new Date();
+            const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+            const finMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+            
+            document.getElementById('fechaInicio').value = inicioMes.toISOString().split('T')[0];
+            document.getElementById('fechaFin').value = finMes.toISOString().split('T')[0];
+            
+            // Configurar fecha actual en formulario
+            const offset = hoy.getTimezoneOffset() * 60000;
+            const localISOTime = new Date(hoy - offset).toISOString().slice(0, 16);
+            document.getElementById('fechaMovimiento').value = localISOTime;
+            
+            // Configurar botones de período
+            document.querySelectorAll('.periodo-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover active de todos
+                    document.querySelectorAll('.periodo-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Agregar active al clickeado
+                    this.classList.add('active');
+                    const periodo = this.dataset.periodo;
+                    
+                    filtrarPorPeriodo(periodo);
+                });
+            });
+            
+            // Configurar aplicar fechas personalizadas
+            document.getElementById('aplicarFechas').addEventListener('click', function() {
+                const fechaInicio = document.getElementById('fechaInicio').value;
+                const fechaFin = document.getElementById('fechaFin').value;
+                
+                if (!fechaInicio || !fechaFin) {
+                    showError('Por favor seleccione ambas fechas');
+                    return;
+                }
+                
+                if (new Date(fechaInicio) > new Date(fechaFin)) {
+                    showError('La fecha de inicio no puede ser mayor que la fecha de fin');
+                    return;
+                }
+                
+                filtrarPorPeriodo('personalizado');
+            });
+            
+            // Configurar botones de nuevo movimiento
+            document.getElementById('btnNuevoIngreso').addEventListener('click', function() {
+                mostrarFormularioMovimiento('ingreso');
+            });
+            
+            document.getElementById('btnNuevoEgreso').addEventListener('click', function() {
+                mostrarFormularioMovimiento('egreso');
+            });
+            
+            // Configurar botón cancelar
+            document.getElementById('btnCancelarMovimiento').addEventListener('click', function() {
+                document.getElementById('formMovimiento').style.display = 'none';
+                document.getElementById('montoMovimiento').value = '';
+                document.getElementById('razonMovimiento').value = '';
+                
+                // Restaurar botón guardar
+                const btnGuardar = document.getElementById('btnGuardarMovimiento');
+                btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Movimiento';
+                btnGuardar.onclick = guardarMovimiento;
+                
+                movimientoEditandoId = null;
+            });
+            
+            // Configurar botones de exportación
+            document.getElementById('btnExportarIngresos').addEventListener('click', function() {
+                showNotification('Funcionalidad de exportación de ingresos (en desarrollo)', 'warning');
+            });
+            
+            document.getElementById('btnExportarEgresos').addEventListener('click', function() {
+                showNotification('Funcionalidad de exportación de egresos (en desarrollo)', 'warning');
+            });
+            
+            // Inicializar con período "hoy"
+            filtrarPorPeriodo('hoy');
+            
+            // Agregar estilos CSS adicionales
+            const additionalStyles = document.createElement('style');
+            additionalStyles.textContent = `
+                .btn-sm {
+                    padding: 6px 12px !important;
+                    font-size: 12px !important;
+                    min-width: auto !important;
+                }
+                
+                table tr:last-child td {
+                    border-bottom: none;
+                }
+                
+                .form-container {
+                    transition: all 0.3s ease;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                .balance-card, .form-container, .tabla-card, .chart-card {
+                    animation: fadeIn 0.5s ease forwards;
+                }
+                
+                canvas {
+                    max-height: 300px;
+                    width: 100% !important;
+                }
+            `;
+            document.head.appendChild(additionalStyles);
+            
+            // Test de conexión inicial
+            console.log('Reporte de Caja - Sistema AGROVET YACUANQUER');
+            console.log('URL API:', window.location.origin);
+            
+        });
+        
+        // Hacer funciones disponibles globalmente
+        window.editarMovimiento = editarMovimiento;
+        window.eliminarMovimiento = eliminarMovimiento;
+        window.guardarMovimiento = guardarMovimiento;
+        window.actualizarMovimiento = actualizarMovimiento;
+        
+    </script>
+</body>
+</html>

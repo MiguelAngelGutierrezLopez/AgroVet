@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroVet Yacuanquer - Iniciar Sesión</title>
+    <style>
+        /* ===== VARIABLES DE COLOR ===== */
+        :root {
+            --teal: #1F8A86;
+            --teal-dark: #166b68;
+            --teal-light: #3fa6a0;
+            --mostaza: #D9C357;
+            --terracota: #C08A67;
+            --celeste-fondo: #E8F4F6;
+            --blanco-hueso: #F8F9FA;
+            --gris-oscuro: #2C3E50;
+            --gris-medio: #7F8C8D;
+            --gris-claro: #ECF0F1;
+            --exito: #27AE60;
+            --error: #E74C3C;
+            --error-dark: #c0392b;
+            --sombra: 0 8px 24px rgba(0,0,0,0.12);
+            --sombra-hover: 0 12px 32px rgba(0,0,0,0.16);
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Decoración de fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .login-wrapper {
+            display: flex;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--sombra);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ===== LADO IZQUIERDO - INFORMACIÓN ===== */
+        .login-info {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+            padding: 40px;
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .logo-placeholder i {
+            font-size: 60px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .logo-text span {
+            color: var(--mostaza);
+        }
+        
+        .info-title {
+            margin: 30px 0 20px;
+        }
+        
+        .info-title h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .info-title p {
+            font-size: 14px;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+        
+        .features {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .features li i {
+            width: 24px;
+            font-size: 16px;
+            color: var(--mostaza);
+        }
+        
+        .login-footer {
+            font-size: 11px;
+            opacity: 0.6;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* ===== LADO DERECHO - FORMULARIO ===== */
+        .login-form-container {
+            padding: 48px;
+            width: 60%;
+            background: white;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .welcome-message h2 {
+            color: var(--teal);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .welcome-message p {
+            color: var(--gris-medio);
+            font-size: 14px;
+        }
+        
+        .question-message {
+            background: var(--celeste-fondo);
+            padding: 14px 20px;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            margin-bottom: 28px;
+            border-left: 4px solid var(--teal);
+        }
+        
+        .question-message i {
+            color: var(--teal);
+            margin-right: 8px;
+        }
+        
+        .question-message span {
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            color: var(--gris-medio);
+            font-size: 16px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px 14px 45px;
+            border: 2px solid var(--gris-claro);
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--blanco-hueso);
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--teal);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(31,138,134,0.1);
+        }
+        
+        .input-group input::placeholder {
+            color: var(--gris-medio);
+            font-size: 13px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(31,138,134,0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: rgba(231,76,60,0.1);
+            border-left: 4px solid var(--error);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--error);
+            animation: shake 0.3s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .error-message i {
+            font-size: 16px;
+        }
+        
+        .demo-credentials {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-claro);
+            text-align: center;
+        }
+        
+        .demo-credentials p {
+            font-size: 12px;
+            color: var(--gris-medio);
+            margin-bottom: 10px;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .demo-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--gris-claro);
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: var(--gris-oscuro);
+        }
+        
+        .demo-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: var(--celeste-fondo);
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+                max-width: 450px;
+            }
+            
+            .login-info {
+                width: 100%;
+                text-align: center;
+                padding: 30px;
+            }
+            
+            .login-form-container {
+                width: 100%;
+                padding: 32px;
+            }
+            
+            .features {
+                display: none;
+            }
+            
+            .logo-placeholder {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-form-container {
+                padding: 24px;
+            }
+            
+            .welcome-message h2 {
+                font-size: 24px;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-btn {
+                width: 80%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <!-- Lado izquierdo - Información y Logo -->
+        <div class="login-info">
+            <div class="logo-container">
+                <div class="logo-placeholder" id="logoContainer">
+                    <!-- Aquí se cargará la imagen del logo -->
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="logo-text">AGRO<span>VET</span></div>
+                <div style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Yacuanquer - Sistema POS</div>
+            </div>
+            
+            <div class="info-title">
+                <h3><i class="fas fa-leaf"></i> Bienvenido</h3>
+                <p>Accede a tu cuenta para gestionar inventario, ventas y reportes de tu negocio agropecuario.</p>
+            </div>
+            
+            <ul class="features">
+                <li><i class="fas fa-chart-line"></i> Reportes en tiempo real</li>
+                <li><i class="fas fa-boxes"></i> Control de inventario</li>
+                <li><i class="fas fa-cash-register"></i> Ventas rápidas</li>
+                <li><i class="fas fa-file-invoice"></i> Facturación automática</li>
+            </ul>
+            
+            <div class="login-footer">
+                <i class="fas fa-shield-alt"></i> Sistema seguro · Datos encriptados
+            </div>
+        </div>
+        
+        <!-- Lado derecho - Formulario de login -->
+        <div class="login-form-container">
+            <div class="welcome-message">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+            
+            <div class="question-message">
+                <i class="fas fa-question-circle"></i>
+                <span>🤔 ¿Quién iniciará sesión hoy?</span>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Usuario</label>
+                    <i class="fas fa-user-circle"></i>
+                    <input type="text" id="username" placeholder="Ingresa tu usuario" required autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> Contraseña</label>
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar al Sistema
+                </button>
+            </form>
+            
+            <div id="errorMsg" class="error-message" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+            
+            <div class="demo-credentials">
+                <p><i class="fas fa-info-circle"></i> Credenciales de prueba:</p>
+                <div class="demo-buttons">
+                    <button class="demo-btn" data-user="admin" data-pass="admin123">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </button>
+                    <button class="demo-btn" data-user="auxiliar" data-pass="aux123">
+                        <i class="fas fa-user"></i> Auxiliar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la imagen del logo
+        const LOGO_CANDIDATES = [
+            '/imagenes/Logo.jpg',
+            '/images/Logo.jpg',
+            '/static/imagenes/Logo.jpg',
+            '/static/images/Logo.jpg',
+            '/Logo.jpg',
+            '/logo.jpg'
+        ];
+
+        function cargarLogo() {
+            const logoContainer = document.getElementById('logoContainer');
+            logoContainer.style.background = 'rgba(255,255,255,0.15)';
+
+            let encontrado = false;
+            let indice = 0;
+
+            const probarRuta = () => {
+                if (indice >= LOGO_CANDIDATES.length) {
+                    // Ninguna ruta válida, mantener icono default
+                    logoContainer.innerHTML = '<i class="fas fa-store"></i>';
+                    return;
+                }
+
+                const ruta = LOGO_CANDIDATES[indice++];
+                const img = new Image();
+
+                img.onload = () => {
+                    encontrado = true;
+                    logoContainer.innerHTML = '';
+                    logoContainer.style.background = 'rgba(255,255,255,0.1)';
+                    img.alt = 'Logo AgroVet';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    logoContainer.appendChild(img);
+                };
+
+                img.onerror = () => {
+                    console.log('Logo no encontrado en:', ruta);
+                    if (!encontrado) {
+                        probarRuta();
+                    }
+                };
+
+                img.src = ruta;
+            };
+
+            probarRuta();
+        }
+        
+        // Mostrar mensaje de error
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.style.display = 'flex';
+            
+            // Ocultar después de 4 segundos
+            setTimeout(() => {
+                errorDiv.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                    errorDiv.style.animation = '';
+                }, 300);
+            }, 4000);
+        }
+        
+        // Ocultar error
+        function hideError() {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.style.display = 'none';
+        }
+        
+        // Cargar credenciales de demo
+        function cargarCredencialesDemo(user, pass) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+            // Pequeña animación de feedback
+            const usernameInput = document.getElementById('username');
+            usernameInput.style.borderColor = 'var(--teal)';
+            setTimeout(() => {
+                usernameInput.style.borderColor = '';
+            }, 500);
+        }
+        
+        // Manejo del formulario de login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError('Por favor ingresa usuario y contraseña');
+                return;
+            }
+            
+            // Mostrar estado de carga
+            const submitBtn = document.querySelector('.login-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    sessionStorage.setItem('rol', data.rol);
+                    sessionStorage.setItem('logged', 'true');
+                    
+                    // Animación de éxito antes de redirigir
+                    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Ingresando...';
+                    submitBtn.style.background = 'linear-gradient(135deg, var(--exito), #1e8449)';
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 500);
+                } else {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    showError(data.message || 'Usuario o contraseña incorrectos');
+                    
+                    // Limpiar contraseña
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                }
+            } catch (error) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                console.error('Error de conexión:', error);
+                showError('Error de conexión con el servidor. Verifica tu red.');
+            }
+        });
+        
+        // Botones de demo
+        document.querySelectorAll('.demo-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const user = btn.dataset.user;
+                const pass = btn.dataset.pass;
+                cargarCredencialesDemo(user, pass);
+                
+                // Feedback visual
+                btn.style.background = 'var(--teal)';
+                btn.style.color = 'white';
+                btn.style.borderColor = 'var(--teal)';
+                setTimeout(() => {
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 500);
+            });
+        });
+        
+        // Permitir Enter para enviar
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        // Limpiar error al empezar a escribir
+        document.getElementById('username').addEventListener('input', hideError);
+        document.getElementById('password').addEventListener('input', hideError);
+        
+        // Cargar logo al iniciar
+        cargarLogo();
+    </script>
+    
+    <style>
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+        
+        /* Animación de carga para el botón */
+        .login-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Estilo para el input cuando se autocompleta */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px white inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</body>
+</html>
