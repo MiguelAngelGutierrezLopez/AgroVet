@@ -1,0 +1,50 @@
+# Virtual Environment
+agrovet/
+venv/
+env/
+*.egg-info/
+
+# Build files (PyInstaller)
+build/
+dist/
+*.spec
+
+# Database files con datos (mantén solo el esquema si es necesario)
+AgroVet.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# Data folder (logs, backups)
+data/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+config_local.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+tmp_*.js
