@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 
 login_bp = Blueprint('login', __name__)
 
@@ -10,18 +10,23 @@ def login():
 
     # Credenciales hardcodeadas
     if username == 'admin' and password == 'Paola_Milton_Agro26':
+        session.clear()
+        session['rol'] = 'admin'
         return jsonify({
             'success': True,
             'rol': 'admin',
             'redirect': '/inicio'
         })
     elif username == 'auxiliar' and password == 'AgroVet_Auxiliar':
+        session.clear()
+        session['rol'] = 'auxiliar'
         return jsonify({
             'success': True,
             'rol': 'auxiliar',
             'redirect': '/prueba'
         })
     else:
+        session.clear()
         return jsonify({
             'success': False,
             'message': 'Usuario o contraseña incorrectos'

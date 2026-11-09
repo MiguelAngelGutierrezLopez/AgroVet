@@ -1508,11 +1508,12 @@
             productoAEliminar = id;
             const producto = productos.find(p => p.id === id);
             
-            document.getElementById('modalTitle').textContent = 'Eliminar Producto';
+            document.getElementById('modalTitle').textContent = 'Eliminar producto del catálogo';
             document.getElementById('modalBody').innerHTML = `
-                <p>¿Estás seguro de eliminar el producto <strong>"${escapeHtml(producto.nombre)}"</strong>?</p>
+                <p>¿Eliminar <strong>"${escapeHtml(producto.nombre)}"</strong> del catálogo?</p>
+                <p>Sus ventas, compras y recibos históricos se conservarán.</p>
                 <p style="color: var(--error); font-size: 12px;">
-                    <i class="fas fa-exclamation-triangle"></i> Esta acción no se puede deshacer.
+                    <i class="fas fa-exclamation-triangle"></i> El stock debe estar en cero. Esta acción no se puede deshacer.
                 </p>
             `;
             
@@ -1528,7 +1529,7 @@
                 document.getElementById('confirmModal').style.display = 'none';
                 productoAEliminar = null;
                 await cargarProductosDesdeAPI();
-                showNotification('Producto eliminado correctamente', 'success');
+                showNotification(resultado.message || 'Producto eliminado correctamente', 'success');
             } else {
                 showNotification(resultado.message || 'Error al eliminar producto', 'error');
             }

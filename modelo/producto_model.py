@@ -281,21 +281,72 @@ class ProductoModel:
     
     @staticmethod
     def eliminar_producto(producto_id):
-        """Eliminar un producto"""
+        """Eliminar la ficha del catálogo y conservar ventas y compras históricas."""
         conn = None
         cursor = None
         try:
             conn = db.get_connection()
+            conn.start_transaction()
             cursor = conn.cursor(dictionary=True)
-            
-            sql = "DELETE FROM productos WHERE id = %s"
-            cursor.execute(sql, (producto_id,))
+
+            cursor.execute(
+                """
+                SELECT id, cantidad, proveedor
+                FROM productos
+                WHERE id = %s
+                FOR UPDATE
+                """,
+                (producto_id,)
+            )
+            producto = cursor.fetchone()
+            if not producto:
+                conn.rollback()
+                return {
+                    'success': False,
+                    'error_code': 'not_found',
+                    'error': 'Producto no encontrado'
+                }
+
+            stock = int(producto.get('cantidad') or 0)
+            if stock != 0:
+                conn.rollback()
+                return {
+                    'success': False,
+                    'error_code': 'stock_not_zero',
+                    'stock': stock,
+                    'error': 'No se puede eliminar un producto con existencias. Ajusta el stock a cero primero.'
+                }
+
+            cursor.execute(
+                "SELECT COUNT(DISTINCT id_venta) AS total "
+                "FROM detalle_venta WHERE producto_id_historico = %s",
+                (producto_id,)
+            )
+            ventas_preservadas = cursor.fetchone()['total']
+
+            cursor.execute(
+                "SELECT COUNT(*) AS total "
+                "FROM compras_proveedor WHERE producto_id_historico = %s",
+                (producto_id,)
+            )
+            compras_preservadas = cursor.fetchone()['total']
+
+            cursor.execute("DELETE FROM productos WHERE id = %s", (producto_id,))
+            rows_affected = cursor.rowcount
+            if rows_affected != 1:
+                raise RuntimeError('No se pudo eliminar la ficha del producto')
+
+            ProductoModel._sincronizar_proveedor_producto(
+                cursor, producto_id, None, producto.get('proveedor')
+            )
             
             conn.commit()
             
             return {
                 'success': True,
-                'rows_affected': cursor.rowcount
+                'rows_affected': rows_affected,
+                'ventas_preservadas': ventas_preservadas,
+                'compras_preservadas': compras_preservadas
             }
             
         except Exception as e:
@@ -304,6 +355,7 @@ class ProductoModel:
             print(f"Error en eliminar_producto: {str(e)}")
             return {
                 'success': False,
+                'error_code': 'database_error',
                 'error': str(e)
             }
         finally:

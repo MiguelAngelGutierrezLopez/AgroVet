@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from modelo.producto_model import ProductoModel
 import logging
 
@@ -275,38 +275,51 @@ def actualizar_producto(producto_id):
 
 @productos_bp.route('/<int:producto_id>', methods=['DELETE'])
 def eliminar_producto(producto_id):
-    """Eliminar un producto"""
+    """Eliminar una ficha sin borrar sus registros históricos."""
     try:
-        logger.info(f"Eliminando producto ID: {producto_id}")
-        
-        # Verificar si el producto existe usando el modelo actualizado
-        producto_existente = ProductoModel.obtener_producto_por_id(producto_id)
-        if not producto_existente:
+        rol = session.get('rol')
+        if rol is None:
             return jsonify({
                 'success': False,
-                'message': 'Producto no encontrado'
-            }), 404
-        
-        # Eliminar producto de la base de datos usando el modelo actualizado
+                'message': 'Debes iniciar sesión para eliminar productos.'
+            }), 401
+        if rol not in ('admin', 'auxiliar'):
+            return jsonify({
+                'success': False,
+                'message': 'No tienes permiso para eliminar productos.'
+            }), 403
+
+        logger.info(f"Eliminando producto ID: {producto_id}")
+
         resultado = ProductoModel.eliminar_producto(producto_id)
-        
-        if resultado['success']:
-            if resultado['rows_affected'] > 0:
-                logger.info(f"Producto eliminado exitosamente: ID {producto_id}")
-                return jsonify({
-                    'success': True,
-                    'message': 'Producto eliminado exitosamente'
-                })
-            else:
+        if not resultado['success']:
+            if resultado.get('error_code') == 'not_found':
                 return jsonify({
                     'success': False,
-                    'message': 'No se pudo eliminar el producto'
-                }), 500
-        else:
+                    'message': resultado['error']
+                }), 404
+            if resultado.get('error_code') == 'stock_not_zero':
+                return jsonify({
+                    'success': False,
+                    'message': resultado['error'],
+                    'stock': resultado['stock']
+                }), 409
             return jsonify({
                 'success': False,
-                'message': f'Error al eliminar producto: {resultado.get("error", "Error desconocido")}'
+                'message': f'Error al eliminar producto: {resultado.get("error", "Error desconocido")} '
             }), 500
+
+        logger.info(f"Producto eliminado exitosamente: ID {producto_id}")
+        return jsonify({
+            'success': True,
+            'message': (
+                'Producto eliminado del catálogo. Se conservaron '
+                f'{resultado["ventas_preservadas"]} ventas y '
+                f'{resultado["compras_preservadas"]} compras históricas.'
+            ),
+            'ventas_preservadas': resultado['ventas_preservadas'],
+            'compras_preservadas': resultado['compras_preservadas']
+        })
         
     except Exception as e:
         logger.error(f"Error al eliminar producto: {str(e)}")

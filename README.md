@@ -213,6 +213,18 @@ Este proyecto es propiedad de **AgroVet Yacuanquer** y está reservado para uso 
 - Usar HTTPS en despliegues públicos
 - Revisar logs periódicamente
 
+## Migraciones de historial de productos
+
+`setup_database.py` aplica las migraciones después de cargar el esquema base. Para actualizar una base existente, respáldala primero y ejecuta desde la raíz del proyecto:
+
+```powershell
+python migrations/001_add_product_history_columns.py --apply
+python migrations/002_backfill_product_history.py --apply
+python migrations/003_allow_product_deletion.py --apply
+```
+
+El backfill usa los datos actuales del catálogo para completar ventas antiguas. Como el sistema anterior no guardaba el costo por detalle, el costo histórico inicial es una aproximación. En adelante, ventas y compras guardan sus propios datos históricos. Solo se puede borrar una ficha con stock en cero; las ventas y compras se conservan.
+
 ---
 
 ## Recursos Adicionales

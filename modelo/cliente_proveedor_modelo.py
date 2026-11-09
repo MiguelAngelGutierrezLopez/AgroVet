@@ -46,10 +46,10 @@ class ClienteProveedorModel:
                 CREATE TABLE IF NOT EXISTS compras_proveedor (
                     id INT NOT NULL AUTO_INCREMENT,
                     proveedor_telefono VARCHAR(15) NOT NULL,
-                    producto_id INT NOT NULL,
-                    producto_id_historico INT NULL,
-                    producto_nombre_historico VARCHAR(100) NULL,
-                    producto_categoria_historica VARCHAR(50) NULL,
+                    producto_id INT NULL,
+                    producto_id_historico INT NOT NULL,
+                    producto_nombre_historico VARCHAR(100) NOT NULL,
+                    producto_categoria_historica VARCHAR(50) NOT NULL,
                     producto_presentacion_historica VARCHAR(50) NULL,
                     fecha_compra DATE NOT NULL,
                     cantidad INT NOT NULL DEFAULT 0,
@@ -61,8 +61,9 @@ class ClienteProveedorModel:
                     PRIMARY KEY (id),
                     KEY idx_proveedor_fecha (proveedor_telefono, fecha_compra),
                     KEY idx_producto (producto_id),
+                    KEY idx_compras_producto_historico (producto_id_historico),
                     CONSTRAINT fk_compras_proveedor FOREIGN KEY (proveedor_telefono) REFERENCES proveedor (telefono) ON UPDATE CASCADE ON DELETE CASCADE,
-                    CONSTRAINT fk_compras_producto FOREIGN KEY (producto_id) REFERENCES productos (id) ON UPDATE CASCADE ON DELETE RESTRICT
+                    CONSTRAINT fk_compras_producto_actual FOREIGN KEY (producto_id) REFERENCES productos (id) ON UPDATE CASCADE ON DELETE SET NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
             """)
             conn.commit()

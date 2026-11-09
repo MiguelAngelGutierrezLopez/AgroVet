@@ -96,7 +96,8 @@ if "%opcion%"=="1" (
         echo 3. Usuario: root (puede cambiar después)
         echo.
         echo ## Base de Datos
-        echo La base de datos debe estar creada previamente en MySQL o MariaDB.
+        echo Ejecuta setup_database.exe antes de iniciar la aplicación.
+        echo El configurador crea las tablas y aplica las migraciones del historial de productos.
         echo HeidiSQL no necesita permanecer abierto.
         echo.
         echo ## Ejecutar la Aplicación
@@ -145,6 +146,7 @@ if "%opcion%"=="1" (
     "%PYPATH%" -m PyInstaller --name "setup_database" ^
                 --onefile ^
                 --add-data "AgroVet.sql;." ^
+                --add-data "migrations;migrations" ^
                 --hidden-import mysql.connector ^
                 --console ^
                 --clean ^
@@ -174,6 +176,7 @@ if "%opcion%"=="1" (
     echo 📦 Preparando paquete de entrega...
     mkdir "dist\AGROVET_1.0" > nul 2>&1
     xcopy "dist\_build\AGROVET\*" "dist\AGROVET_1.0\" /E /I /H /Y > nul
+    copy /Y "dist\_build\setup_database.exe" "dist\AGROVET_1.0\setup_database.exe" > nul
     copy /Y "README_INSTALACION.txt" "dist\AGROVET_1.0\README_INSTALACION.txt" > nul
 
     REM Comprimir desde TEMP para evitar bloqueos de OneDrive o del antivirus en dist
