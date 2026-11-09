@@ -81,20 +81,44 @@ class VentaModel:
             
             # 5. Insertar productos en detalle_venta
             for producto in datos_venta['productos']:
+                cursor.execute(
+                    """
+                    SELECT id, nombre, categoria, presentacion, precio_costo, cantidad
+                    FROM productos
+                    WHERE id = %s
+                    FOR UPDATE
+                    """,
+                    (producto['id'],)
+                )
+                producto_db = cursor.fetchone()
+                if not producto_db:
+                    raise Exception(f"Producto no encontrado: ID {producto['id']}")
+
+                cantidad = int(producto['cantidad'])
+                if int(producto_db['cantidad'] or 0) < cantidad:
+                    raise Exception(f"Stock insuficiente para el producto ID {producto['id']}")
+
                 sql_detalle = """
                 INSERT INTO detalle_venta 
-                (id_venta, id_producto, fecha_venta, cantidad_vendida, 
-                 precio_unidad, precio_neto)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                (id_venta, id_producto, producto_id_historico,
+                 producto_nombre_historico, producto_categoria_historica,
+                 producto_presentacion_historica, costo_unitario_historico,
+                 fecha_venta, cantidad_vendida, precio_unidad, precio_neto)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
                 
-                precio_neto = producto['cantidad'] * producto['precio']
+                precio_neto = cantidad * producto['precio']
                 
                 cursor.execute(sql_detalle, (
                     venta_id,
-                    producto['id'],
+                    producto_db['id'],
+                    producto_db['id'],
+                    producto_db['nombre'],
+                    producto_db['categoria'],
+                    producto_db['presentacion'],
+                    producto_db['precio_costo'] or 0,
                     fecha_actual,
-                    producto['cantidad'],
+                    cantidad,
                     producto['precio'],
                     precio_neto
                 ))
@@ -105,7 +129,7 @@ class VentaModel:
                 SET cantidad = cantidad - %s 
                 WHERE id = %s AND cantidad >= %s
                 """
-                cursor.execute(sql_update_stock, (producto['cantidad'], producto['id'], producto['cantidad']))
+                cursor.execute(sql_update_stock, (cantidad, producto_db['id'], cantidad))
                 
                 if cursor.rowcount == 0:
                     raise Exception(f"Stock insuficiente para el producto ID {producto['id']}")
@@ -247,9 +271,11 @@ class VentaModel:
             
             # Obtener productos de la venta
             sql_productos = """
-            SELECT dv.*, p.nombre as producto_nombre, p.presentacion
+                 SELECT dv.*,
+                     COALESCE(dv.producto_nombre_historico, p.nombre) as producto_nombre,
+                     COALESCE(dv.producto_presentacion_historica, p.presentacion) as presentacion
             FROM detalle_venta dv
-            JOIN productos p ON dv.id_producto = p.id
+                 LEFT JOIN productos p ON dv.id_producto = p.id
             WHERE dv.id_venta = %s
             """
             

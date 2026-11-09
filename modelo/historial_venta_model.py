@@ -163,18 +163,19 @@ class HistorialVentaModel:
                 producto_query = """
                     SELECT 
                         dv.id,
-                        dv.id_producto,
-                        p.nombre,
-                        p.categoria,
-                        p.presentacion,
+                        COALESCE(dv.producto_id_historico, dv.id_producto) as id_producto,
+                        COALESCE(dv.producto_nombre_historico, p.nombre) as nombre,
+                        COALESCE(dv.producto_categoria_historica, p.categoria) as categoria,
+                        COALESCE(dv.producto_presentacion_historica, p.presentacion) as presentacion,
                         dv.cantidad_vendida as cantidad,
                         dv.precio_unidad as precio_unitario,
                         dv.precio_neto as subtotal,
-                        p.precio_costo,
-                        p.precio_venta,
-                        (dv.precio_unidad - p.precio_costo) * dv.cantidad_vendida as utilidad_producto
+                        COALESCE(dv.costo_unitario_historico, p.precio_costo, 0) as precio_costo,
+                        COALESCE(p.precio_venta, dv.precio_unidad) as precio_venta,
+                        (dv.precio_unidad - COALESCE(dv.costo_unitario_historico, p.precio_costo, 0))
+                            * dv.cantidad_vendida as utilidad_producto
                     FROM detalle_venta dv
-                    JOIN productos p ON dv.id_producto = p.id
+                    LEFT JOIN productos p ON dv.id_producto = p.id
                     WHERE dv.id_venta = %s
                 """
                 cursor.execute(producto_query, (venta['id'],))
@@ -461,8 +462,12 @@ class HistorialVentaModel:
             # Producto
             if producto_id:
                 where_parts.append("""
-                    EXISTS (SELECT 1 FROM detalle_venta dv 
-                            WHERE dv.id_venta = v.id AND dv.id_producto = %s)
+                    EXISTS (
+                        SELECT 1
+                        FROM detalle_venta dv
+                        WHERE dv.id_venta = v.id
+                          AND COALESCE(dv.producto_id_historico, dv.id_producto) = %s
+                    )
                 """)
                 params.append(producto_id)
             
@@ -533,18 +538,19 @@ class HistorialVentaModel:
                 producto_query = """
                     SELECT 
                         dv.id,
-                        dv.id_producto,
-                        p.nombre,
-                        p.categoria,
-                        p.presentacion,
+                        COALESCE(dv.producto_id_historico, dv.id_producto) as id_producto,
+                        COALESCE(dv.producto_nombre_historico, p.nombre) as nombre,
+                        COALESCE(dv.producto_categoria_historica, p.categoria) as categoria,
+                        COALESCE(dv.producto_presentacion_historica, p.presentacion) as presentacion,
                         dv.cantidad_vendida as cantidad,
                         dv.precio_unidad as precio_unitario,
                         dv.precio_neto as subtotal,
-                        p.precio_costo,
-                        p.precio_venta,
-                        (dv.precio_unidad - p.precio_costo) * dv.cantidad_vendida as utilidad_producto
+                        COALESCE(dv.costo_unitario_historico, p.precio_costo, 0) as precio_costo,
+                        COALESCE(p.precio_venta, dv.precio_unidad) as precio_venta,
+                        (dv.precio_unidad - COALESCE(dv.costo_unitario_historico, p.precio_costo, 0))
+                            * dv.cantidad_vendida as utilidad_producto
                     FROM detalle_venta dv
-                    JOIN productos p ON dv.id_producto = p.id
+                    LEFT JOIN productos p ON dv.id_producto = p.id
                     WHERE dv.id_venta = %s
                 """
                 cursor.execute(producto_query, (venta['id'],))
@@ -831,18 +837,19 @@ class HistorialVentaModel:
             producto_query = """
                 SELECT 
                     dv.id,
-                    dv.id_producto,
-                    p.nombre,
-                    p.categoria,
-                    p.presentacion,
+                    COALESCE(dv.producto_id_historico, dv.id_producto) as id_producto,
+                    COALESCE(dv.producto_nombre_historico, p.nombre) as nombre,
+                    COALESCE(dv.producto_categoria_historica, p.categoria) as categoria,
+                    COALESCE(dv.producto_presentacion_historica, p.presentacion) as presentacion,
                     dv.cantidad_vendida as cantidad,
                     dv.precio_unidad as precio_unitario,
                     dv.precio_neto as subtotal,
-                    p.precio_costo,
-                    p.precio_venta,
-                    (dv.precio_unidad - p.precio_costo) * dv.cantidad_vendida as utilidad_producto
+                    COALESCE(dv.costo_unitario_historico, p.precio_costo, 0) as precio_costo,
+                    COALESCE(p.precio_venta, dv.precio_unidad) as precio_venta,
+                    (dv.precio_unidad - COALESCE(dv.costo_unitario_historico, p.precio_costo, 0))
+                        * dv.cantidad_vendida as utilidad_producto
                 FROM detalle_venta dv
-                JOIN productos p ON dv.id_producto = p.id
+                LEFT JOIN productos p ON dv.id_producto = p.id
                 WHERE dv.id_venta = %s
             """
             cursor.execute(producto_query, (venta_id,))
@@ -989,6 +996,21 @@ class HistorialVentaModel:
                     precio_venta
                 FROM productos
                 WHERE cantidad >= 0
+                UNION ALL
+                SELECT
+                    dv.producto_id_historico AS id,
+                    MAX(dv.producto_nombre_historico) AS nombre,
+                    MAX(dv.producto_categoria_historica) AS categoria,
+                    MAX(dv.producto_presentacion_historica) AS presentacion,
+                    MAX(dv.costo_unitario_historico) AS precio_costo,
+                    MAX(dv.precio_unidad) AS precio_venta
+                FROM detalle_venta dv
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM productos p
+                    WHERE p.id = dv.producto_id_historico
+                )
+                GROUP BY dv.producto_id_historico
                 ORDER BY nombre
             """
             
@@ -1139,9 +1161,11 @@ class HistorialVentaModel:
                     COALESCE(SUM(
                         CASE 
                             WHEN v.tipo_pago != 'CRÉDITO' THEN 
-                                (SELECT SUM((dv.precio_unidad - p.precio_costo) * dv.cantidad_vendida)
+                                (SELECT SUM((dv.precio_unidad - COALESCE(
+                                                dv.costo_unitario_historico, p.precio_costo, 0
+                                            )) * dv.cantidad_vendida)
                                  FROM detalle_venta dv
-                                 JOIN productos p ON dv.id_producto = p.id
+                                 LEFT JOIN productos p ON dv.id_producto = p.id
                                  WHERE dv.id_venta = v.id)
                             ELSE 0
                         END
@@ -1149,9 +1173,11 @@ class HistorialVentaModel:
                     COALESCE(SUM(
                         CASE 
                             WHEN v.tipo_pago = 'CRÉDITO' AND c.estado = 'pagado' THEN 
-                                (SELECT SUM((dv.precio_unidad - p.precio_costo) * dv.cantidad_vendida)
+                                (SELECT SUM((dv.precio_unidad - COALESCE(
+                                                dv.costo_unitario_historico, p.precio_costo, 0
+                                            )) * dv.cantidad_vendida)
                                  FROM detalle_venta dv
-                                 JOIN productos p ON dv.id_producto = p.id
+                                 LEFT JOIN productos p ON dv.id_producto = p.id
                                  WHERE dv.id_venta = v.id)
                             ELSE 0
                         END
@@ -1175,9 +1201,11 @@ class HistorialVentaModel:
                     COALESCE(SUM(
                         CASE 
                             WHEN v.tipo_pago = 'CRÉDITO' AND c.estado != 'pagado' THEN 
-                                (SELECT SUM(p.precio_costo * dv.cantidad_vendida)
+                                (SELECT SUM(COALESCE(
+                                                dv.costo_unitario_historico, p.precio_costo, 0
+                                            ) * dv.cantidad_vendida)
                                  FROM detalle_venta dv
-                                 JOIN productos p ON dv.id_producto = p.id
+                                 LEFT JOIN productos p ON dv.id_producto = p.id
                                  WHERE dv.id_venta = v.id)
                             ELSE 0
                         END

@@ -121,9 +121,10 @@ def obtener_venta(venta_id):
         # Intentar obtener productos de la venta (si existe la tabla detalle_venta)
         try:
             cursor.execute("""
-                SELECT p.nombre, dv.cantidad_vendida
+                                SELECT COALESCE(dv.producto_nombre_historico, p.nombre) AS nombre,
+                                             dv.cantidad_vendida
                 FROM detalle_venta dv
-                JOIN productos p ON dv.id_producto = p.id
+                                LEFT JOIN productos p ON dv.id_producto = p.id
                 WHERE dv.id_venta = %s
             """, (venta_id,))
             

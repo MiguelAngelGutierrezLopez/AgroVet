@@ -47,6 +47,10 @@ class ClienteProveedorModel:
                     id INT NOT NULL AUTO_INCREMENT,
                     proveedor_telefono VARCHAR(15) NOT NULL,
                     producto_id INT NOT NULL,
+                    producto_id_historico INT NULL,
+                    producto_nombre_historico VARCHAR(100) NULL,
+                    producto_categoria_historica VARCHAR(50) NULL,
+                    producto_presentacion_historica VARCHAR(50) NULL,
                     fecha_compra DATE NOT NULL,
                     cantidad INT NOT NULL DEFAULT 0,
                     precio_costo_unitario DECIMAL(12,2) NOT NULL DEFAULT 0.00,
@@ -579,9 +583,12 @@ class ClienteProveedorModel:
                 v.subtotal,
                 v.descuento,
                 v.total,
-                (SELECT GROUP_CONCAT(p.nombre SEPARATOR ', ') 
+                (SELECT GROUP_CONCAT(
+                            COALESCE(dv.producto_nombre_historico, p.nombre)
+                            SEPARATOR ', '
+                        )
                  FROM detalle_venta dv 
-                 JOIN productos p ON dv.id_producto = p.id 
+                 LEFT JOIN productos p ON dv.id_producto = p.id
                  WHERE dv.id_venta = v.id) as productos,
                 (SELECT COUNT(*) FROM detalle_venta dv WHERE dv.id_venta = v.id) as total_productos
             FROM ventas v
@@ -727,7 +734,8 @@ class ClienteProveedorModel:
                 
                 # Buscar producto por nombre
                 cursor.execute("""
-                    SELECT id, cantidad, precio_venta 
+                      SELECT id, cantidad, precio_venta, nombre, categoria,
+                          presentacion, precio_costo
                     FROM productos 
                     WHERE nombre LIKE %s 
                     ORDER BY id DESC 
@@ -740,7 +748,7 @@ class ClienteProveedorModel:
                     return False, f"Producto no encontrado: {producto_nombre}"
                 
                 producto_id = producto_db[0]
-                stock_actual = producto_db[1]
+                stock_actual = int(producto_db[1] or 0)
                 precio_db = float(producto_db[2])
                 
                 # Verificar stock
@@ -754,14 +762,21 @@ class ClienteProveedorModel:
                 # Crear detalle de venta
                 sql_detalle = """
                 INSERT INTO detalle_venta (
-                    id_venta, id_producto, fecha_venta, 
-                    cantidad_vendida, precio_unidad, precio_neto
-                ) VALUES (%s, %s, %s, %s, %s, %s)
+                    id_venta, id_producto, producto_id_historico,
+                    producto_nombre_historico, producto_categoria_historica,
+                    producto_presentacion_historica, costo_unitario_historico,
+                    fecha_venta, cantidad_vendida, precio_unidad, precio_neto
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
                 
                 cursor.execute(sql_detalle, (
                     venta_id,
                     producto_id,
+                    producto_id,
+                    producto_db[3],
+                    producto_db[4],
+                    producto_db[5],
+                    producto_db[6] or 0,
                     fecha_venta,
                     cantidad,
                     precio_unitario,
@@ -1116,8 +1131,8 @@ class ClienteProveedorModel:
                     dv.cantidad_vendida,
                     dv.precio_unidad,
                     dv.precio_neto,
-                    p.nombre as producto_nombre,
-                    p.presentacion
+                    COALESCE(dv.producto_nombre_historico, p.nombre) as producto_nombre,
+                    COALESCE(dv.producto_presentacion_historica, p.presentacion) as presentacion
                 FROM detalle_venta dv
                 LEFT JOIN productos p ON dv.id_producto = p.id
                 WHERE dv.id_venta = %s
@@ -1793,7 +1808,8 @@ class ClienteProveedorModel:
 
             cursor.execute(
                 """
-                SELECT p.id, p.nombre, p.proveedor, p.precio_costo, p.precio_venta
+                  SELECT p.id, p.nombre, p.categoria, p.presentacion,
+                      p.proveedor, p.precio_costo, p.precio_venta
                 FROM productos p
                 WHERE p.id = %s
                 """,
@@ -1818,14 +1834,20 @@ class ClienteProveedorModel:
             cursor.execute(
                 """
                 INSERT INTO compras_proveedor (
-                    proveedor_telefono, producto_id, fecha_compra, cantidad,
+                    proveedor_telefono, producto_id, producto_id_historico,
+                    producto_nombre_historico, producto_categoria_historica,
+                    producto_presentacion_historica, fecha_compra, cantidad,
                     precio_costo_unitario, precio_venta_unitario, total_compra,
                     observaciones
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     telefono_proveedor,
                     producto_id,
+                    producto_id,
+                    producto.get('nombre'),
+                    producto.get('categoria'),
+                    producto.get('presentacion'),
                     fecha_compra,
                     cantidad,
                     precio_costo_actual,
@@ -1935,9 +1957,13 @@ class ClienteProveedorModel:
 
             query_costo = f"""
                 SELECT
-                    COALESCE(SUM(dv.cantidad_vendida * p.precio_costo), 0) AS costo_ventas
+                    COALESCE(SUM(
+                        dv.cantidad_vendida * COALESCE(
+                            dv.costo_unitario_historico, p.precio_costo, 0
+                        )
+                    ), 0) AS costo_ventas
                 FROM detalle_venta dv
-                JOIN productos p ON p.id = dv.id_producto
+                LEFT JOIN productos p ON p.id = dv.id_producto
                 JOIN ventas v ON v.id = dv.id_venta
                 {filtro_costo}
             """
@@ -2150,7 +2176,7 @@ class ClienteProveedorModel:
                 SELECT
                     cp.id,
                     cp.fecha_compra,
-                    p.nombre AS producto,
+                    COALESCE(cp.producto_nombre_historico, p.nombre) AS producto,
                     cp.cantidad,
                     cp.precio_costo_unitario,
                     cp.precio_venta_unitario,
@@ -2240,16 +2266,19 @@ class ClienteProveedorModel:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(
                 """
-                SELECT p.nombre AS producto,
+                SELECT COALESCE(
+                           MAX(cp.producto_nombre_historico), MAX(p.nombre)
+                       ) AS producto,
                        COUNT(cp.id) AS total_compras,
                        COALESCE(SUM(cp.cantidad), 0) AS cantidad_total,
                        COALESCE(SUM(cp.total_compra), 0) AS total_gastado,
                        COALESCE(MIN(cp.fecha_compra), NULL) AS primera_compra,
                        COALESCE(MAX(cp.fecha_compra), NULL) AS ultima_compra
-                FROM compras_proveedor cp
-                LEFT JOIN productos p ON p.id = cp.producto_id
-                WHERE cp.proveedor_telefono = %s AND cp.producto_id = %s
-                GROUP BY p.id, p.nombre
+                                FROM compras_proveedor cp
+                                LEFT JOIN productos p ON p.id = cp.producto_id
+                                WHERE cp.proveedor_telefono = %s
+                                    AND cp.producto_id_historico = %s
+                                GROUP BY cp.producto_id_historico
                 """,
                 (telefono, producto_id)
             )
@@ -2260,9 +2289,10 @@ class ClienteProveedorModel:
                 """
                 SELECT cp.id, cp.fecha_compra, cp.cantidad,
                        cp.precio_costo_unitario, cp.total_compra,
-                       cp.observaciones
+                                             cp.observaciones, cp.producto_nombre_historico
                 FROM compras_proveedor cp
-                WHERE cp.proveedor_telefono = %s AND cp.producto_id = %s
+                                WHERE cp.proveedor_telefono = %s
+                                    AND cp.producto_id_historico = %s
                 ORDER BY cp.fecha_compra DESC, cp.id DESC
                 """,
                 (telefono, producto_id)

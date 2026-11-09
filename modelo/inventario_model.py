@@ -184,20 +184,22 @@ class InventarioModel:
             # Consulta corregida para obtener ventas mensuales
             query = """
                 SELECT 
-                    p.categoria as tipo_producto,
-                    p.nombre as nombre_producto,
-                    p.presentacion as unidad_presentacion,
+                    COALESCE(dv.producto_categoria_historica, p.categoria) as tipo_producto,
+                    COALESCE(dv.producto_nombre_historico, p.nombre) as nombre_producto,
+                    COALESCE(dv.producto_presentacion_historica, p.presentacion) as unidad_presentacion,
                     COALESCE(SUM(dv.cantidad_vendida), 0) as cantidad_unidades_vendidas,
                     COALESCE(SUM(dv.precio_neto), 0) as valor_ventas
-                FROM productos p
-                LEFT JOIN detalle_venta dv ON p.id = dv.id_producto
-                LEFT JOIN ventas v ON dv.id_venta = v.id
+                FROM detalle_venta dv
+                LEFT JOIN productos p ON p.id = dv.id_producto
                 WHERE dv.fecha_venta IS NOT NULL 
                     AND MONTH(dv.fecha_venta) = %s 
                     AND YEAR(dv.fecha_venta) = %s
-                GROUP BY p.id, p.categoria, p.nombre, p.presentacion
+                GROUP BY COALESCE(dv.producto_id_historico, dv.id_producto),
+                         COALESCE(dv.producto_categoria_historica, p.categoria),
+                         COALESCE(dv.producto_nombre_historico, p.nombre),
+                         COALESCE(dv.producto_presentacion_historica, p.presentacion)
                 HAVING COALESCE(SUM(dv.cantidad_vendida), 0) > 0
-                ORDER BY p.categoria, valor_ventas DESC
+                ORDER BY tipo_producto, valor_ventas DESC
             """
             
             cursor.execute(query, (mes, anio))
@@ -273,11 +275,13 @@ class InventarioModel:
             # Rotación (ventas últimos 30 días / stock total)
             cursor.execute("""
                 SELECT 
-                    COALESCE(SUM(dv.cantidad_vendida), 0) as ventas_30_dias,
-                    COALESCE(SUM(p.cantidad), 0) as stock_total
-                FROM productos p
-                LEFT JOIN detalle_venta dv ON p.id = dv.id_producto 
-                    AND dv.fecha_venta >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                    (SELECT COALESCE(SUM(dv.cantidad_vendida), 0)
+                     FROM detalle_venta dv
+                     WHERE dv.fecha_venta >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                    ) as ventas_30_dias,
+                    (SELECT COALESCE(SUM(p.cantidad), 0)
+                     FROM productos p
+                    ) as stock_total
             """)
             rotacion = cursor.fetchone()
             if rotacion['stock_total'] > 0:
@@ -328,9 +332,9 @@ class InventarioModel:
                     dv.id,
                     dv.id_venta,
                     v.numero_venta,
-                    dv.id_producto,
-                    p.nombre as producto_nombre,
-                    p.categoria,
+                    COALESCE(dv.producto_id_historico, dv.id_producto) as id_producto,
+                    COALESCE(dv.producto_nombre_historico, p.nombre) as producto_nombre,
+                    COALESCE(dv.producto_categoria_historica, p.categoria) as categoria,
                     dv.cantidad_vendida as cantidad,
                     dv.precio_unidad,
                     dv.precio_neto,
@@ -342,7 +346,7 @@ class InventarioModel:
                     'venta' as motivo,
                     CONCAT(SUBSTRING(v.fecha_hora, 1, 5), ' hrs') as hora_formateada
                 FROM detalle_venta dv
-                JOIN productos p ON dv.id_producto = p.id
+                LEFT JOIN productos p ON dv.id_producto = p.id
                 JOIN ventas v ON dv.id_venta = v.id
                 WHERE dv.fecha_venta >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
                 ORDER BY dv.fecha_venta DESC, v.fecha_hora DESC
@@ -381,18 +385,18 @@ class InventarioModel:
             
             query = """
                 SELECT 
-                    p.id,
-                    p.nombre,
-                    p.categoria,
-                    p.presentacion,
-                    p.precio_venta,
+                    COALESCE(dv.producto_id_historico, dv.id_producto) as id,
+                    MAX(COALESCE(dv.producto_nombre_historico, p.nombre)) as nombre,
+                    MAX(COALESCE(dv.producto_categoria_historica, p.categoria)) as categoria,
+                    MAX(COALESCE(dv.producto_presentacion_historica, p.presentacion)) as presentacion,
+                    MAX(COALESCE(p.precio_venta, dv.precio_unidad)) as precio_venta,
                     SUM(dv.cantidad_vendida) as cantidad_vendida,
                     SUM(dv.precio_neto) as ingresos_totales,
-                    p.cantidad as stock_actual
-                FROM productos p
-                JOIN detalle_venta dv ON p.id = dv.id_producto
+                    COALESCE(MAX(p.cantidad), 0) as stock_actual
+                FROM detalle_venta dv
+                LEFT JOIN productos p ON p.id = dv.id_producto
                 WHERE dv.fecha_venta >= DATE_SUB(CURDATE(), INTERVAL %s DAY)
-                GROUP BY p.id, p.nombre, p.categoria, p.presentacion, p.precio_venta, p.cantidad
+                GROUP BY COALESCE(dv.producto_id_historico, dv.id_producto)
                 ORDER BY cantidad_vendida DESC
                 LIMIT %s
             """
