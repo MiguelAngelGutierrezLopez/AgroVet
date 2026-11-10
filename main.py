@@ -702,6 +702,17 @@ if __name__ == '__main__':
     print("     /api/productos/buscar - Buscar productos para venta manual")
     print("     /api/login - Endpoint de login")
     print("=" * 60)
+
+    print("\n   VERIFICANDO MIGRACIONES DE BASE DE DATOS...")
+    try:
+        from setup_database import apply_product_history_migrations
+        apply_product_history_migrations()
+    except Exception as e:
+        logger.exception("No se pudo actualizar el esquema de base de datos")
+        print(f"\nNo se pudo preparar la base de datos: {e}")
+        print("Verifica que MySQL esté iniciado y vuelve a ejecutar AGROVET.exe.")
+        input("Presiona Enter para cerrar...")
+        sys.exit(1)
     
     # Abrir navegador después de 2 segundos
     Timer(2, abrir_navegador).start()

@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('vista', 'vista'), ('data', 'data'), ('imagenes', 'imagenes'), ('static', 'static'), ('templates', 'templates')],
+    datas=[('vista', 'vista'), ('data', 'data'), ('imagenes', 'imagenes'), ('static', 'static'), ('templates', 'templates'), ('migrations', 'migrations')],
     hiddenimports=['mysql.connector', 'flask', 'waitress', 'reportlab', 'arabic_reshaper', 'bidi', 'pyphen', 'xhtml2pdf', 'svglib', 'lxml'],
     hookspath=[],
     hooksconfig={},

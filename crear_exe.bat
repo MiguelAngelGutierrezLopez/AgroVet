@@ -96,9 +96,9 @@ if "%opcion%"=="1" (
         echo 3. Usuario: root (puede cambiar después)
         echo.
         echo ## Base de Datos
-        echo Ejecuta setup_database.exe antes de iniciar la aplicación.
-        echo El configurador crea las tablas y aplica las migraciones del historial de productos.
-        echo HeidiSQL no necesita permanecer abierto.
+        echo MySQL/MariaDB debe estar iniciado antes de abrir AgroVet.
+        echo Al iniciar AGROVET.exe se aplican automaticamente las migraciones pendientes.
+        echo Para una instalacion nueva, ejecuta setup_database.exe primero.
         echo.
         echo ## Ejecutar la Aplicación
         echo 1. Ejecutar AGROVET.exe
@@ -118,6 +118,7 @@ if "%opcion%"=="1" (
                 --add-data "imagenes;imagenes" ^
                 --add-data "static;static" ^
                 --add-data "templates;templates" ^
+                --add-data "migrations;migrations" ^
                 --hidden-import mysql.connector ^
                 --hidden-import flask ^
                 --hidden-import waitress ^
@@ -212,6 +213,7 @@ if "%opcion%"=="2" (
                 --add-data "modelo;modelo" ^
                 --add-data "data;data" ^
                 --add-data "AgroVet.sql;." ^
+                --add-data "migrations;migrations" ^
                 --add-data "config.py;." ^
                 --add-data "database.py;." ^
                 --hidden-import mysql.connector ^
