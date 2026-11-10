@@ -23,10 +23,25 @@ REM Definir intérprete Python a usar (priorizar virtualenv)
 set "PYPATH=agrovet\Scripts\python.exe"
 if not exist "%PYPATH%" set "PYPATH=python"
 
-REM Instalar/actualizar PyInstaller usando el intérprete seleccionado
-echo 📦 Instalando PyInstaller en %PYPATH%...
-"%PYPATH%" -m pip install --upgrade pyinstaller > nul 2>&1
-echo ✅ PyInstaller actualizado (%PYPATH%)
+REM Verificar PyInstaller; no actualizarlo en cada compilación
+echo 🔍 Verificando PyInstaller en %PYPATH%...
+"%PYPATH%" -m PyInstaller --version > nul 2>&1
+if errorlevel 1 (
+    echo ⚠️  PyInstaller no funciona. Reparando la instalación...
+    "%PYPATH%" -m pip install --force-reinstall --no-cache-dir "pyinstaller==6.22.2"
+    if errorlevel 1 (
+        echo ❌ No se pudo instalar PyInstaller 6.22.2
+        pause
+        exit /b 1
+    )
+)
+
+"%PYPATH%" -m PyInstaller --version
+if errorlevel 1 (
+    echo ❌ PyInstaller sigue sin funcionar en %PYPATH%
+    pause
+    exit /b 1
+)
 
 REM Verificar estructura de archivos
 echo 📁 Verificando archivos...
@@ -212,6 +227,9 @@ if "%opcion%"=="2" (
                 --add-data "controlador;controlador" ^
                 --add-data "modelo;modelo" ^
                 --add-data "data;data" ^
+                --add-data "imagenes;imagenes" ^
+                --add-data "static;static" ^
+                --add-data "templates;templates" ^
                 --add-data "AgroVet.sql;." ^
                 --add-data "migrations;migrations" ^
                 --add-data "config.py;." ^
@@ -228,8 +246,24 @@ if "%opcion%"=="2" (
                 --hidden-import lxml ^
                 --console ^
                 --clean ^
+                --noconfirm ^
+                --distpath "dist" ^
+                --workpath "build\_build_onefile" ^
+                --specpath "build\_spec_onefile" ^
                 main.py
-    
+
+    if errorlevel 1 (
+        echo ❌ Error compilando AGROVET en modo one-file
+        pause
+        exit /b 1
+    )
+
+    if not exist "dist\AGROVET.exe" (
+        echo ❌ No se genero dist\AGROVET.exe
+        pause
+        exit /b 1
+    )
+
     echo ✅ Compilación completada!
     echo 📄 El ejecutable está en: dist\AGROVET.exe
 )
