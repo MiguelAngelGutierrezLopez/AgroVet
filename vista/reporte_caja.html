@@ -3097,7 +3097,6 @@
             document.getElementById('cierreSaldoInicialBanco').addEventListener('input', actualizarVistaPreviaCierre);
             document.getElementById('cierreAjusteBanco').addEventListener('input', actualizarVistaPreviaCierre);
             
-            const hoy = new Date();
             document.getElementById('cierreMesFiltro').value = String(hoy.getMonth() + 1);
             document.getElementById('cierreAnioFiltro').value = String(hoy.getFullYear());
             consultarCierresMes();
