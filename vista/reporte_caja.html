@@ -1522,7 +1522,12 @@
                 <h2 class="periodo-title" id="cierreCajaTitulo">
                     <i class="fas fa-box-archive"></i> Baúl de cierre diario
                 </h2>
-                <span class="cierre-caja-periodo" id="cierreCajaPeriodo">Cierre de hoy</span>
+                <div class="historico-cierres-header">
+                    <span class="cierre-caja-periodo" id="cierreCajaPeriodo">Cierre de hoy</span>
+                    <button class="btn btn-secondary" id="btnAbrirHistorialCierres" type="button">
+                        <i class="fas fa-list"></i> Ver cierres guardados
+                    </button>
+                </div>
             </div>
             <p class="cierre-caja-subtitle">
                 Revisa de dónde sale cada importe. Al aplicar el cierre, los saldos finales pasan a ser la apertura del siguiente cierre.
@@ -1599,48 +1604,6 @@
             </div>
         </section>
 
-        <section class="periodo-container" aria-labelledby="historialCierresTitulo">
-            <div class="historico-cierres-header">
-                <h2 class="periodo-title" id="historialCierresTitulo">
-                    <i class="fas fa-history"></i> Cierres guardados
-                </h2>
-                <div class="historico-cierres-filtros">
-                    <select class="date-input" id="cierreMesFiltro" aria-label="Mes de cierres">
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
-                    <input class="date-input" id="cierreAnioFiltro" type="number" min="2000" max="2100" aria-label="Año de cierres">
-                    <button class="btn btn-primary" id="btnConsultarCierres" type="button">
-                        <i class="fas fa-search"></i> Consultar
-                    </button>
-                </div>
-            </div>
-            <table class="cierres-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Desde</th>
-                        <th>Efectivo final</th>
-                        <th>Banco final</th>
-                        <th>Total</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody id="cierresTablaBody">
-                    <tr><td colspan="6">Selecciona un mes para ver los cierres.</td></tr>
-                </tbody>
-            </table>
-        </section>
         
         <div class="resumen-financiero">
             <h2 class="periodo-title" style="margin-bottom: 25px;">
@@ -1819,6 +1782,52 @@
             </div>
         </div>
         
+        <div class="modal-overlay" id="modalHistorialCierres">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2><i class="fas fa-history"></i> Cierres guardados</h2>
+                    <button class="modal-close" type="button" onclick="cerrarModalHistorialCierres()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="historico-cierres-filtros">
+                        <select class="date-input" id="cierreMesFiltro" aria-label="Mes de cierres">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                        <input class="date-input" id="cierreAnioFiltro" type="number" min="2000" max="2100" aria-label="Año de cierres">
+                        <button class="btn btn-primary" id="btnConsultarCierres" type="button">
+                            <i class="fas fa-search"></i> Consultar
+                        </button>
+                    </div>
+                    <table class="cierres-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Desde</th>
+                                <th>Efectivo final</th>
+                                <th>Banco final</th>
+                                <th>Total</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cierresTablaBody">
+                            <tr><td colspan="6">Selecciona un mes para ver los cierres.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-overlay" id="modalEditarCierre">
             <div class="modal-container">
                 <div class="modal-header">
@@ -2038,6 +2047,13 @@
                 valor = parseFloat(valor) || 0;
             }
             return `$${valor.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function escapeHtml(texto) {
+            if (texto === null || texto === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(texto);
+            return div.innerHTML;
         }
         
         function formatDateTime(fechaStr) {
@@ -2447,6 +2463,18 @@
             document.getElementById('cierreFinalEfectivo').textContent = formatCurrency(saldoEfectivo);
             document.getElementById('cierreFinalBanco').textContent = formatCurrency(saldoBanco);
             document.getElementById('cierreTotalFinal').textContent = formatCurrency(saldoEfectivo + saldoBanco);
+        }
+
+        function abrirHistorialCierres() {
+            const hoy = new Date();
+            document.getElementById('cierreMesFiltro').value = String(hoy.getMonth() + 1);
+            document.getElementById('cierreAnioFiltro').value = String(hoy.getFullYear());
+            document.getElementById('modalHistorialCierres').classList.add('active');
+            consultarCierresMes();
+        }
+
+        function cerrarModalHistorialCierres() {
+            document.getElementById('modalHistorialCierres').classList.remove('active');
         }
 
         async function consultarCierresMes() {
@@ -3089,6 +3117,7 @@
             document.getElementById('btnExportarExcel').addEventListener('click', exportarAExcel);
             document.getElementById('btnDiagnostico').addEventListener('click', ejecutarDiagnostico);
             document.getElementById('btnInicializarDatos').addEventListener('click', inicializarDatosEjemplo);
+            document.getElementById('btnAbrirHistorialCierres').addEventListener('click', abrirHistorialCierres);
             document.getElementById('btnConsultarCierres').addEventListener('click', consultarCierresMes);
             document.getElementById('btnGuardarCierreEditado').addEventListener('click', guardarCierreEditado);
             document.getElementById('btnAgregarAjuste').addEventListener('click', agregarAjusteCierre);
@@ -3099,7 +3128,6 @@
             
             document.getElementById('cierreMesFiltro').value = String(hoy.getMonth() + 1);
             document.getElementById('cierreAnioFiltro').value = String(hoy.getFullYear());
-            consultarCierresMes();
             filtrarPorPeriodo('hoy');
         });
         
@@ -3112,6 +3140,8 @@
         window.abrirEditarCierre = abrirEditarCierre;
         window.cerrarModalEditarCierre = cerrarModalEditarCierre;
         window.eliminarAjusteCierre = eliminarAjusteCierre;
+        window.abrirHistorialCierres = abrirHistorialCierres;
+        window.cerrarModalHistorialCierres = cerrarModalHistorialCierres;
     </script>
 </body>
 </html>
