@@ -5,7 +5,7 @@ a = Analysis(
     ['setup_database.py'],
     pathex=[],
     binaries=[],
-    datas=[('AgroVet.sql', '.')],
+    datas=[('AgroVet.sql', '.'), ('migrations', 'migrations')],
     hiddenimports=['mysql.connector'],
     hookspath=[],
     hooksconfig={},

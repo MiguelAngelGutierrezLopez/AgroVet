@@ -1,5 +1,5 @@
 # controlador/reporte_caja_controller.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from modelo.reporte_caja_model import model
 import logging
 
@@ -324,6 +324,78 @@ def obtener_dinero_banco():
             'success': False,
             'message': f'Error al obtener dinero por banco: {str(e)}'
         }), 500
+
+@reporte_caja_bp.route('/api/reporte-caja/cierre-actual', methods=['GET'])
+def obtener_cierre_actual():
+    if session.get('rol') != 'admin':
+        return jsonify({'success': False, 'message': 'Solo el administrador puede consultar el baúl.'}), 403
+
+    resultado = model.obtener_cierre_actual()
+    if not resultado['success']:
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error al obtener el cierre')}), 500
+    return jsonify({'success': True, 'data': resultado['cierre']})
+
+@reporte_caja_bp.route('/api/reporte-caja/cierres', methods=['GET'])
+def listar_cierres():
+    if session.get('rol') != 'admin':
+        return jsonify({'success': False, 'message': 'Solo el administrador puede consultar los cierres.'}), 403
+    anio = request.args.get('anio', type=int)
+    mes = request.args.get('mes', type=int)
+    if not anio or not mes:
+        return jsonify({'success': False, 'message': 'Debe indicar año y mes.'}), 400
+    resultado = model.listar_cierres_mes(anio, mes)
+    status = 400 if resultado.get('error_code') == 'validation' else 500
+    if not resultado['success']:
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error al listar cierres')}), status
+    return jsonify({'success': True, 'data': resultado})
+
+@reporte_caja_bp.route('/api/reporte-caja/cierres/<fecha_cierre>', methods=['GET', 'PUT'])
+def gestionar_cierre_fecha(fecha_cierre):
+    if session.get('rol') != 'admin':
+        return jsonify({'success': False, 'message': 'Solo el administrador puede editar cierres.'}), 403
+    if request.method == 'GET':
+        resultado = model.obtener_cierre_fecha(fecha_cierre)
+    else:
+        datos = request.get_json(silent=True) or {}
+        resultado = model.editar_cierre(fecha_cierre, datos)
+    if not resultado['success']:
+        status = 404 if resultado.get('error_code') == 'not_found' else 400 if resultado.get('error_code') == 'validation' else 500
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error con el cierre')}), status
+    return jsonify({'success': True, 'data': resultado.get('cierre'), 'message': resultado.get('message')})
+
+@reporte_caja_bp.route('/api/reporte-caja/cierre', methods=['POST'])
+def aplicar_cierre():
+    if session.get('rol') != 'admin':
+        return jsonify({'success': False, 'message': 'Solo el administrador puede aplicar el cierre.'}), 403
+
+    datos = request.get_json(silent=True) or {}
+    resultado = model.aplicar_cierre(datos)
+    if not resultado['success']:
+        status = 400 if resultado.get('error_code') == 'validation' else 500
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error al aplicar el cierre')}), status
+    return jsonify({
+        'success': True,
+        'message': resultado.get('message', 'Cierre de caja guardado.'),
+        'data': resultado['cierre'],
+    })
+
+@reporte_caja_bp.route('/api/reporte-caja/cierres/<fecha_cierre>/ajustes', methods=['POST'])
+@reporte_caja_bp.route('/api/reporte-caja/cierres/<fecha_cierre>/ajustes/<int:ajuste_id>', methods=['PUT', 'DELETE'])
+def gestionar_ajuste_banco(fecha_cierre, ajuste_id=None):
+    if session.get('rol') != 'admin':
+        return jsonify({'success': False, 'message': 'Solo el administrador puede gestionar ajustes bancarios.'}), 403
+
+    if request.method == 'DELETE':
+        resultado = model.eliminar_ajuste_banco(fecha_cierre, ajuste_id)
+    else:
+        datos = request.get_json(silent=True) or {}
+        resultado = model.crear_actualizar_ajuste_banco(fecha_cierre, datos, ajuste_id)
+
+    if not resultado['success']:
+        status = 404 if resultado.get('error_code') == 'not_found' else 400 if resultado.get('error_code') == 'validation' else 500
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error en el ajuste bancario')}), status
+    message = 'Ajuste eliminado.' if request.method == 'DELETE' else resultado.get('message')
+    return jsonify({'success': True, 'message': message, 'data': resultado.get('cierre')})
 
 @reporte_caja_bp.route('/api/reporte-caja/diagnostico', methods=['GET'])
 def ejecutar_diagnostico():

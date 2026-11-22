@@ -277,6 +277,191 @@
             margin-bottom: 25px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
+
+        .cierre-caja-container {
+            border-top: 4px solid var(--mostaza);
+        }
+
+        .cierre-caja-header,
+        .cierre-caja-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cierre-caja-header {
+            margin-bottom: 10px;
+        }
+
+        .cierre-caja-subtitle,
+        .cierre-caja-description,
+        .cierre-caja-periodo {
+            color: var(--gris-medio);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .cierre-caja-periodo {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .cierre-caja-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0 24px;
+            margin-top: 18px;
+        }
+
+        .cierre-caja-dato {
+            min-width: 0;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+
+        .cierre-caja-dato label {
+            display: block;
+            color: var(--gris-oscuro);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .cierre-caja-valor {
+            color: var(--teal);
+            font-size: 19px;
+            font-weight: 700;
+            margin: 8px 0 4px;
+        }
+
+        .cierre-caja-input {
+            width: 100%;
+            min-height: 40px;
+            margin: 7px 0 4px;
+            padding: 8px 10px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 6px;
+            color: var(--gris-oscuro);
+            font-size: 15px;
+        }
+
+        .cierre-caja-input:disabled {
+            background: var(--blanco-hueso);
+            color: var(--gris-medio);
+        }
+
+        .cierre-caja-totales {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 22px;
+            padding: 18px 0;
+            border-top: 2px solid var(--gris-claro);
+            border-bottom: 2px solid var(--gris-claro);
+        }
+
+        .cierre-caja-total-label {
+            color: var(--gris-medio);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .cierre-caja-total-valor {
+            color: var(--teal);
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .cierre-caja-actions {
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .cierre-caja-estado {
+            flex: 1;
+            color: var(--gris-medio);
+            font-size: 13px;
+        }
+
+        .historico-cierres-header,
+        .historico-cierres-filtros {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .historico-cierres-filtros {
+            justify-content: flex-start;
+        }
+
+        .cierres-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+
+        .cierres-table th,
+        .cierres-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--gris-claro);
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .cierres-table th {
+            color: var(--gris-medio);
+            background: var(--blanco-hueso);
+        }
+
+        .cierre-ajuste-lista {
+            display: grid;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .cierre-ajuste-item {
+            display: grid;
+            grid-template-columns: 90px 100px 1fr 90px 90px;
+            gap: 8px;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid var(--gris-claro);
+            border-radius: 8px;
+        }
+
+        .cierre-ajuste-form {
+            display: grid;
+            grid-template-columns: 120px 150px 1fr 1fr auto;
+            gap: 8px;
+            align-items: end;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .cierre-ajuste-item,
+            .cierre-ajuste-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .cierre-caja-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cierre-caja-grid,
+            .cierre-caja-totales {
+                grid-template-columns: 1fr;
+            }
+        }
         
         .periodo-header {
             display: flex;
@@ -1331,6 +1516,131 @@
                 </div>
             </div>
         </div>
+
+        <section class="periodo-container cierre-caja-container" aria-labelledby="cierreCajaTitulo">
+            <div class="cierre-caja-header">
+                <h2 class="periodo-title" id="cierreCajaTitulo">
+                    <i class="fas fa-box-archive"></i> Baúl de cierre diario
+                </h2>
+                <span class="cierre-caja-periodo" id="cierreCajaPeriodo">Cierre de hoy</span>
+            </div>
+            <p class="cierre-caja-subtitle">
+                Revisa de dónde sale cada importe. Al aplicar el cierre, los saldos finales pasan a ser la apertura del siguiente cierre.
+            </p>
+
+            <div class="cierre-caja-grid">
+                <div class="cierre-caja-dato">
+                    <label for="cierreSaldoInicialEfectivo">Apertura de efectivo</label>
+                    <input class="cierre-caja-input" id="cierreSaldoInicialEfectivo" type="number" min="0" step="0.01" value="0">
+                    <p class="cierre-caja-description" id="cierreAperturaEfectivoDescripcion">Se toma del cierre anterior. En el primer cierre, ingresa el saldo con el que empieza el negocio.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label for="cierreSaldoInicialBanco">Apertura de banco</label>
+                    <input class="cierre-caja-input" id="cierreSaldoInicialBanco" type="number" min="0" step="0.01" value="0">
+                    <p class="cierre-caja-description" id="cierreAperturaBancoDescripcion">Se toma del cierre anterior. En el primer cierre, ingresa el saldo bancario inicial.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Ingresos manuales en efectivo</label>
+                    <div class="cierre-caja-valor" id="cierreIngresosManuales">$0</div>
+                    <p class="cierre-caja-description">Movimientos de tipo ingreso registrados en Reporte de Caja; se consideran efectivo.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Ventas de contado</label>
+                    <div class="cierre-caja-valor" id="cierreVentasContado">$0</div>
+                    <p class="cierre-caja-description">Ventas normales de contado y la parte en efectivo de las ventas mixtas.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Anticipos de crédito</label>
+                    <div class="cierre-caja-valor" id="cierreAnticipos">$0</div>
+                    <p class="cierre-caja-description">Anticipos guardados al registrar ventas a crédito; se consideran efectivo.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Abonos en efectivo</label>
+                    <div class="cierre-caja-valor" id="cierreAbonos">$0</div>
+                    <p class="cierre-caja-description">Abonos a créditos cuyo método de pago está registrado como efectivo.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Gastos manuales</label>
+                    <div class="cierre-caja-valor" id="cierreEgresos">$0</div>
+                    <p class="cierre-caja-description">Egresos registrados en Reporte de Caja; por ahora se descuentan del efectivo.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label>Entradas registradas en banco</label>
+                    <div class="cierre-caja-valor" id="cierreIngresosBanco">$0</div>
+                    <p class="cierre-caja-description">Ventas por banco, Nequi, transferencias o tarjeta, partes bancarias de ventas mixtas y abonos bancarios.</p>
+                </div>
+                <div class="cierre-caja-dato">
+                    <label for="cierreAjusteBanco">Dinero adicional recibido en banco</label>
+                    <input class="cierre-caja-input" id="cierreAjusteBanco" type="number" min="0" step="0.01" value="0">
+                    <p class="cierre-caja-description">Depósitos u otras entradas bancarias que no quedaron registradas como venta o abono.</p>
+                </div>
+            </div>
+
+            <div class="cierre-caja-totales">
+                <div>
+                    <div class="cierre-caja-total-label">Efectivo al cierre</div>
+                    <div class="cierre-caja-total-valor" id="cierreFinalEfectivo">$0</div>
+                </div>
+                <div>
+                    <div class="cierre-caja-total-label">Banco al cierre</div>
+                    <div class="cierre-caja-total-valor" id="cierreFinalBanco">$0</div>
+                </div>
+                <div>
+                    <div class="cierre-caja-total-label">Total para iniciar el siguiente día</div>
+                    <div class="cierre-caja-total-valor" id="cierreTotalFinal">$0</div>
+                </div>
+            </div>
+
+            <div class="cierre-caja-actions">
+                <span class="cierre-caja-estado" id="cierreCajaEstado" role="status">Cargando datos del cierre...</span>
+                <button class="btn btn-primary" id="btnAplicarCierre" type="button" disabled>
+                    <i class="fas fa-save"></i> Aplicar cierre
+                </button>
+            </div>
+        </section>
+
+        <section class="periodo-container" aria-labelledby="historialCierresTitulo">
+            <div class="historico-cierres-header">
+                <h2 class="periodo-title" id="historialCierresTitulo">
+                    <i class="fas fa-history"></i> Cierres guardados
+                </h2>
+                <div class="historico-cierres-filtros">
+                    <select class="date-input" id="cierreMesFiltro" aria-label="Mes de cierres">
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input class="date-input" id="cierreAnioFiltro" type="number" min="2000" max="2100" aria-label="Año de cierres">
+                    <button class="btn btn-primary" id="btnConsultarCierres" type="button">
+                        <i class="fas fa-search"></i> Consultar
+                    </button>
+                </div>
+            </div>
+            <table class="cierres-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Desde</th>
+                        <th>Efectivo final</th>
+                        <th>Banco final</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cierresTablaBody">
+                    <tr><td colspan="6">Selecciona un mes para ver los cierres.</td></tr>
+                </tbody>
+            </table>
+        </section>
         
         <div class="resumen-financiero">
             <h2 class="periodo-title" style="margin-bottom: 25px;">
@@ -1509,6 +1819,52 @@
             </div>
         </div>
         
+        <div class="modal-overlay" id="modalEditarCierre">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2><i class="fas fa-edit"></i> Editar cierre</h2>
+                    <button class="modal-close" type="button" onclick="cerrarModalEditarCierre()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editarCierreFecha">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="editarSaldoInicialEfectivo">Apertura de efectivo</label>
+                            <input class="form-input" id="editarSaldoInicialEfectivo" type="number" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editarSaldoInicialBanco">Apertura de banco</label>
+                            <input class="form-input" id="editarSaldoInicialBanco" type="number" min="0" step="0.01" value="0">
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 18px 0 6px; color: var(--teal);">Ajustes bancarios</h3>
+                    <p class="cierre-caja-description">Las entradas aumentan el banco y los retiros lo disminuyen. Los ajustes quedan registrados en este cierre.</p>
+                    <div class="cierre-ajuste-lista" id="editarCierresAjustes"></div>
+
+                    <div class="cierre-ajuste-form">
+                        <select class="form-select" id="ajusteTipo">
+                            <option value="entrada">Entrada</option>
+                            <option value="retiro">Retiro</option>
+                        </select>
+                        <input class="form-input" id="ajusteMonto" type="number" min="0.01" step="0.01" placeholder="Monto">
+                        <input class="form-input" id="ajusteDescripcion" type="text" placeholder="Descripción">
+                        <input class="form-input" id="ajusteReferencia" type="text" placeholder="Referencia (opcional)">
+                        <button class="btn btn-primary" id="btnAgregarAjuste" type="button">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 18px;">
+                        <button class="btn btn-secondary" type="button" onclick="cerrarModalEditarCierre()">Cancelar</button>
+                        <button class="btn btn-primary" id="btnGuardarCierreEditado" type="button">
+                            <i class="fas fa-save"></i> Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-overlay" id="modalBanco">
             <div class="modal-container">
                 <div class="modal-header">
@@ -1672,6 +2028,7 @@
         const itemsPerPage = 10;
         let periodoActual = "hoy";
         let chartFlujoCaja = null;
+        let cierreCajaActual = null;
         let chartDistribucionEgresos = null;
         let movimientoEditandoId = null;
         let isSubmitting = false;
@@ -2019,6 +2376,250 @@
                 }
             } catch (error) {
                 document.getElementById('totalBanco').textContent = formatCurrency(0);
+            }
+        }
+
+        async function cargarBaulCierre() {
+            const boton = document.getElementById('btnAplicarCierre');
+            boton.disabled = true;
+            try {
+                const response = await fetch('/api/reporte-caja/cierre-actual');
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'No se pudo cargar el cierre de caja.');
+                }
+                mostrarDatosBaulCierre(result.data);
+            } catch (error) {
+                document.getElementById('cierreCajaEstado').textContent = 'No se pudieron cargar los datos del cierre.';
+                showError(error.message);
+            }
+        }
+
+        function mostrarDatosBaulCierre(cierre) {
+            cierreCajaActual = cierre;
+            document.getElementById('cierreCajaPeriodo').textContent = `Cierre del ${cierre.fecha_cierre}`;
+            document.getElementById('cierreSaldoInicialEfectivo').value = Number(cierre.saldo_inicial_efectivo || 0).toFixed(2);
+            document.getElementById('cierreSaldoInicialBanco').value = Number(cierre.saldo_inicial_banco || 0).toFixed(2);
+            document.getElementById('cierreAjusteBanco').value = Number(cierre.ajuste_banco_externo || 0).toFixed(2);
+
+            const aperturaEditable = Boolean(cierre.apertura_manual) && !cierre.cierre_aplicado;
+            document.getElementById('cierreSaldoInicialEfectivo').disabled = !aperturaEditable;
+            document.getElementById('cierreSaldoInicialBanco').disabled = !aperturaEditable;
+
+            const inicioDescripcion = aperturaEditable
+                ? 'Primer cierre: ingresa el efectivo con el que inicia el periodo.'
+                : `Saldo final guardado en el cierre anterior. Movimientos desde ${cierre.fecha_inicio_movimientos}.`;
+            document.getElementById('cierreAperturaEfectivoDescripcion').textContent = inicioDescripcion;
+            document.getElementById('cierreAperturaBancoDescripcion').textContent = aperturaEditable
+                ? 'Primer cierre: ingresa el saldo bancario con el que inicia el periodo.'
+                : `Saldo final guardado en el cierre anterior. Movimientos desde ${cierre.fecha_inicio_movimientos}.`;
+
+            document.getElementById('cierreIngresosManuales').textContent = formatCurrency(cierre.ingresos_manuales_efectivo);
+            document.getElementById('cierreVentasContado').textContent = formatCurrency(cierre.ventas_contado_efectivo);
+            document.getElementById('cierreAnticipos').textContent = formatCurrency(cierre.anticipos_efectivo);
+            document.getElementById('cierreAbonos').textContent = formatCurrency(cierre.abonos_efectivo);
+            document.getElementById('cierreEgresos').textContent = formatCurrency(cierre.egresos_manuales_efectivo);
+            document.getElementById('cierreIngresosBanco').textContent = formatCurrency(cierre.ingresos_banco_registrados);
+
+            document.getElementById('cierreCajaEstado').textContent = cierre.cierre_aplicado
+                ? 'Cierre guardado. Puedes actualizar el ajuste bancario y volver a aplicarlo.'
+                : `Datos acumulados desde ${cierre.fecha_inicio_movimientos}. Revisa la apertura y el ajuste externo antes de aplicar.`;
+            document.getElementById('btnAplicarCierre').innerHTML = cierre.cierre_aplicado
+                ? '<i class="fas fa-save"></i> Actualizar cierre'
+                : '<i class="fas fa-save"></i> Aplicar cierre';
+            document.getElementById('btnAplicarCierre').disabled = false;
+            actualizarVistaPreviaCierre();
+        }
+
+        function actualizarVistaPreviaCierre() {
+            if (!cierreCajaActual) return;
+            const valor = (id) => Math.max(0, Number(document.getElementById(id).value) || 0);
+            const saldoEfectivo = valor('cierreSaldoInicialEfectivo')
+                + Number(cierreCajaActual.ingresos_manuales_efectivo || 0)
+                + Number(cierreCajaActual.ventas_contado_efectivo || 0)
+                + Number(cierreCajaActual.anticipos_efectivo || 0)
+                + Number(cierreCajaActual.abonos_efectivo || 0)
+                - Number(cierreCajaActual.egresos_manuales_efectivo || 0);
+            const saldoBanco = valor('cierreSaldoInicialBanco')
+                + Number(cierreCajaActual.ingresos_banco_registrados || 0)
+                + valor('cierreAjusteBanco');
+
+            document.getElementById('cierreFinalEfectivo').textContent = formatCurrency(saldoEfectivo);
+            document.getElementById('cierreFinalBanco').textContent = formatCurrency(saldoBanco);
+            document.getElementById('cierreTotalFinal').textContent = formatCurrency(saldoEfectivo + saldoBanco);
+        }
+
+        async function consultarCierresMes() {
+            const mes = document.getElementById('cierreMesFiltro').value;
+            const anio = document.getElementById('cierreAnioFiltro').value;
+            const tbody = document.getElementById('cierresTablaBody');
+            tbody.innerHTML = '<tr><td colspan="6">Cargando cierres...</td></tr>';
+            try {
+                const response = await fetch(`/api/reporte-caja/cierres?anio=${encodeURIComponent(anio)}&mes=${encodeURIComponent(mes)}`);
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'No se pudo consultar los cierres.');
+                const cierres = result.data.cierres || [];
+                if (!cierres.length) {
+                    tbody.innerHTML = '<tr><td colspan="6">No hay cierres guardados para este mes.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = cierres.map(cierre => `
+                    <tr>
+                        <td>${escapeHtml(cierre.fecha_cierre)}</td>
+                        <td>${escapeHtml(cierre.fecha_inicio_movimientos)}</td>
+                        <td>${formatCurrency(cierre.saldo_final_efectivo)}</td>
+                        <td>${formatCurrency(cierre.saldo_final_banco)}</td>
+                        <td><strong>${formatCurrency(cierre.total_final)}</strong></td>
+                        <td>
+                            <button class="btn-icon" type="button" onclick="abrirEditarCierre('${escapeHtml(cierre.fecha_cierre)}')" title="Editar cierre">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="6">No se pudo cargar el listado.</td></tr>';
+                showError(error.message);
+            }
+        }
+
+        async function abrirEditarCierre(fecha) {
+            try {
+                const response = await fetch(`/api/reporte-caja/cierres/${encodeURIComponent(fecha)}`);
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'No se pudo abrir el cierre.');
+                mostrarFormularioEditarCierre(result.data);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function mostrarFormularioEditarCierre(cierre) {
+            document.getElementById('editarCierreFecha').value = cierre.fecha_cierre;
+            document.getElementById('editarSaldoInicialEfectivo').value = Number(cierre.saldo_inicial_efectivo || 0).toFixed(2);
+            document.getElementById('editarSaldoInicialBanco').value = Number(cierre.saldo_inicial_banco || 0).toFixed(2);
+            document.getElementById('ajusteTipo').value = 'entrada';
+            document.getElementById('ajusteMonto').value = '';
+            document.getElementById('ajusteDescripcion').value = '';
+            document.getElementById('ajusteReferencia').value = '';
+            renderizarAjustesCierre(cierre.ajustes_banco || { ajustes: [] });
+            document.getElementById('modalEditarCierre').classList.add('active');
+        }
+
+        function renderizarAjustesCierre(data) {
+            const lista = document.getElementById('editarCierresAjustes');
+            const ajustes = data.ajustes || [];
+            if (!ajustes.length) {
+                lista.innerHTML = '<p class="cierre-caja-description">No hay ajustes bancarios registrados para este cierre.</p>';
+                return;
+            }
+            lista.innerHTML = ajustes.map(ajuste => `
+                <div class="cierre-ajuste-item">
+                    <strong>${escapeHtml(ajuste.tipo === 'entrada' ? 'Entrada' : 'Retiro')}</strong>
+                    <strong>${formatCurrency(ajuste.monto)}</strong>
+                    <span>${escapeHtml(ajuste.descripcion)}</span>
+                    <span>${escapeHtml(ajuste.referencia || 'Sin referencia')}</span>
+                    <button class="btn-icon btn-delete" type="button" onclick="eliminarAjusteCierre(${ajuste.id})" title="Eliminar ajuste">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function cerrarModalEditarCierre() {
+            document.getElementById('modalEditarCierre').classList.remove('active');
+        }
+
+        async function guardarCierreEditado() {
+            const fecha = document.getElementById('editarCierreFecha').value;
+            const datos = {
+                saldo_inicial_efectivo: Number(document.getElementById('editarSaldoInicialEfectivo').value),
+                saldo_inicial_banco: Number(document.getElementById('editarSaldoInicialBanco').value)
+            };
+            try {
+                const response = await fetch(`/api/reporte-caja/cierres/${encodeURIComponent(fecha)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'No se pudo guardar el cierre.');
+                showSuccess(result.message || 'Cierre actualizado.');
+                mostrarFormularioEditarCierre(result.data);
+                await consultarCierresMes();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function agregarAjusteCierre() {
+            const fecha = document.getElementById('editarCierreFecha').value;
+            const datos = {
+                tipo: document.getElementById('ajusteTipo').value,
+                monto: Number(document.getElementById('ajusteMonto').value),
+                descripcion: document.getElementById('ajusteDescripcion').value,
+                referencia: document.getElementById('ajusteReferencia').value
+            };
+            try {
+                const response = await fetch(`/api/reporte-caja/cierres/${encodeURIComponent(fecha)}/ajustes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'No se pudo registrar el ajuste.');
+                showSuccess(result.message || 'Ajuste registrado.');
+                mostrarFormularioEditarCierre(result.data);
+                await consultarCierresMes();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function eliminarAjusteCierre(ajusteId) {
+            if (!confirm('¿Eliminar este ajuste bancario?')) return;
+            const fecha = document.getElementById('editarCierreFecha').value;
+            try {
+                const response = await fetch(`/api/reporte-caja/cierres/${encodeURIComponent(fecha)}/ajustes/${ajusteId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'No se pudo eliminar el ajuste.');
+                showSuccess('Ajuste eliminado.');
+                mostrarFormularioEditarCierre(result.data);
+                await consultarCierresMes();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function aplicarCierreBaul() {
+            if (!cierreCajaActual) return;
+            const boton = document.getElementById('btnAplicarCierre');
+            boton.disabled = true;
+            document.getElementById('cierreCajaEstado').textContent = 'Guardando cierre...';
+
+            try {
+                const payload = {
+                    saldo_inicial_efectivo: Number(document.getElementById('cierreSaldoInicialEfectivo').value),
+                    saldo_inicial_banco: Number(document.getElementById('cierreSaldoInicialBanco').value),
+                    ajuste_banco_externo: Number(document.getElementById('cierreAjusteBanco').value)
+                };
+                const response = await fetch('/api/reporte-caja/cierre', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'No se pudo guardar el cierre.');
+                }
+                mostrarDatosBaulCierre(result.data);
+                showSuccess(result.message || 'Cierre de caja guardado.');
+            } catch (error) {
+                document.getElementById('cierreCajaEstado').textContent = 'No se guardó el cierre.';
+                showError(error.message);
+                boton.disabled = false;
             }
         }
         
@@ -2458,6 +3059,7 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             cargarEstadoSidebar();
+            cargarBaulCierre();
             document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
             document.getElementById('toggleSidebarCollapsed').addEventListener('click', toggleSidebar);
             document.getElementById('cardAbonos').addEventListener('click', mostrarDetalleAbonos);
@@ -2487,7 +3089,18 @@
             document.getElementById('btnExportarExcel').addEventListener('click', exportarAExcel);
             document.getElementById('btnDiagnostico').addEventListener('click', ejecutarDiagnostico);
             document.getElementById('btnInicializarDatos').addEventListener('click', inicializarDatosEjemplo);
+            document.getElementById('btnConsultarCierres').addEventListener('click', consultarCierresMes);
+            document.getElementById('btnGuardarCierreEditado').addEventListener('click', guardarCierreEditado);
+            document.getElementById('btnAgregarAjuste').addEventListener('click', agregarAjusteCierre);
+            document.getElementById('btnAplicarCierre').addEventListener('click', aplicarCierreBaul);
+            document.getElementById('cierreSaldoInicialEfectivo').addEventListener('input', actualizarVistaPreviaCierre);
+            document.getElementById('cierreSaldoInicialBanco').addEventListener('input', actualizarVistaPreviaCierre);
+            document.getElementById('cierreAjusteBanco').addEventListener('input', actualizarVistaPreviaCierre);
             
+            const hoy = new Date();
+            document.getElementById('cierreMesFiltro').value = String(hoy.getMonth() + 1);
+            document.getElementById('cierreAnioFiltro').value = String(hoy.getFullYear());
+            consultarCierresMes();
             filtrarPorPeriodo('hoy');
         });
         
@@ -2497,6 +3110,9 @@
         window.cambiarPaginaEgresos = cambiarPaginaEgresos;
         window.cerrarModalAbonos = cerrarModalAbonos;
         window.cerrarModalBanco = cerrarModalBanco;
+        window.abrirEditarCierre = abrirEditarCierre;
+        window.cerrarModalEditarCierre = cerrarModalEditarCierre;
+        window.eliminarAjusteCierre = eliminarAjusteCierre;
     </script>
 </body>
 </html>

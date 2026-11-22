@@ -100,6 +100,28 @@ def product_history_schema_is_current():
     cursor = connection.cursor()
     try:
         schema = Config.DB_CONFIG['database']
+        cursor.execute(
+            """
+            SELECT 1
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'cierre_caja'
+            """,
+            (schema,),
+        )
+        if cursor.fetchone() is None:
+            return False
+
+        cursor.execute(
+            """
+            SELECT 1
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'cierre_caja_ajuste_banco'
+            """,
+            (schema,),
+        )
+        if cursor.fetchone() is None:
+            return False
+
         for table, requirements_for_table in requirements.items():
             cursor.execute(
                 """
@@ -173,6 +195,8 @@ def apply_product_history_migrations():
         '001_add_product_history_columns.py',
         '002_backfill_product_history.py',
         '003_allow_product_deletion.py',
+        '004_create_cierre_caja.py',
+        '005_create_cierre_caja_ajustes.py',
     )
     original_argv = sys.argv[:]
     try:

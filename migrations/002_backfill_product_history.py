@@ -17,7 +17,7 @@ CHECKS = {
             SELECT COUNT(*)
             FROM detalle_venta dv
             LEFT JOIN productos p ON p.id = dv.id_producto
-            WHERE p.id IS NULL
+            WHERE dv.id_producto IS NOT NULL AND p.id IS NULL
         """,
         'missing': """
             SELECT COUNT(*)
@@ -33,7 +33,7 @@ CHECKS = {
             SELECT COUNT(*)
             FROM compras_proveedor cp
             LEFT JOIN productos p ON p.id = cp.producto_id
-            WHERE p.id IS NULL
+            WHERE cp.producto_id IS NOT NULL AND p.id IS NULL
         """,
         'missing': """
             SELECT COUNT(*)

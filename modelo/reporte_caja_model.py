@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta
 from database import Database
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -646,7 +647,581 @@ class ReporteCajaModel:
         except Exception as e:
             logger.error(f"Error en obtener_dinero_banco: {e}")
             return {'success': False, 'message': str(e)}
-    
+
+    @staticmethod
+    def _monto_no_negativo(valor, nombre):
+        try:
+            monto = float(valor or 0)
+        except (TypeError, ValueError):
+            raise ValueError(f'{nombre} debe ser un número válido.')
+        if not math.isfinite(monto) or monto < 0:
+            raise ValueError(f'{nombre} debe ser un número igual o mayor a cero.')
+        return monto
+
+    @staticmethod
+    def _obtener_movimientos_para_cierre(fecha_inicio, fecha_fin):
+        resumen_result = ReporteCajaModel.obtener_resumen_financiero(
+            'personalizado', fecha_inicio, fecha_fin
+        )
+        if not resumen_result['success']:
+            raise RuntimeError(resumen_result.get('message', 'No se pudo calcular el efectivo.'))
+
+        banco_result = ReporteCajaModel.obtener_dinero_banco(
+            'personalizado', fecha_inicio, fecha_fin
+        )
+        if not banco_result['success']:
+            raise RuntimeError(banco_result.get('message', 'No se pudo calcular el banco.'))
+
+        resumen = resumen_result['resumen']
+        return {
+            'ingresos_manuales_efectivo': float(resumen['total_ingresos_manuales'] or 0),
+            'ventas_contado_efectivo': float(resumen['ventas_contado_total'] or 0),
+            'anticipos_efectivo': float(resumen['ventas_credito_anticipo_total'] or 0),
+            'abonos_efectivo': float(resumen['abonos_credito_total'] or 0),
+            'egresos_manuales_efectivo': float(resumen['total_egresos_manuales'] or 0),
+            'ingresos_banco_registrados': float(
+                banco_result['dinero_banco']['total_general'] or 0
+            ),
+        }
+
+    @staticmethod
+    def _formatear_cierre(cierre, apertura_manual=False, cierre_aplicado=True):
+        campos_monto = (
+            'saldo_inicial_efectivo',
+            'saldo_inicial_banco',
+            'ingresos_manuales_efectivo',
+            'ventas_contado_efectivo',
+            'anticipos_efectivo',
+            'abonos_efectivo',
+            'egresos_manuales_efectivo',
+            'ingresos_banco_registrados',
+            'ajuste_banco_externo',
+            'saldo_final_efectivo',
+            'saldo_final_banco',
+            'total_final',
+        )
+        resultado = dict(cierre)
+        for campo in ('fecha_cierre', 'fecha_inicio_movimientos'):
+            if hasattr(resultado.get(campo), 'isoformat'):
+                resultado[campo] = resultado[campo].isoformat()
+        for campo in campos_monto:
+            resultado[campo] = float(resultado.get(campo) or 0)
+
+        resultado['ingresos_efectivo_total'] = sum(
+            resultado[campo]
+            for campo in (
+                'ingresos_manuales_efectivo',
+                'ventas_contado_efectivo',
+                'anticipos_efectivo',
+                'abonos_efectivo',
+            )
+        )
+        resultado['apertura_manual'] = apertura_manual
+        resultado['cierre_aplicado'] = cierre_aplicado
+        return resultado
+
+    @staticmethod
+    def obtener_cierre_actual():
+        try:
+            db = Database()
+            hoy = datetime.now().date()
+            hoy_str = hoy.isoformat()
+
+            cierre_existente = db.fetch_one(
+                "SELECT * FROM cierre_caja WHERE fecha_cierre = %s",
+                (hoy_str,),
+            )
+            if cierre_existente:
+                return {
+                    'success': True,
+                    'cierre': ReporteCajaModel._formatear_cierre(cierre_existente),
+                }
+
+            cierre_anterior = db.fetch_one(
+                """
+                SELECT fecha_cierre, saldo_final_efectivo, saldo_final_banco
+                FROM cierre_caja
+                WHERE fecha_cierre < %s
+                ORDER BY fecha_cierre DESC
+                LIMIT 1
+                """,
+                (hoy_str,),
+            )
+            if cierre_anterior:
+                fecha_inicio = (
+                    cierre_anterior['fecha_cierre'] + timedelta(days=1)
+                ).isoformat()
+                saldo_inicial_efectivo = float(cierre_anterior['saldo_final_efectivo'] or 0)
+                saldo_inicial_banco = float(cierre_anterior['saldo_final_banco'] or 0)
+                apertura_manual = False
+            else:
+                fecha_inicio = hoy_str
+                saldo_inicial_efectivo = 0.0
+                saldo_inicial_banco = 0.0
+                apertura_manual = True
+
+            movimientos = ReporteCajaModel._obtener_movimientos_para_cierre(
+                fecha_inicio, hoy_str
+            )
+            saldo_final_efectivo = (
+                saldo_inicial_efectivo
+                + movimientos['ingresos_manuales_efectivo']
+                + movimientos['ventas_contado_efectivo']
+                + movimientos['anticipos_efectivo']
+                + movimientos['abonos_efectivo']
+                - movimientos['egresos_manuales_efectivo']
+            )
+            saldo_final_banco = (
+                saldo_inicial_banco + movimientos['ingresos_banco_registrados']
+            )
+            cierre = {
+                'fecha_cierre': hoy_str,
+                'fecha_inicio_movimientos': fecha_inicio,
+                'saldo_inicial_efectivo': saldo_inicial_efectivo,
+                'saldo_inicial_banco': saldo_inicial_banco,
+                **movimientos,
+                'ajuste_banco_externo': 0.0,
+                'saldo_final_efectivo': saldo_final_efectivo,
+                'saldo_final_banco': saldo_final_banco,
+                'total_final': saldo_final_efectivo + saldo_final_banco,
+            }
+            return {
+                'success': True,
+                'cierre': ReporteCajaModel._formatear_cierre(
+                    cierre, apertura_manual=apertura_manual, cierre_aplicado=False
+                ),
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo datos del cierre: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def aplicar_cierre(datos):
+        try:
+            db = Database()
+            hoy_str = datetime.now().date().isoformat()
+            cierre_existente = db.fetch_one(
+                "SELECT * FROM cierre_caja WHERE fecha_cierre = %s",
+                (hoy_str,),
+            )
+            cierre_anterior = db.fetch_one(
+                """
+                SELECT fecha_cierre, saldo_final_efectivo, saldo_final_banco
+                FROM cierre_caja
+                WHERE fecha_cierre < %s
+                ORDER BY fecha_cierre DESC
+                LIMIT 1
+                """,
+                (hoy_str,),
+            )
+
+            if cierre_existente:
+                fecha_inicio = cierre_existente['fecha_inicio_movimientos'].isoformat()
+                saldo_inicial_efectivo = float(cierre_existente['saldo_inicial_efectivo'] or 0)
+                saldo_inicial_banco = float(cierre_existente['saldo_inicial_banco'] or 0)
+                ajuste_default = float(cierre_existente['ajuste_banco_externo'] or 0)
+            elif cierre_anterior:
+                fecha_inicio = (
+                    cierre_anterior['fecha_cierre'] + timedelta(days=1)
+                ).isoformat()
+                saldo_inicial_efectivo = float(cierre_anterior['saldo_final_efectivo'] or 0)
+                saldo_inicial_banco = float(cierre_anterior['saldo_final_banco'] or 0)
+                ajuste_default = 0.0
+            else:
+                fecha_inicio = hoy_str
+                saldo_inicial_efectivo = ReporteCajaModel._monto_no_negativo(
+                    datos.get('saldo_inicial_efectivo'), 'Saldo inicial de efectivo'
+                )
+                saldo_inicial_banco = ReporteCajaModel._monto_no_negativo(
+                    datos.get('saldo_inicial_banco'), 'Saldo inicial del banco'
+                )
+                ajuste_default = 0.0
+
+            ajuste_banco = ReporteCajaModel._monto_no_negativo(
+                datos.get('ajuste_banco_externo', ajuste_default),
+                'Ajuste bancario externo',
+            )
+            movimientos = ReporteCajaModel._obtener_movimientos_para_cierre(
+                fecha_inicio, hoy_str
+            )
+            saldo_final_efectivo = (
+                saldo_inicial_efectivo
+                + movimientos['ingresos_manuales_efectivo']
+                + movimientos['ventas_contado_efectivo']
+                + movimientos['anticipos_efectivo']
+                + movimientos['abonos_efectivo']
+                - movimientos['egresos_manuales_efectivo']
+            )
+            saldo_final_banco = (
+                saldo_inicial_banco
+                + movimientos['ingresos_banco_registrados']
+                + ajuste_banco
+            )
+            total_final = saldo_final_efectivo + saldo_final_banco
+
+            db.execute(
+                """
+                INSERT INTO cierre_caja (
+                    fecha_cierre, fecha_inicio_movimientos,
+                    saldo_inicial_efectivo, saldo_inicial_banco,
+                    ingresos_manuales_efectivo, ventas_contado_efectivo,
+                    anticipos_efectivo, abonos_efectivo,
+                    egresos_manuales_efectivo, ingresos_banco_registrados,
+                    ajuste_banco_externo, saldo_final_efectivo,
+                    saldo_final_banco, total_final
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    fecha_inicio_movimientos = VALUES(fecha_inicio_movimientos),
+                    saldo_inicial_efectivo = VALUES(saldo_inicial_efectivo),
+                    saldo_inicial_banco = VALUES(saldo_inicial_banco),
+                    ingresos_manuales_efectivo = VALUES(ingresos_manuales_efectivo),
+                    ventas_contado_efectivo = VALUES(ventas_contado_efectivo),
+                    anticipos_efectivo = VALUES(anticipos_efectivo),
+                    abonos_efectivo = VALUES(abonos_efectivo),
+                    egresos_manuales_efectivo = VALUES(egresos_manuales_efectivo),
+                    ingresos_banco_registrados = VALUES(ingresos_banco_registrados),
+                    ajuste_banco_externo = VALUES(ajuste_banco_externo),
+                    saldo_final_efectivo = VALUES(saldo_final_efectivo),
+                    saldo_final_banco = VALUES(saldo_final_banco),
+                    total_final = VALUES(total_final)
+                """,
+                (
+                    hoy_str,
+                    fecha_inicio,
+                    saldo_inicial_efectivo,
+                    saldo_inicial_banco,
+                    movimientos['ingresos_manuales_efectivo'],
+                    movimientos['ventas_contado_efectivo'],
+                    movimientos['anticipos_efectivo'],
+                    movimientos['abonos_efectivo'],
+                    movimientos['egresos_manuales_efectivo'],
+                    movimientos['ingresos_banco_registrados'],
+                    ajuste_banco,
+                    saldo_final_efectivo,
+                    saldo_final_banco,
+                    total_final,
+                ),
+            )
+
+            resultado = ReporteCajaModel.obtener_cierre_actual()
+            if resultado['success']:
+                resultado['message'] = 'Cierre de caja guardado.'
+            return resultado
+        except ValueError as e:
+            return {'success': False, 'error_code': 'validation', 'message': str(e)}
+        except Exception as e:
+            logger.error(f"Error aplicando cierre de caja: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def _serializar_fecha(valor):
+        if hasattr(valor, 'isoformat'):
+            return valor.isoformat()
+        return str(valor) if valor is not None else None
+
+    @staticmethod
+    def obtener_ajustes_banco(fecha_cierre):
+        db = Database()
+        ajustes = db.fetch_all(
+            """
+            SELECT id, fecha_cierre, tipo, monto, descripcion, referencia,
+                   created_at, updated_at
+            FROM cierre_caja_ajuste_banco
+            WHERE fecha_cierre = %s
+            ORDER BY created_at DESC, id DESC
+            """,
+            (fecha_cierre,),
+        ) or []
+        for ajuste in ajustes:
+            ajuste['fecha_cierre'] = ReporteCajaModel._serializar_fecha(ajuste['fecha_cierre'])
+            ajuste['monto'] = float(ajuste['monto'] or 0)
+            for campo in ('created_at', 'updated_at'):
+                if hasattr(ajuste.get(campo), 'isoformat'):
+                    ajuste[campo] = ajuste[campo].isoformat(sep=' ')
+        entradas = sum(a['monto'] for a in ajustes if a['tipo'] == 'entrada')
+        retiros = sum(a['monto'] for a in ajustes if a['tipo'] == 'retiro')
+        return {
+            'ajustes': ajustes,
+            'total_entradas': entradas,
+            'total_retiros': retiros,
+            'saldo_neto': entradas - retiros,
+        }
+
+    @staticmethod
+    def listar_cierres_mes(anio, mes):
+        try:
+            anio = int(anio)
+            mes = int(mes)
+            if mes < 1 or mes > 12:
+                raise ValueError('Mes no válido.')
+            db = Database()
+            fecha_inicio = datetime(anio, mes, 1).date()
+            if mes == 12:
+                fecha_fin = datetime(anio + 1, 1, 1).date() - timedelta(days=1)
+            else:
+                fecha_fin = datetime(anio, mes + 1, 1).date() - timedelta(days=1)
+
+            cierres = db.fetch_all(
+                """
+                SELECT * FROM cierre_caja
+                WHERE fecha_cierre BETWEEN %s AND %s
+                ORDER BY fecha_cierre DESC
+                """,
+                (fecha_inicio.isoformat(), fecha_fin.isoformat()),
+            ) or []
+
+            resultado = []
+            for cierre in cierres:
+                formateado = ReporteCajaModel._formatear_cierre(cierre)
+                ajustes = ReporteCajaModel.obtener_ajustes_banco(formateado['fecha_cierre'])
+                formateado['ajustes_banco'] = ajustes
+                resultado.append(formateado)
+            return {
+                'success': True,
+                'cierres': resultado,
+                'fecha_inicio': fecha_inicio.isoformat(),
+                'fecha_fin': fecha_fin.isoformat(),
+            }
+        except (TypeError, ValueError) as e:
+            return {'success': False, 'error_code': 'validation', 'message': str(e)}
+        except Exception as e:
+            logger.error(f"Error listando cierres mensuales: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def obtener_cierre_fecha(fecha_cierre):
+        try:
+            datetime.strptime(fecha_cierre, '%Y-%m-%d')
+            db = Database()
+            cierre = db.fetch_one(
+                "SELECT * FROM cierre_caja WHERE fecha_cierre = %s",
+                (fecha_cierre,),
+            )
+            if not cierre:
+                return {'success': False, 'error_code': 'not_found', 'message': 'Cierre no encontrado.'}
+            formateado = ReporteCajaModel._formatear_cierre(cierre)
+            formateado['ajustes_banco'] = ReporteCajaModel.obtener_ajustes_banco(fecha_cierre)
+            return {'success': True, 'cierre': formateado}
+        except ValueError:
+            return {'success': False, 'error_code': 'validation', 'message': 'Fecha de cierre no válida.'}
+        except Exception as e:
+            logger.error(f"Error obteniendo cierre: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def crear_actualizar_ajuste_banco(fecha_cierre, datos, ajuste_id=None):
+        try:
+            datetime.strptime(fecha_cierre, '%Y-%m-%d')
+            tipo = str(datos.get('tipo', '')).strip().lower()
+            if tipo not in ('entrada', 'retiro'):
+                raise ValueError('El tipo debe ser entrada o retiro.')
+            monto = ReporteCajaModel._monto_no_negativo(datos.get('monto'), 'Monto')
+            if monto <= 0:
+                raise ValueError('El monto debe ser mayor a cero.')
+            descripcion = str(datos.get('descripcion', '')).strip()
+            if not descripcion:
+                raise ValueError('La descripción es requerida.')
+            referencia = str(datos.get('referencia', '')).strip() or None
+
+            db = Database()
+            cierre = db.fetch_one(
+                "SELECT id FROM cierre_caja WHERE fecha_cierre = %s",
+                (fecha_cierre,),
+            )
+            if not cierre:
+                return {'success': False, 'error_code': 'not_found', 'message': 'Primero aplica el cierre de esa fecha.'}
+
+            if ajuste_id:
+                db.execute(
+                    """
+                    UPDATE cierre_caja_ajuste_banco
+                    SET tipo = %s, monto = %s, descripcion = %s, referencia = %s
+                    WHERE id = %s AND fecha_cierre = %s
+                    """,
+                    (tipo, monto, descripcion, referencia, ajuste_id, fecha_cierre),
+                )
+                message = 'Ajuste bancario actualizado.'
+            else:
+                db.execute(
+                    """
+                    INSERT INTO cierre_caja_ajuste_banco
+                        (fecha_cierre, tipo, monto, descripcion, referencia)
+                    VALUES (%s, %s, %s, %s, %s)
+                    """,
+                    (fecha_cierre, tipo, monto, descripcion, referencia),
+                )
+                message = 'Ajuste bancario registrado.'
+
+            cierre_actualizado = ReporteCajaModel.obtener_cierre_fecha(fecha_cierre)
+            cierre_actualizado['message'] = message
+            return cierre_actualizado
+        except ValueError as e:
+            return {'success': False, 'error_code': 'validation', 'message': str(e)}
+        except Exception as e:
+            logger.error(f"Error guardando ajuste bancario: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def eliminar_ajuste_banco(fecha_cierre, ajuste_id):
+        try:
+            db = Database()
+            db.execute(
+                "DELETE FROM cierre_caja_ajuste_banco WHERE id = %s AND fecha_cierre = %s",
+                (ajuste_id, fecha_cierre),
+            )
+            return ReporteCajaModel.obtener_cierre_fecha(fecha_cierre)
+        except Exception as e:
+            logger.error(f"Error eliminando ajuste bancario: {e}")
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def editar_cierre(fecha_cierre, datos):
+        try:
+            datetime.strptime(fecha_cierre, '%Y-%m-%d')
+            db = Database()
+            cierre = db.fetch_one(
+                "SELECT * FROM cierre_caja WHERE fecha_cierre = %s",
+                (fecha_cierre,),
+            )
+            if not cierre:
+                return {'success': False, 'error_code': 'not_found', 'message': 'Cierre no encontrado.'}
+
+            saldo_inicial_efectivo = ReporteCajaModel._monto_no_negativo(
+                datos.get('saldo_inicial_efectivo'), 'Saldo inicial de efectivo'
+            )
+            saldo_inicial_banco = ReporteCajaModel._monto_no_negativo(
+                datos.get('saldo_inicial_banco'), 'Saldo inicial del banco'
+            )
+
+            ajustes = ReporteCajaModel.obtener_ajustes_banco(fecha_cierre)
+            ajuste_neto = ajustes['saldo_neto']
+            movimientos = ReporteCajaModel._obtener_movimientos_para_cierre(
+                fecha_cierre, fecha_cierre
+            )
+            saldo_final_efectivo = (
+                saldo_inicial_efectivo
+                + movimientos['ingresos_manuales_efectivo']
+                + movimientos['ventas_contado_efectivo']
+                + movimientos['anticipos_efectivo']
+                + movimientos['abonos_efectivo']
+                - movimientos['egresos_manuales_efectivo']
+            )
+            saldo_final_banco = (
+                saldo_inicial_banco
+                + movimientos['ingresos_banco_registrados']
+                + ajuste_neto
+            )
+
+            db.execute(
+                """
+                UPDATE cierre_caja
+                SET fecha_inicio_movimientos = %s,
+                    saldo_inicial_efectivo = %s,
+                    saldo_inicial_banco = %s,
+                    ingresos_manuales_efectivo = %s,
+                    ventas_contado_efectivo = %s,
+                    anticipos_efectivo = %s,
+                    abonos_efectivo = %s,
+                    egresos_manuales_efectivo = %s,
+                    ingresos_banco_registrados = %s,
+                    ajuste_banco_externo = %s,
+                    saldo_final_efectivo = %s,
+                    saldo_final_banco = %s,
+                    total_final = %s
+                WHERE fecha_cierre = %s
+                """,
+                (
+                    fecha_cierre,
+                    saldo_inicial_efectivo,
+                    saldo_inicial_banco,
+                    movimientos['ingresos_manuales_efectivo'],
+                    movimientos['ventas_contado_efectivo'],
+                    movimientos['anticipos_efectivo'],
+                    movimientos['abonos_efectivo'],
+                    movimientos['egresos_manuales_efectivo'],
+                    movimientos['ingresos_banco_registrados'],
+                    ajuste_neto,
+                    saldo_final_efectivo,
+                    saldo_final_banco,
+                    saldo_final_efectivo + saldo_final_banco,
+                    fecha_cierre,
+                ),
+            )
+
+            cierres_siguientes = db.fetch_all(
+                """
+                SELECT * FROM cierre_caja
+                WHERE fecha_cierre > %s
+                ORDER BY fecha_cierre ASC
+                """,
+                (fecha_cierre,),
+            ) or []
+
+            apertura_efectivo = saldo_final_efectivo
+            apertura_banco = saldo_final_banco
+            for cierre_siguiente in cierres_siguientes:
+                fecha_siguiente = cierre_siguiente['fecha_cierre'].isoformat()
+                movimientos_siguientes = ReporteCajaModel._obtener_movimientos_para_cierre(
+                    fecha_siguiente, fecha_siguiente
+                )
+                ajustes_siguientes = ReporteCajaModel.obtener_ajustes_banco(fecha_siguiente)
+                ajuste_neto_siguiente = ajustes_siguientes['saldo_neto']
+                final_efectivo = (
+                    apertura_efectivo
+                    + movimientos_siguientes['ingresos_manuales_efectivo']
+                    + movimientos_siguientes['ventas_contado_efectivo']
+                    + movimientos_siguientes['anticipos_efectivo']
+                    + movimientos_siguientes['abonos_efectivo']
+                    - movimientos_siguientes['egresos_manuales_efectivo']
+                )
+                final_banco = (
+                    apertura_banco
+                    + movimientos_siguientes['ingresos_banco_registrados']
+                    + ajuste_neto_siguiente
+                )
+                db.execute(
+                    """
+                    UPDATE cierre_caja
+                    SET saldo_inicial_efectivo = %s,
+                        saldo_inicial_banco = %s,
+                        ingresos_manuales_efectivo = %s,
+                        ventas_contado_efectivo = %s,
+                        anticipos_efectivo = %s,
+                        abonos_efectivo = %s,
+                        egresos_manuales_efectivo = %s,
+                        ingresos_banco_registrados = %s,
+                        ajuste_banco_externo = %s,
+                        saldo_final_efectivo = %s,
+                        saldo_final_banco = %s,
+                        total_final = %s
+                    WHERE fecha_cierre = %s
+                    """,
+                    (
+                        apertura_efectivo,
+                        apertura_banco,
+                        movimientos_siguientes['ingresos_manuales_efectivo'],
+                        movimientos_siguientes['ventas_contado_efectivo'],
+                        movimientos_siguientes['anticipos_efectivo'],
+                        movimientos_siguientes['abonos_efectivo'],
+                        movimientos_siguientes['egresos_manuales_efectivo'],
+                        movimientos_siguientes['ingresos_banco_registrados'],
+                        ajuste_neto_siguiente,
+                        final_efectivo,
+                        final_banco,
+                        final_efectivo + final_banco,
+                        fecha_siguiente,
+                    ),
+                )
+                apertura_efectivo = final_efectivo
+                apertura_banco = final_banco
+
+            return ReporteCajaModel.obtener_cierre_fecha(fecha_cierre)
+        except ValueError as e:
+            return {'success': False, 'error_code': 'validation', 'message': str(e)}
+        except Exception as e:
+            logger.error(f"Error editando cierre: {e}")
+            return {'success': False, 'message': str(e)}
+
     @staticmethod
     def ejecutar_diagnostico():
         try:
