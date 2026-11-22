@@ -1579,6 +1579,15 @@
                     <input class="cierre-caja-input" id="cierreAjusteBanco" type="number" min="0" step="0.01" value="0">
                     <p class="cierre-caja-description">Depósitos u otras entradas bancarias que no quedaron registradas como venta o abono.</p>
                 </div>
+                <div class="cierre-caja-dato">
+                    <label for="cierreResponsablesPresentes">Responsables presentes</label>
+                    <input class="cierre-caja-input" id="cierreResponsablesPresentes" type="text" maxlength="500" placeholder="Ej: Administrador y cajera">
+                    <p class="cierre-caja-description">Nombres o roles de las personas presentes al cierre.</p>
+                </div>
+                <div class="cierre-caja-dato" style="grid-column: 1 / -1;">
+                    <label for="cierreObservaciones">Observaciones o motivo de diferencias</label>
+                    <textarea class="cierre-caja-input" id="cierreObservaciones" maxlength="5000" rows="3" placeholder="Explica novedades, ajustes o diferencias"></textarea>
+                </div>
             </div>
 
             <div class="cierre-caja-totales">
@@ -1844,6 +1853,15 @@
                         <div class="form-group">
                             <label class="form-label" for="editarSaldoInicialBanco">Apertura de banco</label>
                             <input class="form-input" id="editarSaldoInicialBanco" type="number" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editarResponsablesCierre">Responsables presentes</label>
+                            <input class="form-input" id="editarResponsablesCierre" type="text" maxlength="500" placeholder="Ej: Administrador y cajera">
+                            <p class="cierre-caja-description">Nombres o roles de las personas presentes al cierre.</p>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="form-label" for="editarObservacionesCierre">Observaciones o motivo de diferencias</label>
+                            <textarea class="form-input" id="editarObservacionesCierre" maxlength="5000" rows="4" placeholder="Explica novedades, ajustes o diferencias del cierre"></textarea>
                         </div>
                     </div>
 
@@ -2417,6 +2435,8 @@
             document.getElementById('cierreSaldoInicialEfectivo').value = Number(cierre.saldo_inicial_efectivo || 0).toFixed(2);
             document.getElementById('cierreSaldoInicialBanco').value = Number(cierre.saldo_inicial_banco || 0).toFixed(2);
             document.getElementById('cierreAjusteBanco').value = Number(cierre.ajuste_banco_externo || 0).toFixed(2);
+            document.getElementById('cierreResponsablesPresentes').value = cierre.responsables_presentes || '';
+            document.getElementById('cierreObservaciones').value = cierre.observaciones || '';
 
             const aperturaEditable = Boolean(cierre.apertura_manual) && !cierre.cierre_aplicado;
             document.getElementById('cierreSaldoInicialEfectivo').disabled = !aperturaEditable;
@@ -2526,6 +2546,8 @@
             document.getElementById('editarCierreFecha').value = cierre.fecha_cierre;
             document.getElementById('editarSaldoInicialEfectivo').value = Number(cierre.saldo_inicial_efectivo || 0).toFixed(2);
             document.getElementById('editarSaldoInicialBanco').value = Number(cierre.saldo_inicial_banco || 0).toFixed(2);
+            document.getElementById('editarResponsablesCierre').value = cierre.responsables_presentes || '';
+            document.getElementById('editarObservacionesCierre').value = cierre.observaciones || '';
             document.getElementById('ajusteTipo').value = 'entrada';
             document.getElementById('ajusteMonto').value = '';
             document.getElementById('ajusteDescripcion').value = '';
@@ -2562,7 +2584,9 @@
             const fecha = document.getElementById('editarCierreFecha').value;
             const datos = {
                 saldo_inicial_efectivo: Number(document.getElementById('editarSaldoInicialEfectivo').value),
-                saldo_inicial_banco: Number(document.getElementById('editarSaldoInicialBanco').value)
+                saldo_inicial_banco: Number(document.getElementById('editarSaldoInicialBanco').value),
+                responsables_presentes: document.getElementById('editarResponsablesCierre').value,
+                observaciones: document.getElementById('editarObservacionesCierre').value
             };
             try {
                 const response = await fetch(`/api/reporte-caja/cierres/${encodeURIComponent(fecha)}`, {
@@ -2631,7 +2655,9 @@
                 const payload = {
                     saldo_inicial_efectivo: Number(document.getElementById('cierreSaldoInicialEfectivo').value),
                     saldo_inicial_banco: Number(document.getElementById('cierreSaldoInicialBanco').value),
-                    ajuste_banco_externo: Number(document.getElementById('cierreAjusteBanco').value)
+                    ajuste_banco_externo: Number(document.getElementById('cierreAjusteBanco').value),
+                    responsables_presentes: document.getElementById('cierreResponsablesPresentes').value,
+                    observaciones: document.getElementById('cierreObservaciones').value
                 };
                 const response = await fetch('/api/reporte-caja/cierre', {
                     method: 'POST',

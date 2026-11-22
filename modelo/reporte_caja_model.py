@@ -841,6 +841,8 @@ class ReporteCajaModel:
                 datos.get('ajuste_banco_externo', ajuste_default),
                 'Ajuste bancario externo',
             )
+            observaciones = str(datos.get('observaciones', '')).strip() or None
+            responsables_presentes = str(datos.get('responsables_presentes', '')).strip() or None
             movimientos = ReporteCajaModel._obtener_movimientos_para_cierre(
                 fecha_inicio, hoy_str
             )
@@ -867,9 +869,9 @@ class ReporteCajaModel:
                     ingresos_manuales_efectivo, ventas_contado_efectivo,
                     anticipos_efectivo, abonos_efectivo,
                     egresos_manuales_efectivo, ingresos_banco_registrados,
-                    ajuste_banco_externo, saldo_final_efectivo,
-                    saldo_final_banco, total_final
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ajuste_banco_externo, observaciones, responsables_presentes,
+                    saldo_final_efectivo, saldo_final_banco, total_final
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
                     fecha_inicio_movimientos = VALUES(fecha_inicio_movimientos),
                     saldo_inicial_efectivo = VALUES(saldo_inicial_efectivo),
@@ -881,6 +883,8 @@ class ReporteCajaModel:
                     egresos_manuales_efectivo = VALUES(egresos_manuales_efectivo),
                     ingresos_banco_registrados = VALUES(ingresos_banco_registrados),
                     ajuste_banco_externo = VALUES(ajuste_banco_externo),
+                    observaciones = VALUES(observaciones),
+                    responsables_presentes = VALUES(responsables_presentes),
                     saldo_final_efectivo = VALUES(saldo_final_efectivo),
                     saldo_final_banco = VALUES(saldo_final_banco),
                     total_final = VALUES(total_final)
@@ -897,6 +901,8 @@ class ReporteCajaModel:
                     movimientos['egresos_manuales_efectivo'],
                     movimientos['ingresos_banco_registrados'],
                     ajuste_banco,
+                    observaciones,
+                    responsables_presentes,
                     saldo_final_efectivo,
                     saldo_final_banco,
                     total_final,
@@ -1092,6 +1098,8 @@ class ReporteCajaModel:
             saldo_inicial_banco = ReporteCajaModel._monto_no_negativo(
                 datos.get('saldo_inicial_banco'), 'Saldo inicial del banco'
             )
+            observaciones = str(datos.get('observaciones', cierre.get('observaciones') or '')).strip() or None
+            responsables_presentes = str(datos.get('responsables_presentes', cierre.get('responsables_presentes') or '')).strip() or None
 
             ajustes = ReporteCajaModel.obtener_ajustes_banco(fecha_cierre)
             ajuste_neto = ajustes['saldo_neto']
@@ -1125,6 +1133,8 @@ class ReporteCajaModel:
                     egresos_manuales_efectivo = %s,
                     ingresos_banco_registrados = %s,
                     ajuste_banco_externo = %s,
+                    observaciones = %s,
+                    responsables_presentes = %s,
                     saldo_final_efectivo = %s,
                     saldo_final_banco = %s,
                     total_final = %s
@@ -1141,6 +1151,8 @@ class ReporteCajaModel:
                     movimientos['egresos_manuales_efectivo'],
                     movimientos['ingresos_banco_registrados'],
                     ajuste_neto,
+                    observaciones,
+                    responsables_presentes,
                     saldo_final_efectivo,
                     saldo_final_banco,
                     saldo_final_efectivo + saldo_final_banco,

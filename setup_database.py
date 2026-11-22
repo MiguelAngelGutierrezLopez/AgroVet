@@ -122,6 +122,18 @@ def product_history_schema_is_current():
         if cursor.fetchone() is None:
             return False
 
+        cursor.execute(
+            """
+            SELECT COLUMN_NAME
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'cierre_caja'
+            """,
+            (schema,),
+        )
+        cierre_columns = {row[0] for row in cursor.fetchall()}
+        if 'observaciones' not in cierre_columns or 'responsables_presentes' not in cierre_columns:
+            return False
+
         for table, requirements_for_table in requirements.items():
             cursor.execute(
                 """
@@ -197,6 +209,7 @@ def apply_product_history_migrations():
         '003_allow_product_deletion.py',
         '004_create_cierre_caja.py',
         '005_create_cierre_caja_ajustes.py',
+        '006_add_cierre_caja_notas.py',
     )
     original_argv = sys.argv[:]
     try:
